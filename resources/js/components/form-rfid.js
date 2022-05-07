@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
+import OutputTouch from './OutputTouch';
 
 class FormRfid extends Component {
 
@@ -10,6 +11,7 @@ class FormRfid extends Component {
         this.state = {
             idRfid: null,
             idMach: null,
+            result: [],
         }
     }
 
@@ -33,6 +35,7 @@ class FormRfid extends Component {
                 idMach : this.state.idMach,
             }
         }).then(function (response) {
+            
             self.setState({
                 result: response.data
             });
@@ -65,9 +68,14 @@ class FormRfid extends Component {
                         >Enter</button>
                 </div>
             <div className="result">
+                <hr/>
+                
                 {this.state.result}
+            
             </div>
+            
             </>
+            
         );
     }
 }

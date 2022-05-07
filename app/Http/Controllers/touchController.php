@@ -19,7 +19,8 @@ class touchController extends Controller
             //$touchMach = MachineQueue::where('id_machine',$_GET['idMach'])->get();
             //$idTask = $touchMach['id_task'];
             //$touchPlan = Planning::where('id_task',$idTask)->get();
-            return response()->json($touchStaff);
+            echo "f";
+            return response()->json($touchStaff,JSON_UNESCAPED_UNICODE);
         }
         catch(Exception $e)
         {
