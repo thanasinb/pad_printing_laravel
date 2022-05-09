@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import axios from 'axios';
 import OutputTouch from './OutputTouch';
-
 class FormRfid extends Component {
 
     constructor(props) {
@@ -11,7 +9,8 @@ class FormRfid extends Component {
         this.state = {
             idRfid: null,
             idMach: null,
-            result: [],
+            resultStaff: [],
+            idTask: null,
         }
     }
 
@@ -29,23 +28,24 @@ class FormRfid extends Component {
 
     getInfoTouch = () => {
         let self = this;
-        axios.get('/info/touch', {
+        axios.get('/update/touch/', {
             params:{
                 idRfid : this.state.idRfid,
                 idMach : this.state.idMach,
             }
         }).then(function (response) {
-            
+            let SolveData = JSON.stringify(response.data);
+            console.log(SolveData);
             self.setState({
-                result: response.data
+                resultStaff: response.data
             });
         });
     }
+    
 
     render() {
         return (
-            <>
-            
+            <div className="container">
                 <div>
                     <label>ID-RFID :
                         <input type="text"
@@ -67,14 +67,14 @@ class FormRfid extends Component {
                         onClick={this.getInfoTouch}
                         >Enter</button>
                 </div>
-            <div className="result">
-                <hr/>
+                <div className="result">
+
+                {this.state.resultStaff.map((x) => {
+                    return <div><OutputTouch data={x}/></div>
+                })}
                 
-                {this.state.result}
-            
+                </div>
             </div>
-            
-            </>
             
         );
     }

@@ -8,5 +8,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/info/touch',   
-    [touchController::class, 'getTouchInfo']);
+Route::get('/update/touch/',   
+    [touchController::class, 'getTouchInfo1']);
+Route::get('/update/touch/',   
+    [touchController::class, 'getTouchInfo2']);
+Route::get('/update/touch/',   
+    [touchController::class, 'getTouchInfo3']);

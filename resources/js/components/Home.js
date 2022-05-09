@@ -1,6 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import FormRfid from './form-rfid';
+import FormRfid from './FormRfid';
 
 function Home() {
     return (
