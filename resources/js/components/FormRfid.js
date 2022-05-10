@@ -1,18 +1,21 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import OutputTouch from './OutputTouch';
+import { isEmpty, isNull } from 'lodash';
 class FormRfid extends Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
+            notFound : 'หาค่านี้ไม่พบ',
             idRfid: null,
             idMach: null,
-            resultStaff: [],
+            result: [],
             idTask: null,
         }
     }
+    
 
     inputRfid = (event) => {
         this.setState({
@@ -30,14 +33,14 @@ class FormRfid extends Component {
         let self = this;
         axios.get('/update/touch/', {
             params:{
-                idRfid : this.state.idRfid,
-                idMach : this.state.idMach,
+                id_rfid : this.state.idRfid,
+                id_mc : this.state.idMach,
             }
         }).then(function (response) {
             let SolveData = JSON.stringify(response.data);
             console.log(SolveData);
             self.setState({
-                resultStaff: response.data
+                result: response.data
             });
         });
     }
@@ -69,13 +72,12 @@ class FormRfid extends Component {
                 </div>
                 <div className="result">
 
-                {this.state.resultStaff.map((x) => {
-                    return <div><OutputTouch data={x}/></div>
+                {this.state.result.map((x, i) => {
+                        return <div><OutputTouch key={i }data={x}/></div>
                 })}
+                </div> 
                 
-                </div>
             </div>
-            
         );
     }
 }
