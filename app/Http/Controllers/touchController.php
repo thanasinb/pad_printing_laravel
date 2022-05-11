@@ -22,7 +22,6 @@ class touchController extends Controller
             // $touchStaff =Staff::where('id_rfid',$idRfid)->get();
             //$touchMachQueue = MachineQueue::where('id_machine',$idMach)->get();
             //$touchPlan = Planning::where('id_task',$touchMachQueue['id_task'])->get();
-            response() -> json($queryTouch);
             return response() -> json($queryTouch);
         }
         catch(Exception $error)

@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Activity extends Model
+class ActivityRework extends Model
 {
     use HasFactory;
     protected $table = 'activity';
@@ -20,7 +20,6 @@ class Activity extends Model
         'id_break',
         'date_eff',
         'time_start',
-        'time_break',
         'time_close',
         'total_work',
         'total_food',
