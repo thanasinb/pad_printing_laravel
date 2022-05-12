@@ -11,9 +11,17 @@ Route::get('/', function () {
 });
 
 Route::get('/update/touch/',   
-    [touchController::class, 'getTouchInfo'
-]);
+    [touchController::class, 'getTouchInfo']
+);
 
 Route::get('/update/activity/',
-    [activityController::class, 'getInfoActivity'
-]);
+    [activityController::class, 'getInfoActivity']
+);
+
+Route::get('/update/count/',
+    [countController::class, 'getInfoCount']
+);
+
+Route::get('/update/repeat/',
+    [repeatController::class, 'getInfoRepeat']
+);

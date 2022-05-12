@@ -7,6 +7,8 @@ use App\Models\Staff;
 use App\Models\MachineQueue;
 use App\Models\Planning;
 use App\Models\Activity;
+use App\Models\ActivityRework;
+
 use Illuminate\Support\Facades\DB;
 
 use Illuminate\Http\Request;
@@ -36,19 +38,19 @@ class activityController extends Controller
             $yesterday_23_00 = $today_00_00 + (23*60*60) - $day_1;
             $shif = '';
             if ($DataQueue['id_staff']==null){
-                $checkRole = Staff::where('id_rfid',$idRfid)->get();
-                if($checkRole['id_shif'] == 'A'){
+                $dataStaff = Staff::where('id_rfid',$idRfid)->get();
+                if($dataStaff['id_shif'] == 'A'){
                     $team_no = '4';
                 }
-                elseif($checkRole['id_shif'] == 'B'){
+                elseif($dataStaff['id_shif'] == 'B'){
                     $team_no = '6';
                 }
-                elseif($checkRole['id_shif'] == 'C'){
+                elseif($dataStaff['id_shif'] == 'C'){
                     $team_no = '5';
                 }
 
                 if ($today_00_00<$time_current AND $time_current<$today_07_00){
-                    $dataActivity = Activity::where('id_staff',$checkRole['id_staff'])
+                    $dataActivity = Activity::where('id_staff',$dataStaff['id_staff'])
                         ->whereBetween('time_start',[date("Y-m-d H:i:s", $yesterday_19_00),date("Y-m-d H:i:s", $yesterday_23_00)])
                         ->get();
                     if(empty($dataActivity)){
@@ -64,7 +66,7 @@ class activityController extends Controller
                 }
                 elseif ($today_15_45<$time_current AND $time_current<$today_19_00){
                     $shif = $team_no . "D";
-                    Activity::where('id_staff', $checkRole['id_staff'])
+                    Activity::where('id_staff', $dataStaff['id_staff'])
                         ->whereBetween('time_start',[date("Y-m-d H:i:s", $today_07_00),date("Y-m-d H:i:s", $today_15_45)])
                         ->update([
                         'shif'   =>  $shif,
@@ -74,7 +76,7 @@ class activityController extends Controller
                     $shif = $team_no . "N";
                 }
                 elseif ($today_23_00<$time_current AND $time_current<$tomorrow_00_00){
-                    $dataActivity = Activity::where('id_staff',$checkRole['id_staff'])
+                    $dataActivity = Activity::where('id_staff',$dataStaff['id_staff'])
                         ->whereBetween('time_start',[date("Y-m-d H:i:s", $today_19_00),date("Y-m-d H:i:s", $today_23_00)])
                         ->get();
                         if (empty($dataActivity)){
@@ -86,11 +88,39 @@ class activityController extends Controller
                 }
                 if($typeActivity==1){
                     
+                    Activity::create([
+                        'id_task'   =>  $DataQueue['id_task'],
+                        'id_machine'=>  $idMach,
+                        'id_staff'=> $dataStaff['id_staff'],
+                        'shif'=> $shif,
+                        'date_eff'=> $date_eff,
+                        'status_work'=> '1',
+                        'time_start'=> now(),
+                    ]);
+                    MachineQueue::where('id_machine', $idMach)
+                        ->where('queue_number','1')
+                        ->update([
+                        'id_staff'   =>  $dataStaff['id_staff'],
+                    ]);
                     echo "OK";
 
                 }
                 elseif($typeActivity==2){
                     
+                    ActivityRework::create([
+                        'id_task'   =>  $DataQueue['id_task'],
+                        'id_machine'=>  $idMach,
+                        'id_staff'=> $dataStaff['id_staff'],
+                        'shif'=> $shif,
+                        'date_eff'=> $date_eff,
+                        'status_work'=> '1',
+                        'time_start'=> now(),
+                    ]);
+                    MachineQueue::where('id_machine', $idMach)
+                        ->where('queue_number','1')
+                        ->update([
+                        'id_staff'   =>  $dataStaff['id_staff'],
+                    ]);
                     echo "OK";
                 }
 
@@ -101,7 +131,6 @@ class activityController extends Controller
                 return response() -> json([
                     'code'=>'025',
                     'message'=>'This machine is currently in occupied by staff ID: ' . $DataQueue['id_staff'],
-                    ''=>'',
                 ]);
             }
     
