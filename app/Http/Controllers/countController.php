@@ -25,11 +25,13 @@ class countController extends Controller
 
             $dataActivity = Activity::where('id_task',$idTask)
                                     ->where('id_machine',$idMach)
-                                    ->where('status_work','1');
+                                    ->where('status_work','1')
+                                    ->get();
             if(empty($dataActivity)){
                 $dataActivity = Activity::where('id_task',$idTask)
                                     ->where('id_machine',$idMach)
-                                    ->where('status_work','1');
+                                    ->where('status_work','1')
+                                    ->get();
                 if(empty($dataActivity)){
                     $activityType=$ACTIVITY_REWORK;
                 }
@@ -74,6 +76,7 @@ class countController extends Controller
                                 'no_pulse2' => $noPulse2,
                                 'no_pulse3' => $noPulse3,
                             ]);
+                            return response() -> json($dataActivity);
                 }
                 elseif ($activityType==$ACTIVITY_REWORK){
                     ActivityRework::where('id_activity',$dataActivity['id_activity'])
@@ -86,6 +89,7 @@ class countController extends Controller
                                 'no_pulse2' => $noPulse2,
                                 'no_pulse3' => $noPulse3,
                             ]);
+                            return response() -> json($dataActivity);
                 }
             }
         }
@@ -96,3 +100,6 @@ class countController extends Controller
         }
     }
 }
+
+
+

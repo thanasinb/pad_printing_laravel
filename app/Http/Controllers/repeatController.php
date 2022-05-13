@@ -27,11 +27,13 @@ class repeatController extends countController
 
             $dataActivity = Activity::where('id_task',$idTask)
                                     ->where('id_machine',$idMach)
-                                    ->where('status_work','1');
+                                    ->where('status_work','1')
+                                    ->get();
             if(empty($dataActivity)){
                 $dataActivity = Activity::where('id_task',$idTask)
                                     ->where('id_machine',$idMach)
-                                    ->where('status_work','1');
+                                    ->where('status_work','1')
+                                    ->get();
                 if(empty($dataActivity)){
                     $activityType=$ACTIVITY_REWORK;
                 }
