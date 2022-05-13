@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Activity;
 use App\Models\ActivityRework;
+use Log;
+use Exception;
 
 class countController extends Controller
 {
@@ -22,18 +24,18 @@ class countController extends Controller
             $noPulse3 = $_GET["no_pulse3"];
 
             $dataActivity = Activity::where('id_task',$idTask)
-                                    ->where('id_machine',idMach)
+                                    ->where('id_machine',$idMach)
                                     ->where('status_work','1');
             if(empty($dataActivity)){
                 $dataActivity = Activity::where('id_task',$idTask)
-                                    ->where('id_machine',idMach)
+                                    ->where('id_machine',$idMach)
                                     ->where('status_work','1');
                 if(empty($dataActivity)){
-                    $activityType=ACTIVITY_REWORK;
+                    $activityType=$ACTIVITY_REWORK;
                 }
             }
             else{
-                $activityType=ACTIVITY_BACKFLUSH;
+                $activityType=$ACTIVITY_BACKFLUSH;
             }
 
             $sql = 'select d.divider from divider as d, planning as p 
@@ -47,11 +49,11 @@ class countController extends Controller
                 ]);
             }
             else{
-                $total_food = strtotime("1970-01-01 " . $data_activity["total_food"] . " UTC");
-                $total_toilet = strtotime("1970-01-01 " . $data_activity["total_toilet"] . " UTC");
+                $total_food = strtotime("1970-01-01 " . $dataActivity["total_food"] . " UTC");
+                $total_toilet = strtotime("1970-01-01 " . $dataActivity["total_toilet"] . " UTC");
                 $total_break = $total_food + $total_toilet;
-                $time_start = strtotime($data_activity["time_start"]);
-                $time_current = strtotime($data_activity["time_current"]);
+                $time_start = strtotime($dataActivity["time_start"]);
+                $time_current = strtotime($dataActivity["time_current"]);
                 $time_total_second = $time_current-$time_start-$total_break;
                 $time_total =  gmdate('H:i:s', $time_total_second);
                 if($noPulse1==0){
@@ -61,10 +63,10 @@ class countController extends Controller
                     $run_time_actual = round($time_total_second/$noPulse1, 2);
                 }
 
-                if($activitType==ACTIVITY_BACKFLUSH){
+                if($activityType==$ACTIVITY_BACKFLUSH){
                     Activity::where('id_activity',$dataActivity['id_activity'])
                             ->update([
-                                'status_work'   =>  $dataStaff['id_staff'],
+                                'status_work'   =>  '1',
                                 'total_work' => $time_total,
                                 'run_time_actual' => $run_time_actual,
                                 'no_send' => $noSend,
@@ -73,10 +75,10 @@ class countController extends Controller
                                 'no_pulse3' => $noPulse3,
                             ]);
                 }
-                elseif ($activityType==ACTIVITY_REWORK){
+                elseif ($activityType==$ACTIVITY_REWORK){
                     ActivityRework::where('id_activity',$dataActivity['id_activity'])
                             ->update([
-                                'status_work'   =>  $dataStaff['id_staff'],
+                                'status_work'   =>  '1',
                                 'total_work' => $time_total,
                                 'run_time_actual' => $run_time_actual,
                                 'no_send' => $noSend,
