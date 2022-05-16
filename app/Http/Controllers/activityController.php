@@ -102,7 +102,12 @@ class activityController extends Controller
                         ->update([
                         'id_staff'   =>  $dataStaff['id_staff'],
                     ]);
-                    echo "OK";
+                    $jsonActivity = Activity::where('id_task', $DataQueue['id_task'])
+                                            ->where('id_staff', $dataStaff['id_staff'])
+                                            ->where('id_machine',  $idMach)
+                                            ->first();
+                    return response() -> json($jsonActivity);
+                    echo "OK Activity";
 
                 }
                 elseif($typeActivity==2){
@@ -121,7 +126,12 @@ class activityController extends Controller
                         ->update([
                         'id_staff'   =>  $dataStaff['id_staff'],
                     ]);
-                    echo "OK";
+                    $jsonActivity = Activity::where('id_task', $DataQueue['id_task'])
+                                            ->where('id_staff', $dataStaff['id_staff'])
+                                            ->where('id_machine',  $idMach)
+                                            ->first();
+                    return response() -> json($jsonActivity);
+                    echo "OK Rework";
                 }
 
 

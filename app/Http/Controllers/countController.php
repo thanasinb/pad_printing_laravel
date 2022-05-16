@@ -26,12 +26,14 @@ class countController extends Controller
             $dataActivity = Activity::where('id_task',$idTask)
                                     ->where('id_machine',$idMach)
                                     ->where('status_work','1')
-                                    ->get();
+                                    ->first();
+
+            $dataActivity['id_activity'];
             if(empty($dataActivity)){
-                $dataActivity = Activity::where('id_task',$idTask)
+                $dataActivity = ActivityRework::where('id_task',$idTask)
                                     ->where('id_machine',$idMach)
                                     ->where('status_work','1')
-                                    ->get();
+                                    ->first();
                 if(empty($dataActivity)){
                     $activityType=$ACTIVITY_REWORK;
                 }
