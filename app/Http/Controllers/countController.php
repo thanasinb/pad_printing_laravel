@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
 use App\Models\Activity;
 use App\Models\ActivityRework;
@@ -27,13 +27,15 @@ class countController extends Controller
                                     ->where('id_machine',$idMach)
                                     ->where('status_work','1')
                                     ->first();
+                                    // echo $dataActivity[0]->id_task;
+                                    
 
-            $dataActivity['id_activity'];
             if(empty($dataActivity)){
                 $dataActivity = ActivityRework::where('id_task',$idTask)
                                     ->where('id_machine',$idMach)
                                     ->where('status_work','1')
                                     ->first();
+                                
                 if(empty($dataActivity)){
                     $activityType=$ACTIVITY_REWORK;
                 }
@@ -53,22 +55,31 @@ class countController extends Controller
                 ]);
             }
             else{
-                $total_food = strtotime("1970-01-01 " . $dataActivity["total_food"] . " UTC");
-                $total_toilet = strtotime("1970-01-01 " . $dataActivity["total_toilet"] . " UTC");
+                $total_food = strtotime("1970-01-01 " . $dataActivity->total_food . " UTC");
+                $total_toilet = strtotime("1970-01-01 " . $dataActivity->total_toilet . " UTC");
                 $total_break = $total_food + $total_toilet;
-                $time_start = strtotime($dataActivity["time_start"]);
-                $time_current = strtotime($dataActivity["time_current"]);
+                $time_start = strtotime($dataActivity->time_start);
+                $time_current = Carbon::now()->timestamp;
                 $time_total_second = $time_current-$time_start-$total_break;
                 $time_total =  gmdate('H:i:s', $time_total_second);
+                echo $time_current."---";
+                echo $time_start."---";
+                echo $total_break."---";
+                echo $time_total;
+
                 if($noPulse1==0){
                     $run_time_actual=0.0;
+                    // echo 123;
                 }
                 else{
-                    $run_time_actual = round($time_total_second/$noPulse1, 2);
+                    (float)$run_time_actual = round($time_total_second/$noPulse1, 2);
+                    
                 }
-
+                
+                echo $time_total_second."---";
+                
                 if($activityType==$ACTIVITY_BACKFLUSH){
-                    Activity::where('id_activity',$dataActivity['id_activity'])
+                    Activity::where('id_activity',$dataActivity->id_activity)
                             ->update([
                                 'status_work'   =>  '1',
                                 'total_work' => $time_total,
@@ -78,10 +89,9 @@ class countController extends Controller
                                 'no_pulse2' => $noPulse2,
                                 'no_pulse3' => $noPulse3,
                             ]);
-                            return response() -> json($dataActivity);
                 }
                 elseif ($activityType==$ACTIVITY_REWORK){
-                    ActivityRework::where('id_activity',$dataActivity['id_activity'])
+                    ActivityRework::where('id_activity',$dataActivity->id_activity)
                             ->update([
                                 'status_work'   =>  '1',
                                 'total_work' => $time_total,
@@ -91,9 +101,12 @@ class countController extends Controller
                                 'no_pulse2' => $noPulse2,
                                 'no_pulse3' => $noPulse3,
                             ]);
-                            return response() -> json($dataActivity);
                 }
             }
+            
+                // echo 123;
+                print_r($dataActivity);
+                return response() -> json($dataActivity);
         }
         catch(Exception $error){
             

@@ -8,11 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class ActivityRework extends Model
 {
     use HasFactory;
-    protected $table = 'activity';
+    protected $table = 'activity_rework';
     protected $fillable = [
+        'id_activity',
         'id_task',
-        'id_job',
-        'operation',
         'id_machine',
         'id_staff',
         'shif',
@@ -20,6 +19,7 @@ class ActivityRework extends Model
         'id_break',
         'date_eff',
         'time_start',
+        'time_break',
         'time_close',
         'total_work',
         'total_food',

@@ -10,6 +10,7 @@ class Activity extends Model
     use HasFactory;
     protected $table = 'activity';
     protected $fillable = [
+        'id_activity',
         'id_task',
         'id_job',
         'operation',
@@ -20,7 +21,6 @@ class Activity extends Model
         'id_break',
         'date_eff',
         'time_start',
-        'time_break',
         'time_close',
         'total_work',
         'total_food',
