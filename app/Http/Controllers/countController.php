@@ -26,6 +26,7 @@ class countController extends Controller
             $dataActivity = Activity::where('id_task',$idTask)
                                     ->where('id_machine',$idMach)
                                     ->where('status_work','1')
+                                    ->orderBy('id_activity','desc')
                                     ->first();
                                     // echo $dataActivity[0]->id_task;
                                     
@@ -34,6 +35,7 @@ class countController extends Controller
                 $dataActivity = ActivityRework::where('id_task',$idTask)
                                     ->where('id_machine',$idMach)
                                     ->where('status_work','1')
+                                    ->orderBy('id_activity','desc')
                                     ->first();
                                 
                 if(empty($dataActivity)){
@@ -59,13 +61,9 @@ class countController extends Controller
                 $total_toilet = strtotime("1970-01-01 " . $dataActivity->total_toilet . " UTC");
                 $total_break = $total_food + $total_toilet;
                 $time_start = strtotime($dataActivity->time_start);
-                $time_current = Carbon::now()->timestamp;
-                $time_total_second = $time_current-$time_start-$total_break;
+                $time_current = Carbon::now()->setTimezone('Asia/Bangkok')->timestamp;
+                $time_total_second = ($time_current-$time_start)-$total_break;
                 $time_total =  gmdate('H:i:s', $time_total_second);
-                echo $time_current."---";
-                echo $time_start."---";
-                echo $total_break."---";
-                echo $time_total;
 
                 if($noPulse1==0){
                     $run_time_actual=0.0;
@@ -73,14 +71,16 @@ class countController extends Controller
                 }
                 else{
                     (float)$run_time_actual = round($time_total_second/$noPulse1, 2);
+                    if($run_time_actual < 0){
+                        $run_time_actual = $run_time_actual * -1;
+                    }
                     
                 }
                 
-                echo $time_total_second."---";
                 
                 if($activityType==$ACTIVITY_BACKFLUSH){
-                    Activity::where('id_activity',$dataActivity->id_activity)
-                            ->update([
+                    $jsonReturn = Activity::where('id_activity',$dataActivity->id_activity)
+                                ->update([
                                 'status_work'   =>  '1',
                                 'total_work' => $time_total,
                                 'run_time_actual' => $run_time_actual,
@@ -89,9 +89,10 @@ class countController extends Controller
                                 'no_pulse2' => $noPulse2,
                                 'no_pulse3' => $noPulse3,
                             ]);
+                    $jsonReturn = Activity::where('id_activity',$dataActivity->id_activity)->first();
                 }
                 elseif ($activityType==$ACTIVITY_REWORK){
-                    ActivityRework::where('id_activity',$dataActivity->id_activity)
+                    $jsonReturn = ActivityRework::where('id_activity',$dataActivity->id_activity)
                             ->update([
                                 'status_work'   =>  '1',
                                 'total_work' => $time_total,
@@ -101,12 +102,12 @@ class countController extends Controller
                                 'no_pulse2' => $noPulse2,
                                 'no_pulse3' => $noPulse3,
                             ]);
+                    $jsonReturn = ActivityRework::where('id_activity',$dataActivity->id_activity)->first();
                 }
             }
             
                 // echo 123;
-                print_r($dataActivity);
-                return response() -> json($dataActivity);
+                return response() -> json($jsonReturn);
         }
         catch(Exception $error){
             

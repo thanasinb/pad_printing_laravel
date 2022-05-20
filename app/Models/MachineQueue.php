@@ -9,4 +9,14 @@ class MachineQueue extends Model
 {
     use HasFactory;
     protected $table = "machine_queue";
+    protected $fillable = [
+        'id-machine_queue',
+        'id_machine',
+        'queue_number',
+        'id_task',
+        'id_staff',
+        'comp_date',
+        'comp_time',
+    ];
+    public $timestamps = false;
 }

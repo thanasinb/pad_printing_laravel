@@ -8,6 +8,7 @@ use App\Models\MachineQueue;
 use App\Models\Activity;
 use App\Models\ActivityRework;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class activityController extends Controller
 {
@@ -19,11 +20,10 @@ class activityController extends Controller
             $idMach = (string)$_GET["id_mc"];
             $typeActivity = (string)$_GET['activity_type'];
             $DataQueue = MachineQueue::where('id_machine',$idMach)->where('queue_number','1')->first();
-            echo $DataQueue.'<br>';
 
             //Part : find shif
             $time_current = time();
-            $time_current_string = Carbon::now()->toDateTimeString();
+            $time_current_string = Carbon::now()->setTimezone('Asia/Bangkok')->toDateTimeString();
             $date_eff = date("Y-m-d");
             $today_00_00 = strtotime(date("Y-m-d", $time_current));
             $day_1 = 24*60*60;
@@ -47,13 +47,11 @@ class activityController extends Controller
                 elseif($dataStaff->id_shif == 'C'){
                     $team_no = '5';
                 }
-                echo 'OK <br>';
 
                 if ($today_00_00<$time_current AND $time_current<$today_07_00){
                     $dataActivity = Activity::where('id_staff',$dataStaff->id_staff)
                         ->whereBetween('time_start',[date("Y-m-d H:i:s", $yesterday_19_00),date("Y-m-d H:i:s", $yesterday_23_00)])
                         ->first();
-                        echo 'OK <br>';
                     if(empty($dataActivity)){
                         $shif = 'N'.$team_no;
                     }
@@ -91,39 +89,32 @@ class activityController extends Controller
 
 
                 if($typeActivity=='1'){
-                    echo 'OK 1 <br>';
-                    echo $DataQueue->id_task.' <br>';
-                    echo $idMach.' <br>';
-                    echo $dataStaff->id_staff.' <br>';
-                    echo $shif.' <br>';
-                    echo $date_eff.' <br>';
-                    echo $time_current_string.' <br>';
                     Activity::create([
                         'id_task'   =>  $DataQueue->id_task,
                         'id_machine'=>  $idMach,
                         'id_staff'=> $dataStaff->id_staff,
                         'shif'=> $shif,
-                        'date_eff'=> $date_eff,
                         'status_work'=> '1',
+                        'date_eff'=> $date_eff,
                         'time_start'=> $time_current_string,
                     ]);
-                    echo 'Create 1 OK <br>';
+                    // Activity::create(['id_task'   =>  '15','id_machine'=>  '02-01','id_staff'=> '000000','shif'=> 'N4','status_work'=> '1','date_eff'=> '2022-05-19','time_start'=> '2022-05-20 02:32:37']);
                     MachineQueue::where('id_machine', $idMach)
-                        ->where('queue_number','1')
+                        ->where('queue_number',1)
                         ->update([
                         'id_staff'   =>  $dataStaff->id_staff,
                     ]);
                     $jsonActivity = Activity::where('id_task', $DataQueue->id_task)
                                             ->where('id_staff', $dataStaff->id_staff)
                                             ->where('id_machine',  $idMach)
-                                            ->first();
-                    echo "OK Activity";
+                                            ->orderBy('id_activity','desc')->first();
+                    $jsonActivity->Message = 'OK';
                     return response() -> json($jsonActivity);
+                    
                     
 
                 }
                 elseif($typeActivity==2){
-                    echo 'OK 2 <br>';
                     ActivityRework::create([
                         'id_task'   =>  $DataQueue->id_task,
                         'id_machine'=>  $idMach,
@@ -141,8 +132,8 @@ class activityController extends Controller
                     $jsonActivity = Activity::where('id_task', $DataQueue->id_task)
                                             ->where('id_staff', $dataStaff->id_staff)
                                             ->where('id_machine',  $idMach)
-                                            ->first();
-                    echo "OK Rework";
+                                            ->orderBy('id_activity','desc')->first();
+                    $jsonActivity->Message = 'OK';
                     return response() -> json($jsonActivity);
                     
                 }
