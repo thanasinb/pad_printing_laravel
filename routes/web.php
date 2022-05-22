@@ -27,3 +27,11 @@ Route::get('/update/count/',
 Route::get('/update/repeat/',
     [repeatController::class, 'getInfoRepeat']
 );
+
+Route::get('/update/count_v2/',
+    [countController::class, 'getInfoCountV2']
+);
+
+Route::get('/update/repeat_v2/',
+    [repeatController::class, 'getInfoRepeatV2']
+);
