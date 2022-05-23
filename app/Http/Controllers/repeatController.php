@@ -78,6 +78,7 @@ class repeatController extends countController
                 if($activityType==$ACTIVITY_BACKFLUSH){
                         Activity::where('id_activity',$dataActivity->id_activity)
                                 ->update([
+                                'num_repeat' => $dataActivity->num_repeat+1,
                                 'status_work'   =>  '1',
                                 'total_work' => $time_total,
                                 'run_time_actual' => $run_time_actual,
@@ -90,6 +91,7 @@ class repeatController extends countController
                 elseif ($activityType==$ACTIVITY_REWORK){
                             ActivityRework::where('id_activity',$dataActivity->id_activity)
                             ->update([
+                                'num_repeat' => $dataActivity->num_repeat+1,
                                 'status_work'   =>  '1',
                                 'total_work' => $time_total,
                                 'run_time_actual' => $run_time_actual,
@@ -184,6 +186,7 @@ class repeatController extends countController
                 if($activityType==$ACTIVITY_BACKFLUSH){
                         Activity::where('id_activity',$dataActivity->id_activity)
                                 ->update([
+                                'num_repeat' => $dataActivity->num_repeat+1,
                                 'status_work'   =>  '1',
                                 'total_work' => $time_total,
                                 'run_time_actual' => $run_time_actual,
@@ -196,6 +199,7 @@ class repeatController extends countController
                 elseif ($activityType==$ACTIVITY_REWORK){
                             ActivityRework::where('id_activity',$dataActivity->id_activity)
                             ->update([
+                                'num_repeat' => $dataActivity->num_repeat+1,
                                 'status_work'   =>  '1',
                                 'total_work' => $time_total,
                                 'run_time_actual' => $run_time_actual,

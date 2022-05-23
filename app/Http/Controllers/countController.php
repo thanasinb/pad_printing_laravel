@@ -113,6 +113,12 @@ class countController extends Controller
     }
 
 
+
+
+
+
+
+    
     public function getInfoCountV2(){
         try{
             $ACTIVITY_BACKFLUSH=1;
