@@ -1,13 +1,9 @@
 <?php
 namespace App\Http\Controllers;
-use Illuminate\Support\Arr;
 use App\Models\ActivityDowntime;
-use Illuminate\Http\Request;
 use Log;
 use Exception;
 use App\Models\Staff;
-use App\Models\MachineQueue;
-use App\Models\Planning;
 use Illuminate\Support\Facades\DB;
 class touchController extends Controller
 {

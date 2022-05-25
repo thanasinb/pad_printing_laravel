@@ -35,3 +35,7 @@ Route::get('/update/count_v2/',
 Route::get('/update/repeat_v2/',
     [repeatController::class, 'getInfoRepeatV2']
 );
+
+Route::get('/update/timeline/',
+    [timelineController::class, 'getInfoTimeline']
+);

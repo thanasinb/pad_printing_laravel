@@ -22,7 +22,7 @@ class activityController extends Controller
             $DataQueue = MachineQueue::where('id_machine',$idMach)->where('queue_number','1')->first();
 
             //Part : find shif
-            $time_current = time();
+            $time_current = time()+(7*60*60);
             $time_current_string = Carbon::now()->setTimezone('Asia/Bangkok')->toDateTimeString();
             $date_eff = date("Y-m-d");
             $today_00_00 = strtotime(date("Y-m-d", $time_current));
@@ -47,7 +47,6 @@ class activityController extends Controller
                 elseif($dataStaff->id_shif == 'C'){
                     $team_no = '5';
                 }
-
                 if ($today_00_00<$time_current AND $time_current<$today_07_00){
                     $dataActivity = Activity::where('id_staff',$dataStaff->id_staff)
                         ->whereBetween('time_start',[date("Y-m-d H:i:s", $yesterday_19_00),date("Y-m-d H:i:s", $yesterday_23_00)])
@@ -99,16 +98,16 @@ class activityController extends Controller
                         'time_start'=> $time_current_string,
                     ]);
                     // Activity::create(['id_task'   =>  '15','id_machine'=>  '02-01','id_staff'=> '000000','shif'=> 'N4','status_work'=> '1','date_eff'=> '2022-05-19','time_start'=> '2022-05-20 02:32:37']);
-                    MachineQueue::where('id_machine', $idMach)
-                        ->where('queue_number',1)
-                        ->update([
-                        'id_staff'   =>  $dataStaff->id_staff,
-                    ]);
+                    // MachineQueue::where('id_machine', $idMach)
+                    //     ->where('queue_number',1)
+                    //     ->update([
+                    //     'id_staff'   =>  $dataStaff->id_staff,
+                    // ]);
                     $jsonActivity = Activity::where('id_task', $DataQueue->id_task)
                                             ->where('id_staff', $dataStaff->id_staff)
                                             ->where('id_machine',  $idMach)
                                             ->orderBy('id_activity','desc')->first();
-                    $jsonActivity->Message = 'OK';
+                    $jsonActivity->message = 'OK';
                     return response() -> json($jsonActivity);
                     
                     
@@ -133,7 +132,7 @@ class activityController extends Controller
                                             ->where('id_staff', $dataStaff->id_staff)
                                             ->where('id_machine',  $idMach)
                                             ->orderBy('id_activity','desc')->first();
-                    $jsonActivity->Message = 'OK';
+                    $jsonActivity->message = 'OK';
                     return response() -> json($jsonActivity);
                     
                 }

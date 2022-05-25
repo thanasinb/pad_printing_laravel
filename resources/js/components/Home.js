@@ -1,12 +1,12 @@
 import React from 'react';
-import FormRfid from './FormRfid';
+import Timeline from './Timeline';
 
 function Home() {
     return (
         <div className="container">
             <div className="row justify-content-center">
                 {/*component is here.*/}
-                <FormRfid/>
+                <Timeline/>
             </div>
         </div>
     );

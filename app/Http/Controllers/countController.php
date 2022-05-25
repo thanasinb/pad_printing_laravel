@@ -85,7 +85,6 @@ class countController extends Controller
                                 'no_pulse2' => $noPulse2,
                                 'no_pulse3' => $noPulse3,
                             ]);
-                    $jsonReturn = Activity::where('id_activity',$dataActivity->id_activity)->first();
                 }
                 elseif ($activityType==$ACTIVITY_REWORK){
                             ActivityRework::where('id_activity',$dataActivity->id_activity)
@@ -98,12 +97,11 @@ class countController extends Controller
                                 'no_pulse2' => $noPulse2,
                                 'no_pulse3' => $noPulse3,
                             ]);
-                    $jsonReturn = ActivityRework::where('id_activity',$dataActivity->id_activity)->first();
                 }
             }
             
                 // echo 123;
-                return response() -> json($jsonReturn);
+                return response() -> json(['message'=>'OK']);
         }
         catch(Exception $error){
             
@@ -186,7 +184,6 @@ class countController extends Controller
                                 'no_pulse2' => $noPulse2,
                                 'no_pulse3' => $noPulse3,
                             ]);
-                        $jsonReturn = Activity::where('id_activity',$idActivity)->first();
 
                 }
                 elseif ($activityType==$ACTIVITY_REWORK){
@@ -200,11 +197,10 @@ class countController extends Controller
                                 'no_pulse2' => $noPulse2,
                                 'no_pulse3' => $noPulse3,
                             ]);
-                        $jsonReturn = ActivityRework::where('id_activity',$idActivity)->first();
 
                 }
             }
-            return response() -> json($jsonReturn);
+            return response() -> json(['message'=>'OK']);
         }
 
         catch(Exception $error){
