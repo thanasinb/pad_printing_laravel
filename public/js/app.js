@@ -5479,7 +5479,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var react_apexcharts__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-apexcharts */ "./node_modules/react-apexcharts/dist/react-apexcharts.min.js");
 /* harmony import */ var _Timeline_ShowTimeline__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./Timeline/ShowTimeline */ "./resources/js/components/Timeline/ShowTimeline.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var _Timeline_ManageTimeline__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Timeline/ManageTimeline */ "./resources/js/components/Timeline/ManageTimeline.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -5511,6 +5512,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 
+
+
 var Timeline = /*#__PURE__*/function (_Component) {
   _inherits(Timeline, _Component);
 
@@ -5523,31 +5526,61 @@ var Timeline = /*#__PURE__*/function (_Component) {
 
     _this = _super.call(this, props);
 
-    _defineProperty(_assertThisInitialized(_this), "getTimelineList", function () {
+    _defineProperty(_assertThisInitialized(_this), "getTimelineActivity", function () {
       var self = _assertThisInitialized(_this);
 
-      axios__WEBPACK_IMPORTED_MODULE_1___default().get('/update/timeline/').then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_1___default().get('/update/timelineActivity/').then(function (response) {
         self.setState({
-          employees: response.data
+          timelineActivity: response.data
         });
       });
     });
 
-    _this.state = {};
+    _defineProperty(_assertThisInitialized(_this), "getTimelineActivityDowntime", function () {
+      var self = _assertThisInitialized(_this);
+
+      axios__WEBPACK_IMPORTED_MODULE_1___default().get('/update/timelineActivityDowntime/').then(function (response) {
+        self.setState({
+          timelineActivityDowntime: response.data
+        });
+      });
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "getTimelineActivityRework", function () {
+      var self = _assertThisInitialized(_this);
+
+      axios__WEBPACK_IMPORTED_MODULE_1___default().get('/update/timelineActivityRework/').then(function (response) {
+        self.setState({
+          timelineActivityRework: response.data
+        });
+      });
+    });
+
+    _this.state = {
+      timelineActivity: [],
+      timelineActivityDowntime: [],
+      timelineActivityRework: []
+    };
     return _this;
   }
 
   _createClass(Timeline, [{
-    key: "lifeCycleTimeline",
-    value: function lifeCycleTimeline() {
-      this.getTimelineList();
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      this.getTimelineActivity();
+      this.getTimelineActivityDowntime();
+      this.getTimelineActivityRework();
     }
   }, {
     key: "render",
     value: function render() {
-      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
         id: "chart_timeline",
-        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_Timeline_ShowTimeline__WEBPACK_IMPORTED_MODULE_3__["default"], {})
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_Timeline_ShowTimeline__WEBPACK_IMPORTED_MODULE_3__["default"], {}), this.state.timelineActivityDowntime.map(function (x, i) {
+          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_Timeline_ManageTimeline__WEBPACK_IMPORTED_MODULE_4__["default"], {
+            data: x
+          }, i);
+        })]
       });
     }
   }]);
@@ -5556,6 +5589,84 @@ var Timeline = /*#__PURE__*/function (_Component) {
 }(react__WEBPACK_IMPORTED_MODULE_0__.Component);
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Timeline);
+
+/***/ }),
+
+/***/ "./resources/js/components/Timeline/ManageTimeline.js":
+/*!************************************************************!*\
+  !*** ./resources/js/components/Timeline/ManageTimeline.js ***!
+  \************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react_apexcharts__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-apexcharts */ "./node_modules/react-apexcharts/dist/react-apexcharts.min.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+
+
+
+
+
+
+
+var ManageTimeline = /*#__PURE__*/function (_Component) {
+  _inherits(ManageTimeline, _Component);
+
+  var _super = _createSuper(ManageTimeline);
+
+  function ManageTimeline(props) {
+    _classCallCheck(this, ManageTimeline);
+
+    return _super.call(this, props);
+  }
+
+  _createClass(ManageTimeline, [{
+    key: "render",
+    value: function render() {
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("tr", {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("th", {
+          children: this.props.data.id_activity_downtime
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("td", {
+          children: [this.props.data.time_start, "--"]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("td", {
+          children: this.props.data.time_close
+        })]
+      });
+    }
+  }]);
+
+  return ManageTimeline;
+}(react__WEBPACK_IMPORTED_MODULE_0__.Component);
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (ManageTimeline);
 
 /***/ }),
 
@@ -5614,7 +5725,68 @@ var ShowTimeline = /*#__PURE__*/function (_Component) {
     _classCallCheck(this, ShowTimeline);
 
     _this = _super.call(this, props);
-    _this.state = {};
+    _this.state = {
+      series: [// 
+      {
+        name: 'Blue',
+        data: [{
+          x: 'id-machine 1',
+          y: [new Date(1789, 3, 30, 15, 10, 10).getTime(), new Date(1789, 3, 30, 18, 50, 10).getTime()]
+        }]
+      }, // 
+      {
+        name: 'Green',
+        data: [{
+          x: 'id-machine 2',
+          y: [new Date(1789, 3, 29, 15, 10, 10).getTime(), new Date(1789, 3, 29, 18, 50, 10).getTime()]
+        }]
+      }, //
+      {
+        name: 'Yellow',
+        data: [{
+          x: 'id-machine 3',
+          y: [new Date(1789, 3, 29, 15, 10, 10).getTime(), new Date(1789, 3, 29, 18, 50, 10).getTime()]
+        }]
+      }, //
+      {
+        name: 'Red',
+        data: [{
+          x: 'id-machine 4',
+          y: [new Date(1789, 3, 29, 15, 10, 10).getTime(), new Date(1789, 3, 29, 18, 50, 10).getTime()]
+        }]
+      }],
+      options: {
+        chart: {
+          height: 350,
+          type: 'rangeBar'
+        },
+        plotOptions: {
+          bar: {
+            horizontal: true,
+            barHeight: '50%',
+            rangeBarGroupRows: true
+          }
+        },
+        colors: ["#008FFB", "#00E36E", "#F0E040", "#DA4747"],
+        fill: {
+          type: 'solid'
+        },
+        xaxis: {
+          type: 'datetime'
+        },
+        legend: {
+          position: 'right'
+        },
+        tooltip: {
+          custom: function custom(opts) {
+            var fromYear = new Date(opts.y1).getFullYear();
+            var toYear = new Date(opts.y2).getFullYear();
+            var values = opts.ctx.rangeBar.getTooltipValues(opts);
+            return '';
+          }
+        }
+      }
+    };
     return _this;
   }
 
@@ -5622,7 +5794,16 @@ var ShowTimeline = /*#__PURE__*/function (_Component) {
     key: "render",
     value: function render() {
       return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
-        id: "timeline"
+        id: "timeline",
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+          id: "chart",
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(react_apexcharts__WEBPACK_IMPORTED_MODULE_2__["default"], {
+            options: this.state.options,
+            series: this.state.series,
+            type: "rangeBar",
+            height: 350
+          })
+        })
       });
     }
   }]);

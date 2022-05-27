@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\touchController;
 use App\Http\Controllers\countController;
 use App\Http\Controllers\repeatController;
+use App\Http\Controllers\timelineController;
 use Illuminate\Support\Facades\Redirect;
 
 
@@ -36,6 +37,14 @@ Route::get('/update/repeat_v2/',
     [repeatController::class, 'getInfoRepeatV2']
 );
 
-Route::get('/update/timeline/',
-    [timelineController::class, 'getInfoTimeline']
+Route::get('/update/timelineActivity/',
+    [timelineController::class, 'getInfoActivity']
+);
+
+Route::get('/update/timelineActivityDowntime/',
+    [timelineController::class, 'getInfoActivityDowntime']
+);
+
+Route::get('/update/timelineActivityRework/',
+    [timelineController::class, 'getInfoActivityRework']
 );
