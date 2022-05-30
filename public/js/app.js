@@ -5514,6 +5514,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 
+
 var Timeline = /*#__PURE__*/function (_Component) {
   _inherits(Timeline, _Component);
 
@@ -5559,7 +5560,46 @@ var Timeline = /*#__PURE__*/function (_Component) {
     _this.state = {
       timelineActivity: [],
       timelineActivityDowntime: [],
-      timelineActivityRework: []
+      timelineActivityRework: [],
+      showPrint: timelineOpject,
+      series: [{
+        name: 'Blue',
+        data: [{
+          x: 'id-machine 1',
+          y: [new Date("2022-05-18 06:44:46").getTime(), new Date("2022-06-18 06:44:46").getTime()]
+        }]
+      }],
+      options: {
+        chart: {
+          height: 350,
+          type: 'rangeBar'
+        },
+        plotOptions: {
+          bar: {
+            horizontal: true,
+            barHeight: '50%',
+            rangeBarGroupRows: true
+          }
+        },
+        colors: ["#008FFB", "#00E36E", "#F0E040", "#DA4747"],
+        fill: {
+          type: 'solid'
+        },
+        xaxis: {
+          type: 'datetime'
+        },
+        legend: {
+          position: 'right'
+        },
+        tooltip: {
+          custom: function custom(opts) {
+            var fromYear = new Date(opts.y1).getFullYear();
+            var toYear = new Date(opts.y2).getFullYear();
+            var values = opts.ctx.rangeBar.getTooltipValues(opts);
+            return '';
+          }
+        }
+      }
     };
     return _this;
   }
@@ -5574,13 +5614,16 @@ var Timeline = /*#__PURE__*/function (_Component) {
   }, {
     key: "render",
     value: function render() {
-      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
-        id: "chart_timeline",
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_Timeline_ShowTimeline__WEBPACK_IMPORTED_MODULE_3__["default"], {}), this.state.timelineActivityDowntime.map(function (x, i) {
-          return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_Timeline_ManageTimeline__WEBPACK_IMPORTED_MODULE_4__["default"], {
-            data: x
-          }, i);
-        })]
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.Fragment, {
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+          id: "chart_timeline",
+          children: [this.state.timelineActivityRework.map(function (x, i) {}), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(react_apexcharts__WEBPACK_IMPORTED_MODULE_2__["default"], {
+            options: this.state.options,
+            series: this.state.series,
+            type: "rangeBar",
+            height: 350
+          })]
+        })
       });
     }
   }]);
@@ -5607,7 +5650,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var react_apexcharts__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-apexcharts */ "./node_modules/react-apexcharts/dist/react-apexcharts.min.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var _ShowTimeline__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./ShowTimeline */ "./resources/js/components/Timeline/ShowTimeline.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -5643,23 +5687,80 @@ var ManageTimeline = /*#__PURE__*/function (_Component) {
   var _super = _createSuper(ManageTimeline);
 
   function ManageTimeline(props) {
+    var _this;
+
     _classCallCheck(this, ManageTimeline);
 
-    return _super.call(this, props);
+    _this = _super.call(this, props);
+    _this.state = {
+      series: [// 
+      {
+        name: 'Blue',
+        data: [{
+          x: 'id-machine 1',
+          y: [new Date(2022, 3, 30, 15, 10, 10).getTime(), new Date(2022, 3, 30, 18, 50, 10).getTime()]
+        }]
+      }],
+      options: {
+        chart: {
+          height: 350,
+          type: 'rangeBar'
+        },
+        plotOptions: {
+          bar: {
+            horizontal: true,
+            barHeight: '50%',
+            rangeBarGroupRows: true
+          }
+        },
+        colors: ["#008FFB", "#00E36E", "#F0E040", "#DA4747"],
+        fill: {
+          type: 'solid'
+        },
+        xaxis: {
+          type: 'datetime'
+        },
+        legend: {
+          position: 'right'
+        },
+        tooltip: {
+          custom: function custom(opts) {
+            var fromYear = new Date(opts.y1).getFullYear();
+            var toYear = new Date(opts.y2).getFullYear();
+            var values = opts.ctx.rangeBar.getTooltipValues(opts);
+            return '';
+          }
+        }
+      }
+    };
+    return _this;
   }
 
   _createClass(ManageTimeline, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      this.state.series = this.state.series.data.concat({
+        x: 'id-machine 1',
+        y: [new Date("2022-05-18 06:44:46").getTime(), new Date("2022-05-18 08:48:46").getTime()]
+      });
+    }
+  }, {
     key: "render",
     value: function render() {
-      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("tr", {
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("th", {
-          children: this.props.data.id_activity_downtime
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)("td", {
-          children: [this.props.data.time_start, "--"]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("td", {
-          children: this.props.data.time_close
-        })]
-      });
+      return (
+        /*#__PURE__*/
+        // <tr>
+        //     <th>{this.props.data.id_activity_downtime}</th>
+        //     <td>{this.props.data.time_start}--</td>
+        //     <td>{this.props.data.time_close}</td>
+        // </tr>
+        (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+          id: "timeline",
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_ShowTimeline__WEBPACK_IMPORTED_MODULE_3__["default"], {
+            data: this.state.series
+          })
+        })
+      );
     }
   }]);
 
@@ -5726,35 +5827,7 @@ var ShowTimeline = /*#__PURE__*/function (_Component) {
 
     _this = _super.call(this, props);
     _this.state = {
-      series: [// 
-      {
-        name: 'Blue',
-        data: [{
-          x: 'id-machine 1',
-          y: [new Date(1789, 3, 30, 15, 10, 10).getTime(), new Date(1789, 3, 30, 18, 50, 10).getTime()]
-        }]
-      }, // 
-      {
-        name: 'Green',
-        data: [{
-          x: 'id-machine 2',
-          y: [new Date(1789, 3, 29, 15, 10, 10).getTime(), new Date(1789, 3, 29, 18, 50, 10).getTime()]
-        }]
-      }, //
-      {
-        name: 'Yellow',
-        data: [{
-          x: 'id-machine 3',
-          y: [new Date(1789, 3, 29, 15, 10, 10).getTime(), new Date(1789, 3, 29, 18, 50, 10).getTime()]
-        }]
-      }, //
-      {
-        name: 'Red',
-        data: [{
-          x: 'id-machine 4',
-          y: [new Date(1789, 3, 29, 15, 10, 10).getTime(), new Date(1789, 3, 29, 18, 50, 10).getTime()]
-        }]
-      }],
+      series: _this.props.data,
       options: {
         chart: {
           height: 350,
