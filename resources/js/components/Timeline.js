@@ -4,11 +4,87 @@ import Chart from 'react-apexcharts'
 import ReactApexChart from 'react-apexcharts';
 import ShowTimeline from './Timeline/ShowTimeline';
 import ManageTimeline from './Timeline/ManageTimeline';
+import { data } from 'autoprefixer';
 
+const dataSeries = [
+  {
+    name: 'Blue',
+    data: [
+      {
+        x: 'id-machine 1',
+        y:[
+          new Date("2022-04-18 06:44:46").getTime(),
+          new Date("2022-04-18 06:44:46").getTime()
+          ]
+      },
+      
 
+    ]
+  },
 
+  {
+    name: 'Green',
+    data: [
+      {
+        x: 'id-machine 1',
+        y:[
+          new Date("2022-04-25 08:44:46").getTime(),
+          new Date("2022-04-25 11:44:46").getTime()
+          ]
+      },
+      {
+        x: 'id-machine 2',
+        y:[
+          new Date("2022-04-15 16:44:46").getTime(),
+          new Date("2022-04-15 17:44:46").getTime()
+          ]
+      },
+      {
+        x: 'id-machine 3',
+        y:[
+          new Date("2022-04-19 06:44:46").getTime(),
+          new Date("2022-04-19 08:44:46").getTime()
+          ]
+      },
+      {
+        x: 'id-machine 4',
+        y:[
+          new Date("2022-04-19 06:44:46").getTime(),
+          new Date("2022-04-19 07:44:46").getTime()
+          ]
+      },
+    ]
+  },
+
+  {
+    name: 'Yellow',
+    data: [
+      {
+        x: 'id-machine 3',
+        y:[
+          new Date("2022-04-18 09:44:46").getTime(),
+          new Date("2022-04-18 10:44:46").getTime()
+          ]
+      },
+    ]
+  },
+
+  {
+    name: 'Red',
+    data: [
+      {
+        x: 'id-machine 4',
+        y:[
+          new Date("2022-04-18 06:44:46").getTime(),
+          new Date("2022-04-18 16:44:46").getTime()
+          ]
+      },
+    ]
+  },
+  ];
+
+    
 class Timeline extends Component {
-
     constructor(props) {
             super(props);
 
@@ -16,22 +92,7 @@ class Timeline extends Component {
                 timelineActivity : [],
                 timelineActivityDowntime : [],
                 timelineActivityRework : [],
-                showPrint : timelineOpject,
-                series: [
-                    {
-                      name: 'Blue',
-                      data: [
-                        {
-                          x: 'id-machine 1',
-                          y: [
-                            new Date("2022-05-18 06:44:46").getTime(),
-                            new Date("2022-06-18 06:44:46").getTime()
-                          ]
-                        },
-                      ]
-                    },
-
-                    ],
+                series: dataSeries,
                 options: {
                         chart: {
                           height: 350,
@@ -75,8 +136,12 @@ class Timeline extends Component {
         this.getTimelineActivity();
         this.getTimelineActivityDowntime();
         this.getTimelineActivityRework();
+        console.log(dataSeries);
+        
     }
+
     
+
     getTimelineActivity = () => {
         let self = this;
         axios.get('/update/timelineActivity/').then(function (response) {
@@ -103,27 +168,48 @@ class Timeline extends Component {
             });
         });
     }
-
-
+    
+    
     render() {
         return (
             <>
             <div id="chart_timeline">
-                {/* <ShowTimeline /> */}
-                {/* {/* <div>{this.state.timelineActivity[0].id_activity}</div> */}
-                
+                    {this.state.timelineActivity.map(function (x, i) {
+                        
+                        dataSeries[1].data.push({
+                          x: 'id-machine 2',
+                          y: [
+                            new Date(x.time_start).getTime(),
+                            new Date(x.time_close).getTime()
+                          ]
+                        });
+                    })}
+
                     {this.state.timelineActivityRework.map(function (x, i) {
                         
+                        dataSeries[2].data.push({
+                          x: 'id-machine 3',
+                          y: [
+                            new Date(x.time_start).getTime(),
+                            new Date(x.time_close).getTime()
+                          ]
+                        });
                     })}
-                {/* <div>{this.state.timelineActivityRework[0].id_activity}</div> */}
 
-                <ReactApexChart options={this.state.options} series={this.state.series} type="rangeBar" height={350} />
-                    
-                
-
+                    {this.state.timelineActivityDowntime.map(function (x, i) {
+                        
+                        dataSeries[3].data.push({
+                          x: 'id-machine 4',
+                          y: [
+                            new Date(x.time_start).getTime(),
+                            new Date(x.time_close).getTime()
+                          ]
+                        });
+                    })}
+                <ReactApexChart options={this.state.options} series={this.state.series} type="rangeBar" height={350} />                
             </div>
-            
             </>
+            
         );
     }
 }

@@ -8,22 +8,6 @@ class ManageTimeline extends Component {
     constructor(props) {
             super(props);
             this.state = {
-          
-                series: [
-                  // 
-                  {
-                    name: 'Blue',
-                    data: [
-                      {
-                        x: 'id-machine 1',
-                        y: [
-                          new Date(2022, 3, 30, 15, 10, 10).getTime(),
-                          new Date(2022, 3, 30, 18, 50, 10).getTime()
-                        ]
-                      },
-                    ]
-                  },
-                ],
                 options: {
                   chart: {
                     height: 350,
@@ -62,28 +46,14 @@ class ManageTimeline extends Component {
                 },
               }
         }
-    componentDidMount(){
-        this.state.series = this.state.series.data.concat(
-              {
-                x: 'id-machine 1',
-                y: [
-                    new Date("2022-05-18 06:44:46").getTime(),
-                    new Date("2022-05-18 08:48:46").getTime()
-                ]
-              },
-          )
-    }
 
     render() {
         return (
-            // <tr>
-            //     <th>{this.props.data.id_activity_downtime}</th>
-            //     <td>{this.props.data.time_start}--</td>
-            //     <td>{this.props.data.time_close}</td>
-            // </tr>
-            <div id="timeline">
-            <ShowTimeline data={this.state.series} />
-        </div>
+      <div id="timeline">
+          <div id="chart">
+              <ReactApexChart options={this.state.options} series={[this.props.series]} type="rangeBar" height={350} />
+          </div>
+      </div>
         );
     }
 }
