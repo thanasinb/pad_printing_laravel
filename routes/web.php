@@ -48,3 +48,11 @@ Route::get('/update/timelineActivityDowntime/',
 Route::get('/update/timelineActivityRework/',
     [timelineController::class, 'getInfoActivityRework']
 );
+
+Route::get('/update/timelineBreak/',
+    [timelineController::class, 'getInfoBreak']
+);
+
+Route::get('/update/timelineBreakRework/',
+    [timelineController::class, 'getInfoBreakRework']
+);

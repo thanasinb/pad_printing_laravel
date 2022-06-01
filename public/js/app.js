@@ -14285,38 +14285,17 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 var dataSeries = [{
-  name: 'Blue',
-  data: [{
-    x: 'id-machine 1',
-    y: [new Date("2022-04-18 06:44:46").getTime(), new Date("2022-04-18 06:44:46").getTime()]
-  }]
+  name: 'Idle',
+  data: []
 }, {
-  name: 'Green',
-  data: [{
-    x: 'id-machine 1',
-    y: [new Date("2022-04-25 08:44:46").getTime(), new Date("2022-04-25 11:44:46").getTime()]
-  }, {
-    x: 'id-machine 2',
-    y: [new Date("2022-04-15 16:44:46").getTime(), new Date("2022-04-15 17:44:46").getTime()]
-  }, {
-    x: 'id-machine 3',
-    y: [new Date("2022-04-19 06:44:46").getTime(), new Date("2022-04-19 08:44:46").getTime()]
-  }, {
-    x: 'id-machine 4',
-    y: [new Date("2022-04-19 06:44:46").getTime(), new Date("2022-04-19 07:44:46").getTime()]
-  }]
+  name: 'Used',
+  data: []
 }, {
-  name: 'Yellow',
-  data: [{
-    x: 'id-machine 3',
-    y: [new Date("2022-04-18 09:44:46").getTime(), new Date("2022-04-18 10:44:46").getTime()]
-  }]
+  name: 'Break',
+  data: []
 }, {
-  name: 'Red',
-  data: [{
-    x: 'id-machine 4',
-    y: [new Date("2022-04-18 06:44:46").getTime(), new Date("2022-04-18 16:44:46").getTime()]
-  }]
+  name: 'Downtime',
+  data: []
 }];
 
 var Timeline = /*#__PURE__*/function (_Component) {
@@ -14361,10 +14340,32 @@ var Timeline = /*#__PURE__*/function (_Component) {
       });
     });
 
+    _defineProperty(_assertThisInitialized(_this), "getTimelineBreak", function () {
+      var self = _assertThisInitialized(_this);
+
+      axios__WEBPACK_IMPORTED_MODULE_1___default().get('/update/timelineBreak/').then(function (response) {
+        self.setState({
+          timelineBreak: response.data
+        });
+      });
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "getTimelineBreakRework", function () {
+      var self = _assertThisInitialized(_this);
+
+      axios__WEBPACK_IMPORTED_MODULE_1___default().get('/update/timelineBreakRework/').then(function (response) {
+        self.setState({
+          timelineBreakRework: response.data
+        });
+      });
+    });
+
     _this.state = {
       timelineActivity: [],
       timelineActivityDowntime: [],
       timelineActivityRework: [],
+      timelineBreak: [],
+      timelineBreakRework: [],
       series: dataSeries,
       options: {
         chart: {
@@ -14407,6 +14408,8 @@ var Timeline = /*#__PURE__*/function (_Component) {
       this.getTimelineActivity();
       this.getTimelineActivityDowntime();
       this.getTimelineActivityRework();
+      this.getTimelineBreak();
+      this.getTimelineBreakRework();
       console.log(dataSeries);
     }
   }, {
@@ -14417,17 +14420,27 @@ var Timeline = /*#__PURE__*/function (_Component) {
           id: "chart_timeline",
           children: [this.state.timelineActivity.map(function (x, i) {
             dataSeries[1].data.push({
-              x: 'id-machine 2',
+              x: 'ID : ' + x.id_machine,
               y: [new Date(x.time_start).getTime(), new Date(x.time_close).getTime()]
             });
           }), this.state.timelineActivityRework.map(function (x, i) {
-            dataSeries[2].data.push({
-              x: 'id-machine 3',
+            dataSeries[1].data.push({
+              x: 'ID : ' + x.id_machine,
               y: [new Date(x.time_start).getTime(), new Date(x.time_close).getTime()]
+            });
+          }), this.state.timelineBreak.map(function (x, i) {
+            dataSeries[2].data.push({
+              x: 'ID : ' + x.id_machine,
+              y: [new Date(x.break_start).getTime(), new Date(x.break_stop).getTime()]
+            });
+          }), this.state.timelineActivityRework.map(function (x, i) {
+            dataSeries[2].data.push({
+              x: 'ID : ' + x.id_machine,
+              y: [new Date(x.break_start).getTime(), new Date(x.break_stop).getTime()]
             });
           }), this.state.timelineActivityDowntime.map(function (x, i) {
             dataSeries[3].data.push({
-              x: 'id-machine 4',
+              x: 'ID : ' + x.id_machine,
               y: [new Date(x.time_start).getTime(), new Date(x.time_close).getTime()]
             });
           }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(react_apexcharts__WEBPACK_IMPORTED_MODULE_2__["default"], {
