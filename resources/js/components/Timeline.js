@@ -142,6 +142,7 @@ class Timeline extends Component {
             <>
             <div id="chart_timeline">
                     {this.state.timelineActivity.map(function (x, i) {
+                      
                         dataSeries[1].data.push({
                           x: 'ID : '+x.id_machine,
                           y: [
