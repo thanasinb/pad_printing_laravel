@@ -1,0 +1,124 @@
+<?php
+namespace App\Http\Controllers;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
+use App\Models\MachineQueue;
+use App\Models\Activity;
+use App\Models\ActivityRework;
+use App\Models\ActivityDowntime;
+class dashboardRefreshController extends Controller
+{
+    //
+    public function dashboardRefresh(){
+        try
+        {
+            $idMach = (string)$_GET["id_mc"];
+            $data_machine_queue = MachineQueue::where('queue_number' ,'1') ->where('id_machine' ,$idMach)->get();
+            $idTask = $data_machine_queue[0]->id_task;
+            $idTask = (string)$idTask;
+            // echo $idMach.'--';
+            // echo $idTask.'--';
+        // ACCUMULATE THE PROCESSED QTY WHICH HAS NOT BEEN RE-IMPORTED
+            $data_activity_sum = DB::select('SELECT SUM(no_pulse1) AS qty_process, SUM(num_repeat) AS qty_repeat FROM activity WHERE status_work<6 AND id_task='.$idTask);
+                // echo $data_activity_sum[0]->qty_process;
+            if($data_activity_sum[0]->qty_process == null){
+                $data_activity_sum[0]->qty_process = 0;
+                //echo $data_activity_sum[0]->qty_process;
+            }
+            if($data_activity_sum[0]->qty_repeat == null){
+                $data_activity_sum[0]->qty_repeat = 0;
+                //echo $data_activity_sum[0]->qty_repeat;
+            }
+                // echo $data_activity_sum[0]->qty_process;
+        // SELECT THE ACTIVE BACKFLUSH ACTIVITY
+            $data_activity_time = Activity::where('id_task',$idTask)
+                                        ->where('id_machine',$idMach)
+                                        ->where('status_work','<','3')
+                                        ->first();
+            // $data_activity_time = json_encode($data_activity_time);
+        // SELECT THE ACTIVE REWORK ACTIVITY
+            $data_rework_time = ActivityRework::where('id_task',$idTask)
+                                            ->where('id_machine',$idMach)
+                                            ->where('status_work','<','3')
+                                            ->first();
+            // $data_rework_time = json_encode($data_rework_time);
+        // SELECT THE DOWNTIME ACTIVITY OF SUCH TASK
+            $data_activity_downtime = DB::select("SELECT ad.id_staff, ad.status_downtime, cd.code_downtime
+            FROM activity_downtime as ad, code_downtime as cd where ad.id_code_downtime=cd.id_code_downtime
+            and status_downtime < 3
+            and id_task='".(string)$idTask."'
+            and id_machine='".(string)$idMach."'");
+
+            // $data_activity_downtime = json_encode($data_activity_downtime);
+            // echo $data_activity_time;
+            // echo $data_rework_time;
+            // print_r ($data_activity_time);
+            // print_r ($data_rework_time);
+            // print_r ($data_activity_downtime);
+
+            $active_work = 0;
+            if(($data_activity_time) > 0){
+                $active_work++;
+            }
+            if(($data_activity_downtime) > 0){
+                $active_work++;
+            }
+            if(($data_rework_time) > 0){
+                $active_work++;
+            }
+            $rework='n';
+            // echo $active_work;
+            if ($active_work>1){
+                return response() -> json([
+                    "code" => "020",
+                    "message" => "The activity exists in both activity and activity_downtime tables"
+                ]);
+            } 
+            else {
+                $data_activity_time = new Activity();
+                if($data_activity_downtime[0]->status_downtime != null){
+                    $data_activity_time->status_work = 4;
+                    $data_activity_time->id_staff = $data_activity_downtime[0]->id_staff;
+                    $data_activity_time->code_downtime = $data_activity_downtime[0]->code_downtime;
+                }
+                elseif($data_rework_time[0]->status_work != null){
+                    $data_activity_time = $data_rework_time;
+                    $rework='y';
+                }
+                if($data_activity_time->status_work == null){
+                    $data_activity_time->status_work = 0 ;
+                }
+                if ($data_activity_time->run_time_actual == null) {
+                    $data_activity_time->run_time_actual = 0;
+                }
+                $data_planning = DB::select('SELECT task_complete, status_backup, qty_order,
+                qty_comp AS qty_complete, qty_open, run_time_std, divider.divider as divider
+                FROM planning, divider
+                where planning.op_color=divider.op_color
+                AND planning.op_side=divider.op_side
+                and id_task=' . $idTask);
+                $data_planning[0]->run_time_std = number_format((floatval($data_planning[0]->run_time_std)*3600)-2, 2);
+                // print_r($data_planning);
+                return response() -> json([
+                        "qty_process"=> $data_activity_sum[0]->qty_process,
+                        "qty_repeat"=> $data_activity_sum[0]->qty_repeat,
+                        "task_complete"=> $data_planning[0]->task_complete,
+                        "status_backup"=> $data_planning[0]->status_backup,
+                        "qty_order"=> $data_planning[0]->qty_order,
+                        "qty_complete"=> $data_planning[0]->qty_complete,
+                        "qty_open"=> $data_planning[0]->qty_open,
+                        "run_time_std"=> $data_planning[0]->run_time_std,
+                        "divider"=> $data_planning[0]->divider,
+                        "status_work"=> $data_activity_time->status_work,
+                        "id_staff"=> $data_activity_time->id_staff,
+                        "code_downtime"=> $data_activity_time->code_downtime,
+                        "run_time_actual"=> $data_activity_time->run_time_actual,
+                        "rework"=> $rework
+                ]);
+            }
+        }
+        catch(Exception $error){
+            Log::error($error);
+        }
+    }
+}
