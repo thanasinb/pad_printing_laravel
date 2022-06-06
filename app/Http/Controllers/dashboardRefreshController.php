@@ -6,14 +6,24 @@ use App\Models\MachineQueue;
 use App\Models\Activity;
 use App\Models\ActivityRework;
 use App\Models\ActivityDowntime;
+use App\Models\Machine;
+use log;
+use Exception;
 class dashboardRefreshController extends Controller
 {
     //
     public function dashboardRefresh(){
         try
         {
-            $idMach = (string)$_GET["id_mc"];
-            $data_machine_queue = MachineQueue::where('queue_number' ,'1') ->where('id_machine' ,$idMach)->get();
+            $machineId = Machine::all();
+            $id_mc = array();
+            for ($i=0;$i<6;$i++){
+                array_push($id_mc,$machineId[$i]->id_mc);
+            }
+            foreach($id_mc as $value){
+
+            $idMach = $value;
+            $data_machine_queue  = MachineQueue::where('queue_number' ,'1') ->where('id_machine' ,$idMach)->get();
             $idTask = $data_machine_queue[0]->id_task;
             $idTask = (string)$idTask;
             // echo $idMach.'--';
@@ -31,18 +41,23 @@ class dashboardRefreshController extends Controller
             }
                 // echo $data_activity_sum[0]->qty_process;
         // SELECT THE ACTIVE BACKFLUSH ACTIVITY
+
             $data_activity_time = Activity::where('id_task',$idTask)
                                         ->where('id_machine',$idMach)
                                         ->where('status_work','<','3')
                                         ->first();
+
             // $data_activity_time = json_encode($data_activity_time);
         // SELECT THE ACTIVE REWORK ACTIVITY
+
             $data_rework_time = ActivityRework::where('id_task',$idTask)
                                             ->where('id_machine',$idMach)
                                             ->where('status_work','<','3')
                                             ->first();
+
             // $data_rework_time = json_encode($data_rework_time);
         // SELECT THE DOWNTIME ACTIVITY OF SUCH TASK
+
             $data_activity_downtime = DB::select("SELECT ad.id_staff, ad.status_downtime, cd.code_downtime
             FROM activity_downtime as ad, code_downtime as cd where ad.id_code_downtime=cd.id_code_downtime
             and status_downtime < 3
@@ -57,19 +72,19 @@ class dashboardRefreshController extends Controller
             // print_r ($data_activity_downtime);
 
             $active_work = 0;
-            if(($data_activity_time) > 0){
+            if(($data_activity_time) != null){
                 $active_work++;
             }
-            if(($data_activity_downtime) > 0){
+            if(($data_activity_downtime) != null){
                 $active_work++;
             }
-            if(($data_rework_time) > 0){
+            if(($data_rework_time) != null){
                 $active_work++;
             }
             $rework='n';
             // echo $active_work;
             if ($active_work>1){
-                return response() -> json([
+                $sumResult[$value] = json_encode([
                     "code" => "020",
                     "message" => "The activity exists in both activity and activity_downtime tables"
                 ]);
@@ -99,7 +114,7 @@ class dashboardRefreshController extends Controller
                 and id_task=' . $idTask);
                 $data_planning[0]->run_time_std = number_format((floatval($data_planning[0]->run_time_std)*3600)-2, 2);
                 // print_r($data_planning);
-                return response() -> json([
+                $sumResult[$value] = json_encode([
                         "qty_process"=> $data_activity_sum[0]->qty_process,
                         "qty_repeat"=> $data_activity_sum[0]->qty_repeat,
                         "task_complete"=> $data_planning[0]->task_complete,
@@ -116,6 +131,8 @@ class dashboardRefreshController extends Controller
                         "rework"=> $rework
                 ]);
             }
+        }
+            echo $sumResult;
         }
         catch(Exception $error){
             Log::error($error);

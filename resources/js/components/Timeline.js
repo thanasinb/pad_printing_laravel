@@ -2,9 +2,8 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import Chart from 'react-apexcharts'
 import ReactApexChart from 'react-apexcharts';
-import ShowTimeline from './Timeline/ShowTimeline';
-import ManageTimeline from './Timeline/ManageTimeline';
-import { data } from 'autoprefixer';
+import moment from 'moment'
+import 'moment-timezone';
 
 const dataSeries = [
   {
@@ -65,13 +64,18 @@ class Timeline extends Component {
                           position: 'right'
                         },
                         tooltip: {
+                          enabled:true,
                           custom: function(opts) {
                             const fromYear = new Date(opts.y1).getFullYear()
                             const toYear = new Date(opts.y2).getFullYear()
                             const values = opts.ctx.rangeBar.getTooltipValues(opts)
-                        
+                            const timeStartTemp = new Date(parseInt(values.start))
+                            const timeEndTemp = new Date(parseInt(values.end))
+                            const timeStart = moment(timeStartTemp).format("dd.MM.yyyy hh:mm:ss");
+                            const timeEnd = moment(timeEndTemp).format("dd.MM.yyyy hh:mm:ss");
                             return (
-                              ''
+                              '<div>'+timeStart+' '+'</div>'+
+                              '<div>'+timeEnd+' '+'</div>'
                             )
                           }
                         }
@@ -86,6 +90,8 @@ class Timeline extends Component {
         this.getTimelineBreak();
         this.getTimelineBreakRework();
         console.log(dataSeries);
+        this.forceUpdate();
+        
         
     }
 
@@ -135,8 +141,6 @@ class Timeline extends Component {
         });
     });
 }
-    
-    
     render() {
         return (
             <>
@@ -191,7 +195,9 @@ class Timeline extends Component {
                           ]
                         });
                     })}
-                <ReactApexChart options={this.state.options} series={this.state.series} type="rangeBar" height={350} />                
+                    
+                <ReactApexChart options={this.state.options} series={this.state.series} type="rangeBar" height={350}/>  
+                {window.dispatchEvent(new Event('resize'))}
             </div>
             </>
             
