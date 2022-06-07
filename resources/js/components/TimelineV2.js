@@ -2,7 +2,7 @@ import React, { Component,useState } from 'react';
 import axios from 'axios';
 import Chart from 'react-apexcharts'
 import ReactApexChart from 'react-apexcharts';
-import DatePicker from "react-datepicker";
+import DatePicker from 'react-date-picker';
 
 const dataSeries = [
     {
@@ -54,9 +54,9 @@ class TimelineV2 extends Component {
             super(props);
 
             this.state = {
-                selectShif: '',
-                selectDate: '',
-                startDate: new Date()  ,
+                selectShif: null,
+                selectDate: null,
+                nowDate : new Date(),
                 timelineActivity : [],
                 timelineActivityDowntime : [],
                 timelineActivityRework : [],
@@ -101,9 +101,8 @@ class TimelineV2 extends Component {
                         }
                       },
             }
-            this.handleChange = this.handleChange.bind(this);  
-            this.onFormSubmit = this.onFormSubmit.bind(this);  
         }
+    
 
     componentDidMount() {
         // this.getTimelineActivity();
@@ -161,48 +160,43 @@ class TimelineV2 extends Component {
         });
     });
 }
+    onChangeDate = (e) => {
+      console.log(e);
+      const temp = String(e)
+      this.setState({
+        
+        selectDate : temp
+      });
+    }
+    onChangeShif = (e) => {
+      this.setState({
+        selectShif : e
+    });
+  }
+    submitTimeline = () =>{
 
-    setShif(e){  
-        this.setState({  
-          selectShif : e 
-        })  
-      }  
+    }
 
-    handleChange(date) {  
-    this.setState({  
-      startDate: date  
-    })  
-  }  
-  
-  onFormSubmit(e) {  
-    e.preventDefault();  
-    console.log(this.state.startDate)  
-  }  
     
     render() {
         return (
             <>
-            <div>
-                <div id='select-date'>
-                <form onSubmit={ this.onFormSubmit }>  
-        <div className="form-group">  
-          <DatePicker  
-              selected={ this.state.startDate }  
-              onChange={ this.handleChange }  
-              name="startDate"  
-              dateFormat="MM/dd/yyyy"  
-          />  
-            <select 
-            value={this.state.selectShif}
-            onChange={this.setShif()}>
-                <option value="Orange">Orange</option>
-                <option value="Radish">Radish</option>
-                <option value="Cherry">Cherry</option>
-            </select>
-          <button className="btn btn-primary">Show Date</button>  
-        </div>  
-      </form>  
-                </div>
+            <form >
+              <label>
+                Shif : 
+                <select name="selectList" id="selectList" onSelect={this.onChangeShif}>
+                  <option value="day" >Day</option>
+                  <option value="night" >Night</option>
+                </select>
+              </label>
+              <div>
+                <DatePicker onChange={this.onChangeDate} value={this.state.nowDate} format="dd MM yyyy" />
+              </div>
+              <input type="submit" value="Submit" />
+            </form>
+            {this.state.selectDate}
+            {this.state.selectShif}
+              
 
                 {/* <div id="chart_timeline">
                         {this.state.timelineActivity.map(function (x, i) {
@@ -257,7 +251,6 @@ class TimelineV2 extends Component {
                         })}
                     <ReactApexChart options={this.state.options} series={this.state.series} type="rangeBar" height={350} />                
                 </div> */}
-            </div>
             </>
             
         );
