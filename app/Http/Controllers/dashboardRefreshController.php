@@ -7,7 +7,7 @@ use App\Models\Activity;
 use App\Models\ActivityRework;
 use App\Models\ActivityDowntime;
 use App\Models\Machine;
-use log;
+use Illuminate\Support\Facades\Log;
 use Exception;
 class dashboardRefreshController extends Controller
 {
@@ -28,7 +28,7 @@ class dashboardRefreshController extends Controller
             $idTask = (string)$idTask;
             // echo $idMach.'--';
             // echo $idTask.'--';
-        // ACCUMULATE THE PROCESSED QTY WHICH HAS NOT BEEN RE-IMPORTED
+            // ACCUMULATE THE PROCESSED QTY WHICH HAS NOT BEEN RE-IMPORTED
             $data_activity_sum = DB::select('SELECT SUM(no_pulse1) AS qty_process, SUM(num_repeat) AS qty_repeat FROM activity WHERE status_work<6 AND id_task='.$idTask);
                 // echo $data_activity_sum[0]->qty_process;
             if($data_activity_sum[0]->qty_process == null){
@@ -137,5 +137,55 @@ class dashboardRefreshController extends Controller
         catch(Exception $error){
             Log::error($error);
         }
+    }
+
+    public function dashboardRefreshV2(){
+    try{
+        // $machineId = Machine::all();
+        // $id_mc = array();
+        // for ($i=0;$i<6;$i++){
+        //     array_push($id_mc,$machineId[$i]->id_mc);
+        //     }
+        // $data_machine_queue  = MachineQueue::where('queue_number' ,'1') ->where('id_machine' ,$idMach)->get();
+        // $idTask = $data_machine_queue[0]->id_task;
+        // $idTask = (string)$idTask;
+        // print_r($idTask);
+        
+        $data_activity = DB::select('SELECT * FROM (select max(id_activity) as id_activity_max FROM activity GROUP by id_machine) as max_activity , activity as a where a.id_activity = max_activity.id_activity_max');
+        $count = count((array)$data_activity);
+        for($i = 0 ; $i<$count ; $i++){
+            print_r($i);
+            $data_activity_sum = DB::select('SELECT SUM(no_pulse1) AS qty_process, SUM(num_repeat) AS qty_repeat FROM activity WHERE status_work<6 AND id_task='.$data_activity[$i]->id_task);
+            $data_planning = DB::select('SELECT task_complete, status_backup, qty_order,
+            qty_comp AS qty_complete, qty_open, run_time_std, divider.divider as divider
+            FROM planning, divider
+            where planning.op_color=divider.op_color
+            AND planning.op_side=divider.op_side
+            and id_task=' . $data_activity[$i]->id_task);
+            $data_planning[0]->run_time_std = number_format((floatval($data_planning[0]->run_time_std)*3600)-2, 2);
+            $rework = 'y';
+            $sumResult[$i] = array(
+                "id_machine"=>$data_activity[$i]->id_machine,
+                "qty_process"=> $data_activity_sum[0]->qty_process,
+                "qty_repeat"=> $data_activity_sum[0]->qty_repeat,
+                "task_complete"=> $data_planning[0]->task_complete,
+                "status_backup"=> $data_planning[0]->status_backup,
+                "qty_order"=> $data_planning[0]->qty_order,
+                "qty_complete"=> $data_planning[0]->qty_complete,
+                "qty_open"=> $data_planning[0]->qty_open,
+                "run_time_std"=> $data_planning[0]->run_time_std,
+                "divider"=> $data_planning[0]->divider,
+                "status_work"=> $data_activity[$i]->status_work,
+                "id_staff"=> $data_activity[$i]->id_staff,
+                "run_time_actual"=> $data_activity[$i]->run_time_actual,
+                "rework"=> $rework
+        );
+        }
+        return response() -> json($sumResult);
+        
+    }
+    catch(Exception $error){
+        Log::error($error);
+    }
     }
 }

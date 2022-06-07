@@ -59,5 +59,5 @@ Route::get('/update/timelineBreakRework/',
 );
 
 Route::get('/update/dashboard/',
-    [dashboardRefreshController::class, 'dashboardRefresh']
+    [dashboardRefreshController::class, 'dashboardRefreshV2']
 );
