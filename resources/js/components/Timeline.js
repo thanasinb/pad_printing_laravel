@@ -3,7 +3,6 @@ import axios from 'axios';
 import Chart from 'react-apexcharts'
 import ReactApexChart from 'react-apexcharts';
 import moment from 'moment'
-import 'moment-timezone';
 
 const dataSeries = [
   {
