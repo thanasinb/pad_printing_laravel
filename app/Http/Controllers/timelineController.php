@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Log;
+use Illuminate\Support\Facades\Log;
 use Exception;
 use App\Models\Activity;
 use App\Models\ActivityDowntime;

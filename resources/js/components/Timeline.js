@@ -70,8 +70,8 @@ class Timeline extends Component {
                             const values = opts.ctx.rangeBar.getTooltipValues(opts)
                             const timeStartTemp = new Date(parseInt(values.start))
                             const timeEndTemp = new Date(parseInt(values.end))
-                            const timeStart = moment(timeStartTemp).format("dd.MM.yyyy hh:mm:ss");
-                            const timeEnd = moment(timeEndTemp).format("dd.MM.yyyy hh:mm:ss");
+                            const timeStart = moment(timeStartTemp).format("DD.MM.yyyy hh:mm:ss");
+                            const timeEnd = moment(timeEndTemp).format("DD.MM.yyyy hh:mm:ss");
                             return (
                               '<div>'+timeStart+' '+'</div>'+
                               '<div>'+timeEnd+' '+'</div>'

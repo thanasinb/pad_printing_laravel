@@ -32,6 +32,7 @@
         "react-date-picker": "^8.4.0",
         "react-datepicker": "^4.8.0",
         "react-google-charts": "^4.0.0",
-        "react-moment": "^1.1.2"
+        "react-moment": "^1.1.2",
+        "react-select": "^5.3.2"
     }
 }
