@@ -91,18 +91,21 @@ class TimelineV2 extends Component {
         }
     
 
-    componentDidMount() {
+    componentDidMount = () => {
         this.getTimelineActivity();
         this.getTimelineActivityDowntime();
         this.getTimelineActivityRework();
         this.getTimelineBreak();
         this.getTimelineBreakRework();
+        // this.startTimeline();
+        this.onChangeDate(new Date());
+        this.submitTimeline();
         console.log(dataSeries);
         
     }
-
+ 
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
-
     getTimelineActivity = () => {
         let self = this;
         axios.get('/update/timelineActivity/').then(function (response) {
@@ -111,6 +114,7 @@ class TimelineV2 extends Component {
             });
         });
     }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     getTimelineActivityDowntime = () => {
         let self = this;
@@ -120,6 +124,7 @@ class TimelineV2 extends Component {
             });
         });
     }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     getTimelineActivityRework = () => {
         let self = this;
@@ -129,6 +134,7 @@ class TimelineV2 extends Component {
             });
         });
     }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     getTimelineBreak = () => {
       let self = this;
@@ -138,6 +144,7 @@ class TimelineV2 extends Component {
           });
       });
   }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     getTimelineBreakRework = () => {
     let self = this;
@@ -147,19 +154,7 @@ class TimelineV2 extends Component {
         });
     });
   }
-
-  setDefualt = (e) => {
-    console.log(e);
-    const temp = String(e);
-    const toUnix = (new Date(temp).getTime());
-    const toStringDate = new Date(toUnix)
-    const stringDate = toStringDate.getDate()+"/"+(toStringDate.getMonth()+1)+"/"+toStringDate.getFullYear()
-    this.setState({
-      unixDate: toUnix,
-      nowDate: toStringDate,
-      selectDate : stringDate
-    });
-  }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     onChangeDate = (e) => {
       console.log(e);
@@ -173,13 +168,29 @@ class TimelineV2 extends Component {
         selectDate : stringDate
       });
     }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     onChangeShif = (e) => {
       this.setState({
         selectShif : e.target.value
     });
   }
-    submitTimeline = () => {
-      event.preventDefault();
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    submitTimeline = (e) => {
+      var shif;
+      if(!(e == null)){
+        e.preventDefault();
+        shif = this.state.selectShif;
+      }
+      else{
+        var tempCurrentDate = new Date();
+        var intDate = parseInt(tempCurrentDate.getHours());
+        if(intDate >=7 && intDate <= 19){
+          shif = '07:00:00';
+        }
+        else{
+          shif = '19:00:00';
+        }
+      }
       dataSeries = [
         {
           name: 'Idle',
@@ -201,7 +212,7 @@ class TimelineV2 extends Component {
           data: []
         },
         ];
-      var shifDateUnix = this.state.selectShif
+      var shifDateUnix = shif;
       if(shifDateUnix == '07:00:00'){
         var unixDate = this.state.unixDate+(7*60*60*1000);
       }
@@ -212,7 +223,8 @@ class TimelineV2 extends Component {
         alert('Select Shif !!');
         return;
       }
-      
+      console.log(shif);
+      console.log(unixDate);
       
       this.state.timelineActivity.map(function (x, i) {
         if(((new Date(x.time_start).getTime()) > unixDate) && ((new Date(x.time_start).getTime()) < unixDate + (12*60*60*1000))){
@@ -278,6 +290,7 @@ class TimelineV2 extends Component {
 
 
     }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     
     render() {
@@ -304,6 +317,7 @@ class TimelineV2 extends Component {
               <input type="submit" value="Submit" />
             </form>
             </div>
+            
             </>
             
         );

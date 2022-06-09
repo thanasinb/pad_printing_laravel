@@ -6195,6 +6195,25 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
 
     _this = _super.call(this, props);
 
+    _defineProperty(_assertThisInitialized(_this), "componentDidMount", function () {
+      _this.getTimelineActivity();
+
+      _this.getTimelineActivityDowntime();
+
+      _this.getTimelineActivityRework();
+
+      _this.getTimelineBreak();
+
+      _this.getTimelineBreakRework(); // this.startTimeline();
+
+
+      _this.onChangeDate(new Date());
+
+      _this.submitTimeline();
+
+      console.log(dataSeries);
+    });
+
     _defineProperty(_assertThisInitialized(_this), "getTimelineActivity", function () {
       var self = _assertThisInitialized(_this);
 
@@ -6245,20 +6264,6 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
       });
     });
 
-    _defineProperty(_assertThisInitialized(_this), "setDefualt", function (e) {
-      console.log(e);
-      var temp = String(e);
-      var toUnix = new Date(temp).getTime();
-      var toStringDate = new Date(toUnix);
-      var stringDate = toStringDate.getDate() + "/" + (toStringDate.getMonth() + 1) + "/" + toStringDate.getFullYear();
-
-      _this.setState({
-        unixDate: toUnix,
-        nowDate: toStringDate,
-        selectDate: stringDate
-      });
-    });
-
     _defineProperty(_assertThisInitialized(_this), "onChangeDate", function (e) {
       console.log(e);
       var temp = String(e);
@@ -6279,8 +6284,23 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
       });
     });
 
-    _defineProperty(_assertThisInitialized(_this), "submitTimeline", function () {
-      event.preventDefault();
+    _defineProperty(_assertThisInitialized(_this), "submitTimeline", function (e) {
+      var shif;
+
+      if (!(e == null)) {
+        e.preventDefault();
+        shif = _this.state.selectShif;
+      } else {
+        var tempCurrentDate = new Date();
+        var intDate = parseInt(tempCurrentDate.getHours());
+
+        if (intDate >= 7 && intDate <= 19) {
+          shif = '07:00:00';
+        } else {
+          shif = '19:00:00';
+        }
+      }
+
       dataSeries = [{
         name: 'Idle',
         data: []
@@ -6294,7 +6314,7 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
         name: 'Downtime',
         data: []
       }];
-      var shifDateUnix = _this.state.selectShif;
+      var shifDateUnix = shif;
 
       if (shifDateUnix == '07:00:00') {
         var unixDate = _this.state.unixDate + 7 * 60 * 60 * 1000;
@@ -6304,6 +6324,9 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
         alert('Select Shif !!');
         return;
       }
+
+      console.log(shif);
+      console.log(unixDate);
 
       _this.state.timelineActivity.map(function (x, i) {
         if (new Date(x.time_start).getTime() > unixDate && new Date(x.time_start).getTime() < unixDate + 12 * 60 * 60 * 1000) {
@@ -6419,18 +6442,9 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
   }
 
   _createClass(TimelineV2, [{
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      this.getTimelineActivity();
-      this.getTimelineActivityDowntime();
-      this.getTimelineActivityRework();
-      this.getTimelineBreak();
-      this.getTimelineBreakRework();
-      console.log(dataSeries);
-    }
-  }, {
     key: "render",
-    value: function render() {
+    value: ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    function render() {
       return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.Fragment, {
         children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
           id: "chart_timeline",
