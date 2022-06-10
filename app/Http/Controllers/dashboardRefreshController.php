@@ -107,8 +107,9 @@ class dashboardRefreshController extends Controller
                     $data_activity_time->run_time_actual = 0;
                 }
                 $data_planning = DB::select('SELECT task_complete, status_backup, qty_order,
-                qty_comp AS qty_complete, qty_open, run_time_std, divider.divider as divider
-                FROM planning, divider
+                qty_comp AS qty_complete, qty_open, run_time_std, divider.divider  as divider,
+                p.op_color, p.op_side, p.op_des, p.item_no
+                FROM planning as p, divider
                 where planning.op_color=divider.op_color
                 AND planning.op_side=divider.op_side
                 and id_task=' . $idTask);
@@ -124,6 +125,10 @@ class dashboardRefreshController extends Controller
                         "qty_open"=> $data_planning[0]->qty_open,
                         "run_time_std"=> $data_planning[0]->run_time_std,
                         "divider"=> $data_planning[0]->divider,
+                        "op_color" => $data_planning[0]->op_color,
+                        "op_side" => $data_planning[0]->op_side,
+                        "op_des" => $data_planning[0]->op_des,
+                        "item_no" => $data_planning[0]->item_no,
                         "status_work"=> $data_activity_time->status_work,
                         "id_staff"=> $data_activity_time->id_staff,
                         "code_downtime"=> $data_activity_time->code_downtime,
@@ -154,13 +159,13 @@ class dashboardRefreshController extends Controller
         $data_activity = DB::select('SELECT * FROM (select max(id_activity) as id_activity_max FROM activity GROUP by id_machine) as max_activity , activity as a where a.id_activity = max_activity.id_activity_max');
         $count = count((array)$data_activity);
         for($i = 0 ; $i<$count ; $i++){
-            print_r($i);
             $data_activity_sum = DB::select('SELECT SUM(no_pulse1) AS qty_process, SUM(num_repeat) AS qty_repeat FROM activity WHERE status_work<6 AND id_task='.$data_activity[$i]->id_task);
             $data_planning = DB::select('SELECT task_complete, status_backup, qty_order,
-            qty_comp AS qty_complete, qty_open, run_time_std, divider.divider as divider
-            FROM planning, divider
-            where planning.op_color=divider.op_color
-            AND planning.op_side=divider.op_side
+            qty_comp AS qty_complete, qty_open, run_time_std, divider.divider as divider,
+            p.op_color, p.op_side, p.op_des, p.item_no
+            FROM planning as p, divider
+            where p.op_color=divider.op_color
+            AND p.op_side=divider.op_side
             and id_task=' . $data_activity[$i]->id_task);
             $data_planning[0]->run_time_std = number_format((floatval($data_planning[0]->run_time_std)*3600)-2, 2);
             $rework = 'y';
@@ -175,6 +180,10 @@ class dashboardRefreshController extends Controller
                 "qty_open"=> $data_planning[0]->qty_open,
                 "run_time_std"=> $data_planning[0]->run_time_std,
                 "divider"=> $data_planning[0]->divider,
+                "op_color" => $data_planning[0]->op_color,
+                "op_side" => $data_planning[0]->op_side,
+                "op_des" => $data_planning[0]->op_des,
+                "item_no" => $data_planning[0]->item_no,
                 "status_work"=> $data_activity[$i]->status_work,
                 "id_staff"=> $data_activity[$i]->id_staff,
                 "run_time_actual"=> $data_activity[$i]->run_time_actual,

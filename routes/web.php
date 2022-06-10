@@ -6,6 +6,7 @@ use App\Http\Controllers\touchController;
 use App\Http\Controllers\countController;
 use App\Http\Controllers\repeatController;
 use App\Http\Controllers\timelineController;
+use App\Http\Controllers\dashboardController;
 use App\Http\Controllers\dashboardRefreshController;
 use Illuminate\Support\Facades\Redirect;
 
@@ -58,6 +59,6 @@ Route::get('/update/timelineBreakRework/',
     [timelineController::class, 'getInfoBreakRework']
 );
 
-Route::get('/update/dashboard/',
+Route::get('/update/DashboardRefresh/',
     [dashboardRefreshController::class, 'dashboardRefreshV2']
 );
