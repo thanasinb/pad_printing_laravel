@@ -27,8 +27,8 @@
         </style>
     </head>
     <body class="antialiased">
-        <div id="homepage">
-
+        <div id="chart" >
+        <div id="homepage" apexcharts-tooltip="padding: 5px 10px;, opacity: 1 !important;" ></div>
         </div>
     </body>
 </html>

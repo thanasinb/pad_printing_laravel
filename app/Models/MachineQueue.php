@@ -10,13 +10,15 @@ class MachineQueue extends Model
     use HasFactory;
     protected $table = "machine_queue";
     protected $fillable = [
-        'id-machine_queue',
+        'id_machine_queue',
         'id_machine',
         'queue_number',
         'id_task',
         'id_staff',
-        'comp_date',
-        'comp_time',
+        'status_work',
+        'id_activity',
+        'id_activity_downtime',
+        'id_activity_rework'
     ];
     public $timestamps = false;
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import Timeline from './Timeline';
 import TimelineV2 from './TimelineV2';
-import Dashboard from './Dashboard';
+// import Dashboard from './Dashboard';
 
 function Home() {
     return (
@@ -9,7 +9,7 @@ function Home() {
             <div className="row justify-content-center">
                 {/*component is here.*/}
                 <TimelineV2/>
-                <Dashboard/>
+                {/* <Dashboard/> */}
             </div>
         </div>
     );
