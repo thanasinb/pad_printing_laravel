@@ -200,26 +200,36 @@ class dashboardRefreshController extends Controller
     }
 
     public function dashboardRefreshV3(){
-        
+        // return response() -> json($sumResult);
         try{
             $machineId = MachineQueue::where('queue_number' ,'1')->get();
+            
+            $machineId_queue_2 = MachineQueue::where('queue_number' ,'2')->get();
+            
             $id_mc = array();
-            $sumResult = array();
+            $id_mc_queue_2 =array();
 
-            for ($i=0;$i<6;$i++){
+            $sumResult = array();
+            $count = $machineId->count();
+            $count2 = $machineId_queue_2->count();
+
+            for ($i=0;$i<$count;$i++){
                 array_push($id_mc,$machineId[$i]->id_machine);
+                }
+            for ($i=0;$i<$count2;$i++){
+                array_push($id_mc_queue_2,$machineId[$i]->id_machine);
                 }
                 
             // $data_activity = DB::select('SELECT * FROM (select max(id_activity) as id_activity_max FROM activity GROUP by id_machine) as max_activity , activity as a where a.id_activity = max_activity.id_activity_max');
-            $count = count((array)$id_mc);
+
             // print_r($count);
             for($i = 0 ; $i<$count ; $i++){
 
                 $data_machine_queue = MachineQueue::where('id_machine',$id_mc[$i])->where('queue_number','1')->get();
-
+                
                 $data_activity_sum = DB::select('SELECT SUM(no_pulse1) AS qty_process, SUM(num_repeat) AS qty_repeat FROM activity WHERE status_work<6 AND id_task='.$data_machine_queue[0]->id_task);
                 
-                $data_planning = DB::select('SELECT task_complete, status_backup, qty_order,
+                $data_planning = DB::select('SELECT task_complete, status_backup, qty_order, p.datetime_update, p.operation,
                 qty_comp AS qty_complete, qty_open, run_time_std, divider.divider as divider,
                 p.op_color, p.op_side, p.op_des, p.item_no
                 FROM planning as p, divider
@@ -234,12 +244,12 @@ class dashboardRefreshController extends Controller
                 $code_downtime = '-';
                 $des_downtime = '-';
                 $des_downtime_thai = '-';
+                $item_no_2 = '-';
+                $operation_2 = '-';
                 if($data_machine_queue[0]->id_activity != 0){
                     $number_count++;
                     $data_activity = Activity::where('id_activity',$data_machine_queue[0]->id_activity)->get();
                     
-                    
-
                 }  
                 if($data_machine_queue[0]->id_activity_downtime != 0){
                     $number_count++;
@@ -259,6 +269,17 @@ class dashboardRefreshController extends Controller
 
                 }
 
+                ////////////////////////////////////////////
+                foreach($id_mc_queue_2 as $values){
+                    if($values == $id_mc[$i]){
+                        $data_machine_queue_2 = MachineQueue::where('id_machine',$id_mc[$i])->where('queue_number','2')->get();
+                        $data_planning_queue_2 = DB::select('SELECT operation, item_no FROM planning where id_task=' . $data_machine_queue_2[0]->id_task);
+                        $item_no_2 = $data_planning_queue_2[0]->item_no;
+                        $operation_2 = $data_planning_queue_2[0]->operation;
+                    }
+                }
+                ////////////////////////////////////////////
+
                 if ($number_count>=2 || $number_count<=0){
                     $sumResult[$i] = array(
                         "id_machine" => $id_mc[$i],
@@ -268,8 +289,10 @@ class dashboardRefreshController extends Controller
                     continue;
                 } 
                 else{
+                    // return response() -> json($data_planning[0]->operation);
                     $sumResult[$i] = array(
                         "id_machine"=>$id_mc[$i],
+                        "id_task"=>$data_machine_queue[0]->id_task,
                         "qty_process"=> $data_activity_sum[0]->qty_process,
                         "qty_repeat"=> $data_activity_sum[0]->qty_repeat,
                         "task_complete"=> $data_planning[0]->task_complete,
@@ -289,9 +312,12 @@ class dashboardRefreshController extends Controller
                         "id_code_downtime"=> $id_code_downtime,
                         "code_downtime"=> $code_downtime,
                         "des_downtime"=> $des_downtime,
-                        "des_downtime_thai"=> $des_downtime_thai
+                        "des_downtime_thai"=> $des_downtime_thai,
+                        "oparation" => $data_planning[0]->datetime_update,
+                        "datetime_update" => $data_planning[0]->operation,
+                        "item_no_2" => $item_no_2,
+                        "operation_2" => $operation_2
                         
-
                 );
 
                 }
