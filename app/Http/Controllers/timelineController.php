@@ -10,12 +10,68 @@ use App\Models\ActivityDowntime;
 use App\Models\ActivityRework;
 use App\Models\BreakRework;
 use App\Models\BreakTable;
+use App\Models\MachineQueue;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class timelineController extends Controller
 {
     //
+    public function getInfoAllActivityAndAllBreak(){
+        try
+        {
+            $queryActivity1 = DB::select('SELECT * FROM activity as a ,break as b ,divider as d ,planning as p  
+            WHERE a.id_break = b.id_break and a.id_task = p.id_task 
+            and p.op_color = d.op_color and p.op_side =  d.op_side');
+            
+            $queryActivity1_noBreak = DB::select('SELECT * FROM activity as a ,divider as d ,planning as p  
+            WHERE a.id_break = 0 and a.id_task = p.id_task 
+            and p.op_color = d.op_color and p.op_side =  d.op_side');
+            // $num_break = count($queryActivity1);
+            // $num_nobreak = count($queryActivity1_noBreak);
+
+            $queryActivity2 = DB::select('SELECT * FROM activity_rework as a ,break as b ,divider as d ,planning as p  
+            WHERE a.id_break = b.id_break and a.id_task = p.id_task 
+            and p.op_color = d.op_color and p.op_side =  d.op_side');
+
+            $queryActivity2_noBreak = DB::select('SELECT * FROM activity_rework as a ,divider as d ,planning as p  
+            WHERE a.id_break = 0 and a.id_task = p.id_task 
+            and p.op_color = d.op_color and p.op_side =  d.op_side');
+            // $num_r_break = count($queryActivity2);
+            // $num_r_nobreak = count($queryActivity2_noBreak);
+
+            $queryActivity3 = ActivityDowntime::all();
+
+            $result =(object)array_merge(  
+            array($queryActivity1),
+            array($queryActivity1_noBreak),
+            array($queryActivity2),
+            array($queryActivity2_noBreak),
+            array($queryActivity3));
+
+            return response() -> json($result);
+        }
+        catch(Exception $error)
+        {
+            Log::error($error);
+        }
+    }
+    public function getQueueMachineInfo(){
+        try
+        {
+            $queryActivity = MachineQueue::where('queue_number','1')->get();
+            $IdMachine = array();
+            for($i=0;$i<$queryActivity->count();$i++){
+                array_push($IdMachine,$queryActivity[$i]->id_machine);
+            }
+            return response() -> json($IdMachine);
+        }
+        catch(Exception $error)
+        {
+            Log::error($error);
+        }
+    }
+
     public function getInfoActivity(){
         try
         {

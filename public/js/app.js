@@ -5860,7 +5860,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var _Timeline__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Timeline */ "./resources/js/components/Timeline.js");
 /* harmony import */ var _TimelineV2__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./TimelineV2 */ "./resources/js/components/TimelineV2.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var _TimelineV3__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./TimelineV3 */ "./resources/js/components/TimelineV3.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
 
 
  // import Dashboard from './Dashboard';
@@ -5868,11 +5870,11 @@ __webpack_require__.r(__webpack_exports__);
 
 
 function Home() {
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
     className: "container",
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)("div", {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
       className: "row justify-content-center",
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(_TimelineV2__WEBPACK_IMPORTED_MODULE_2__["default"], {})
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_TimelineV3__WEBPACK_IMPORTED_MODULE_3__["default"], {})
     })
   });
 }
@@ -6513,6 +6515,386 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
             })]
           })
         }), this.state.selectDate, /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("br", {}), this.state.selectShif]
+      });
+    }
+  }]);
+
+  return TimelineV2;
+}(react__WEBPACK_IMPORTED_MODULE_0__.Component);
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (TimelineV2);
+
+/***/ }),
+
+/***/ "./resources/js/components/TimelineV3.js":
+/*!***********************************************!*\
+  !*** ./resources/js/components/TimelineV3.js ***!
+  \***********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react_apexcharts__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-apexcharts */ "./node_modules/react-apexcharts/dist/react-apexcharts.min.js");
+/* harmony import */ var react_date_picker__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-date-picker */ "./node_modules/react-date-picker/dist/entry.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var react_datepicker_dist_react_datepicker_css__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react-datepicker/dist/react-datepicker.css */ "./node_modules/react-datepicker/dist/react-datepicker.css");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+
+
+
+
+
+
+
+ // import 'bootstrap/dist/css/bootstrap.min.css';
+
+
+
+
+var allData = [];
+var listIdMachine = [];
+var dataSeries = [{
+  name: 'Idle',
+  data: []
+}, {
+  name: 'Used',
+  data: []
+}, {
+  name: 'Break',
+  data: []
+}, {
+  name: 'Downtime',
+  data: []
+}];
+var tempCurrentDate = new Date();
+var shif = '';
+var intDate = parseInt(tempCurrentDate.getHours());
+
+if (intDate >= 7 && intDate <= 19) {
+  shif = '07:00:00';
+} else {
+  shif = '19:00:00';
+}
+
+var InitialTime = new Date(); // console.log(InitialTime);
+
+var InitialTimeDate = InitialTime.getDate() + "/" + (InitialTime.getMonth() + 1) + "/" + InitialTime.getFullYear(); // console.log(new Date(parseInt(InitialTime.getFullYear()),parseInt(InitialTime.getMonth()),parseInt(InitialTime.getDate())).getTime());
+
+var TimelineV2 = /*#__PURE__*/function (_Component) {
+  _inherits(TimelineV2, _Component);
+
+  var _super = _createSuper(TimelineV2);
+
+  function TimelineV2(props) {
+    var _this;
+
+    _classCallCheck(this, TimelineV2);
+
+    _this = _super.call(this, props);
+
+    _defineProperty(_assertThisInitialized(_this), "componentDidMount", function () {
+      _this.getQueueMachineInfo();
+
+      _this.getTimeline();
+
+      _this.setState({
+        resultTimeline: []
+      }); // this.startTimeline();
+      // this.onChangeDate(new Date());
+
+
+      _this.submitTimeline();
+
+      var x = _this.state.resultTimeline;
+      console.log(x);
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "getTimeline", function () {
+      var self = _assertThisInitialized(_this);
+
+      axios__WEBPACK_IMPORTED_MODULE_1___default().get('/update/timelineAll/').then(function (response) {
+        console.log(response.data);
+        var resultData = response.data;
+        var dataLength = Object.keys(resultData).length;
+        console.log(dataLength);
+
+        for (var i = 0; i < dataLength; i++) {
+          for (var j = 0; j < resultData[i].length; j++) {
+            allData.push(resultData[i][j]);
+          }
+        }
+
+        allData.sort(function (a, b) {
+          return a.time_start > b.time_start ? 1 : -1;
+        });
+        console.log(allData);
+        self.setState({
+          timeline: allData
+        });
+      });
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "onChangeDate", function (e) {
+      console.log(e);
+      var temp = String(e);
+      var toUnix = new Date(temp).getTime();
+      var toStringDate = new Date(toUnix);
+      var stringDate = toStringDate.getDate() + "/" + (toStringDate.getMonth() + 1) + "/" + toStringDate.getFullYear();
+
+      _this.setState({
+        unixDate: toUnix,
+        nowDate: toStringDate,
+        selectDate: stringDate
+      });
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "onChangeShif", function (e) {
+      _this.setState({
+        selectShif: e.target.value
+      });
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "submitTimeline", function (e) {
+      if (e != null) {
+        e.preventDefault();
+      }
+
+      dataSeries = [{
+        name: 'Idle',
+        data: []
+      }, {
+        name: 'Used',
+        data: []
+      }, {
+        name: 'Break',
+        data: []
+      }, {
+        name: 'Downtime',
+        data: []
+      }];
+      var shifDateUnix = _this.state.selectShif;
+
+      if (shifDateUnix == '07:00:00') {
+        var unixDate = _this.state.unixDate + 7 * 60 * 60 * 1000;
+      } else if (shifDateUnix == '19:00:00') {
+        var unixDate = _this.state.unixDate + 19 * 60 * 60 * 1000;
+      } else {
+        alert('Select Shif !!');
+        return;
+      }
+
+      console.log(shifDateUnix);
+      console.log(unixDate);
+      var tempMachine;
+      var tempCloseDate;
+      var tempStaff;
+      var count = 0;
+
+      _this.state.timeline.map(function (x, i) {
+        if (new Date(x.time_start).getTime() > unixDate && new Date(x.time_start).getTime() < unixDate + 12 * 60 * 60 * 1000) {
+          if (count > 1) {
+            dataSeries[0].data.push({
+              x: 'ID : ' + tempMachine,
+              y: [new Date(tempCloseDate).getTime(), new Date(x.time_start).getTime()],
+              staff: '-',
+              count: '-'
+            });
+          }
+
+          if (x.id_activity != null) {
+            if (x.id_break != 0) {
+              dataSeries[1].data.push({
+                x: 'ID : ' + x.id_machine,
+                y: [new Date(x.time_start).getTime(), new Date(x.break_start).getTime()],
+                staff: x.id_staff,
+                count: parseInt(x.no_pulse1) / parseInt(x.divider)
+              });
+              dataSeries[2].data.push({
+                x: 'ID : ' + x.id_machine,
+                y: [new Date(x.break_start).getTime(), new Date(x.break_stop).getTime()],
+                staff: x.id_staff,
+                count: parseInt(x.no_pulse1) / parseInt(x.divider)
+              });
+              dataSeries[1].data.push({
+                x: 'ID : ' + x.id_machine,
+                y: [new Date(x.break_stop).getTime(), new Date(x.time_close).getTime()],
+                staff: x.id_staff,
+                count: parseInt(x.no_pulse1) / parseInt(x.divider)
+              });
+            }
+          } else {
+            dataSeries[3].data.push({
+              x: 'ID : ' + x.id_machine,
+              y: [new Date(x.time_start).getTime(), new Date(x.time_close).getTime()],
+              staff: x.id_staff,
+              count: parseInt(x.no_pulse1) / parseInt(x.divider)
+            });
+          }
+
+          tempMachine = x.id_machine;
+          tempCloseDate = x.time_close;
+          tempStaff = x.id_staff;
+          count++;
+        }
+      });
+
+      count = 0;
+      console.log('OK');
+
+      _this.setState({
+        series: dataSeries
+      });
+
+      count = 0;
+      console.log('OK');
+      console.log(dataSeries);
+      window.dispatchEvent(new Event('resize'));
+    });
+
+    _this.state = {
+      selectShif: shif,
+      selectDate: InitialTimeDate,
+      unixDate: new Date(parseInt(InitialTime.getFullYear()), parseInt(InitialTime.getMonth()), parseInt(InitialTime.getDate())).getTime(),
+      nowDate: new Date(),
+      timeline: [],
+      resultTimeline: [],
+      series: dataSeries,
+      options: {
+        chart: {
+          height: 350,
+          type: 'rangeBar'
+        },
+        plotOptions: {
+          bar: {
+            horizontal: true,
+            barHeight: '50%',
+            rangeBarGroupRows: true
+          }
+        },
+        colors: ["#008FFB", "#00E36E", "#F0E040", "#DA4747"],
+        fill: {
+          type: 'solid'
+        },
+        xaxis: {
+          type: 'datetime'
+        },
+        legend: {
+          position: 'right'
+        },
+        tooltip: {
+          enabled: true,
+          onDatasetHover: {
+            highlightDataSeries: false
+          },
+          style: {
+            padding: '5px 10px'
+          },
+          theme: 'dark',
+          custom: function custom(opts) {
+            var data = opts.ctx.w.globals.initialSeries[opts.seriesIndex].data[opts.dataPointIndex];
+            var fromYear = new Date(opts.y1).getFullYear();
+            var toYear = new Date(opts.y2).getFullYear();
+            var values = opts.ctx.rangeBar.getTooltipValues(opts);
+            var timeStartTemp = new Date(parseInt(values.start));
+            var timeEndTemp = new Date(parseInt(values.end));
+            var timeStart = moment__WEBPACK_IMPORTED_MODULE_4___default()(timeStartTemp).format("DD.MM.yyyy HH:mm:ss");
+            var timeEnd = moment__WEBPACK_IMPORTED_MODULE_4___default()(timeEndTemp).format("DD.MM.yyyy HH:mm:ss"); // console.log(opts);
+            // console.log(data);
+
+            return '<div>Time Start : ' + timeStart + ' ' + '</div>' + '<div>Time Close :' + timeEnd + ' ' + '</div>' + '<div>ID Staff: ' + data.staff + ' ' + '</div>' + '<div>' + '<form >' + '<label>Enter Comment :' + '  <input ' + '    type="text" ' + '  />' + ' </label>' + '<input type="submit" />' + '</form>' + '</div>';
+          }
+        }
+      }
+    };
+    return _this;
+  }
+
+  _createClass(TimelineV2, [{
+    key: "getQueueMachineInfo",
+    value: ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    function getQueueMachineInfo() {
+      axios__WEBPACK_IMPORTED_MODULE_1___default().get('/update/getQueueMachineInfo/').then(function (response) {
+        console.log(response.data);
+      });
+    } ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  }, {
+    key: "render",
+    value: ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    function render() {
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+          id: "chart_timeline",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(react_apexcharts__WEBPACK_IMPORTED_MODULE_2__["default"], {
+            options: this.state.options,
+            series: this.state.series,
+            type: "rangeBar",
+            height: 350
+          }), window.dispatchEvent(new Event('resize'))]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("form", {
+            onSubmit: this.submitTimeline,
+            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("label", {
+              children: ["Shif :", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("select", {
+                id: "lang",
+                onChange: this.onChangeShif,
+                value: this.state.selectShif,
+                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("option", {
+                  value: "Select",
+                  children: "---Select---"
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("option", {
+                  value: "07:00:00",
+                  children: "Day"
+                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("option", {
+                  value: "19:00:00",
+                  children: "Night"
+                })]
+              })]
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+              children: ["Date:", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(react_date_picker__WEBPACK_IMPORTED_MODULE_3__["default"], {
+                name: "Date",
+                onChange: this.onChangeDate,
+                value: this.state.nowDate
+              })]
+            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("input", {
+              type: "submit",
+              value: "Submit"
+            })]
+          })
+        })]
       });
     }
   }]);

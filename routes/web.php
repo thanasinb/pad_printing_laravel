@@ -39,6 +39,14 @@ Route::get('/update/repeat_v2/',
     [repeatController::class, 'getInfoRepeatV2']
 );
 
+Route::get('/update/timelineAll/',
+    [timelineController::class, 'getInfoAllActivityAndAllBreak']
+);
+
+Route::get('/update/getQueueMachineInfo/',
+    [timelineController::class, 'getQueueMachineInfo']
+);
+
 Route::get('/update/timelineActivity/',
     [timelineController::class, 'getInfoActivity']
 );
