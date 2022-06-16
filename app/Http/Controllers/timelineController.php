@@ -64,6 +64,7 @@ class timelineController extends Controller
             for($i=0;$i<$queryActivity->count();$i++){
                 array_push($IdMachine,$queryActivity[$i]->id_machine);
             }
+
             return response() -> json($IdMachine);
         }
         catch(Exception $error)

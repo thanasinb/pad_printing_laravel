@@ -6626,20 +6626,9 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
     _this = _super.call(this, props);
 
     _defineProperty(_assertThisInitialized(_this), "componentDidMount", function () {
-      _this.getQueueMachineInfo();
-
       _this.getTimeline();
 
-      _this.setState({
-        resultTimeline: []
-      }); // this.startTimeline();
-      // this.onChangeDate(new Date());
-
-
       _this.submitTimeline();
-
-      var x = _this.state.resultTimeline;
-      console.log(x);
     });
 
     _defineProperty(_assertThisInitialized(_this), "getTimeline", function () {
@@ -6649,7 +6638,6 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
         console.log(response.data);
         var resultData = response.data;
         var dataLength = Object.keys(resultData).length;
-        console.log(dataLength);
 
         for (var i = 0; i < dataLength; i++) {
           for (var j = 0; j < resultData[i].length; j++) {
@@ -6660,7 +6648,6 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
         allData.sort(function (a, b) {
           return a.time_start > b.time_start ? 1 : -1;
         });
-        console.log(allData);
         self.setState({
           timeline: allData
         });
@@ -6718,67 +6705,132 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
 
       console.log(shifDateUnix);
       console.log(unixDate);
-      var tempMachine;
-      var tempCloseDate;
-      var tempStaff;
-      var count = 0;
+
+      _this.getQueueMachineInfo();
+
+      var dateDaySelect = _this.state.selectDate;
+      console.log(dateDaySelect);
 
       _this.state.timeline.map(function (x, i) {
-        if (new Date(x.time_start).getTime() > unixDate && new Date(x.time_start).getTime() < unixDate + 12 * 60 * 60 * 1000) {
-          if (count > 1) {
-            dataSeries[0].data.push({
-              x: 'ID : ' + tempMachine,
-              y: [new Date(tempCloseDate).getTime(), new Date(x.time_start).getTime()],
-              staff: '-',
-              count: '-'
-            });
-          }
+        listIdMachine.forEach(function (id_mc) {
+          if (new Date(x.time_start).getTime() > unixDate && new Date(x.time_start).getTime() < unixDate + 12 * 60 * 60 * 1000) {
+            if (x.id_machine == id_mc.id_mc) {
+              if (id_mc.count > 0) {
+                dataSeries[0].data.push({
+                  x: 'ID : ' + id_mc.id_mc,
+                  y: [new Date(id_mc.timeLast).getTime(), new Date(x.time_start).getTime()],
+                  staff: id_mc.staffLast,
+                  count: '-'
+                });
+              } else {
+                dataSeries[0].data.push({
+                  x: 'ID : ' + id_mc.id_mc,
+                  y: [new Date(dateDaySelect + ' ' + shifDateUnix).getTime(), new Date(x.time_start).getTime()],
+                  staff: id_mc.staffLast,
+                  count: '-'
+                });
+              }
 
-          if (x.id_activity != null) {
-            if (x.id_break != 0) {
-              dataSeries[1].data.push({
-                x: 'ID : ' + x.id_machine,
-                y: [new Date(x.time_start).getTime(), new Date(x.break_start).getTime()],
-                staff: x.id_staff,
-                count: parseInt(x.no_pulse1) / parseInt(x.divider)
-              });
-              dataSeries[2].data.push({
-                x: 'ID : ' + x.id_machine,
-                y: [new Date(x.break_start).getTime(), new Date(x.break_stop).getTime()],
-                staff: x.id_staff,
-                count: parseInt(x.no_pulse1) / parseInt(x.divider)
-              });
-              dataSeries[1].data.push({
-                x: 'ID : ' + x.id_machine,
-                y: [new Date(x.break_stop).getTime(), new Date(x.time_close).getTime()],
-                staff: x.id_staff,
-                count: parseInt(x.no_pulse1) / parseInt(x.divider)
-              });
+              if (x.id_activity != null) {
+                if (x.id_break != 0) {
+                  dataSeries[1].data.push({
+                    x: 'ID : ' + x.id_machine,
+                    y: [new Date(x.time_start).getTime(), new Date(x.break_start).getTime()],
+                    staff: x.id_staff,
+                    count: parseInt(x.no_pulse1) / parseInt(x.divider)
+                  });
+                  dataSeries[2].data.push({
+                    x: 'ID : ' + x.id_machine,
+                    y: [new Date(x.break_start).getTime(), new Date(x.break_stop).getTime()],
+                    staff: x.id_staff,
+                    count: parseInt(x.no_pulse1) / parseInt(x.divider)
+                  });
+                  dataSeries[1].data.push({
+                    x: 'ID : ' + x.id_machine,
+                    y: [new Date(x.break_stop).getTime(), new Date(x.time_close).getTime()],
+                    staff: x.id_staff,
+                    count: parseInt(x.no_pulse1) / parseInt(x.divider)
+                  });
+                }
+              } else {
+                dataSeries[3].data.push({
+                  x: 'ID : ' + x.id_machine,
+                  y: [new Date(x.time_start).getTime(), new Date(x.time_close).getTime()],
+                  staff: x.id_staff,
+                  count: parseInt(x.no_pulse1) / parseInt(x.divider)
+                });
+              }
+
+              id_mc.timeLast = x.time_close;
+              id_mc.staffLast = x.id_staff;
+              id_mc.count = id_mc.count + 1;
             }
-          } else {
-            dataSeries[3].data.push({
-              x: 'ID : ' + x.id_machine,
-              y: [new Date(x.time_start).getTime(), new Date(x.time_close).getTime()],
-              staff: x.id_staff,
-              count: parseInt(x.no_pulse1) / parseInt(x.divider)
-            });
           }
-
-          tempMachine = x.id_machine;
-          tempCloseDate = x.time_close;
-          tempStaff = x.id_staff;
-          count++;
-        }
+        }); // if(((new Date(x.time_start).getTime()) > unixDate) && ((new Date(x.time_start).getTime()) < unixDate + (12*60*60*1000))){
+        //   if(count>0){
+        //     dataSeries[0].data.push({
+        //       x: 'ID : '+tempMachine,
+        //       y: [
+        //         new Date(tempCloseDate).getTime(),
+        //         new Date(x.time_start).getTime()
+        //       ],
+        //       staff : tempStaff,
+        //       count : '-'
+        //     });
+        //   }
+        //   if( x.id_activity!=null ){
+        //     if(x.id_break != 0){
+        //         dataSeries[1].data.push({
+        //           x: 'ID : '+x.id_machine,
+        //           y: [
+        //             new Date(x.time_start).getTime(),
+        //             new Date(x.break_start).getTime()
+        //           ],
+        //           staff : x.id_staff,
+        //           count : parseInt(x.no_pulse1) / parseInt(x.divider)
+        //         });
+        //         dataSeries[2].data.push({
+        //           x: 'ID : '+x.id_machine,
+        //           y: [
+        //             new Date(x.break_start).getTime(),
+        //             new Date(x.break_stop).getTime()
+        //           ],
+        //           staff : x.id_staff,
+        //           count : parseInt(x.no_pulse1) / parseInt(x.divider)
+        //         });
+        //         dataSeries[1].data.push({
+        //           x: 'ID : '+x.id_machine,
+        //           y: [
+        //             new Date(x.break_stop).getTime(),
+        //             new Date(x.time_close).getTime()
+        //           ],
+        //           staff : x.id_staff,
+        //           count : parseInt(x.no_pulse1) / parseInt(x.divider)
+        //         });
+        //     }
+        //   }
+        //   else{
+        //     dataSeries[3].data.push({
+        //       x: 'ID : '+x.id_machine,
+        //       y: [
+        //         new Date(x.time_start).getTime(),
+        //         new Date(x.time_close).getTime()
+        //       ],
+        //       staff : x.id_staff,
+        //       count : parseInt(x.no_pulse1) / parseInt(x.divider)
+        //     });
+        //   }
+        //   count++;
+        // }
       });
 
-      count = 0;
+      console.log(listIdMachine);
       console.log('OK');
 
       _this.setState({
         series: dataSeries
       });
 
-      count = 0;
       console.log('OK');
       console.log(dataSeries);
       window.dispatchEvent(new Event('resize'));
@@ -6791,6 +6843,7 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
       nowDate: new Date(),
       timeline: [],
       resultTimeline: [],
+      id_machine: [],
       series: dataSeries,
       options: {
         chart: {
@@ -6830,11 +6883,11 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
             var values = opts.ctx.rangeBar.getTooltipValues(opts);
             var timeStartTemp = new Date(parseInt(values.start));
             var timeEndTemp = new Date(parseInt(values.end));
-            var timeStart = moment__WEBPACK_IMPORTED_MODULE_4___default()(timeStartTemp).format("DD.MM.yyyy HH:mm:ss");
-            var timeEnd = moment__WEBPACK_IMPORTED_MODULE_4___default()(timeEndTemp).format("DD.MM.yyyy HH:mm:ss"); // console.log(opts);
+            var timeStart = moment__WEBPACK_IMPORTED_MODULE_4___default()(timeStartTemp).format("DD/MM/yyyy HH:mm:ss");
+            var timeEnd = moment__WEBPACK_IMPORTED_MODULE_4___default()(timeEndTemp).format("DD/MM/yyyy HH:mm:ss"); // console.log(opts);
             // console.log(data);
 
-            return '<div>Time Start : ' + timeStart + ' ' + '</div>' + '<div>Time Close :' + timeEnd + ' ' + '</div>' + '<div>ID Staff: ' + data.staff + ' ' + '</div>' + '<div>' + '<form >' + '<label>Enter Comment :' + '  <input ' + '    type="text" ' + '  />' + ' </label>' + '<input type="submit" />' + '</form>' + '</div>';
+            return '<div>Time Start : ' + timeStart + ' ' + '</div>' + '<div>Time Close :' + timeEnd + ' ' + '</div>' + '<div>ID Staff: ' + data.staff + ' ' + '</div>' + '<div>Item Count: ' + data.count + ' ' + '</div>' + '<div>' + '<form >' + '<label>Enter Comment :' + '  <input ' + '    type="text" ' + '  />' + ' </label>' + '<input type="submit" />' + '</form>' + '</div>';
           }
         }
       }
@@ -6847,7 +6900,16 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
     value: ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     function getQueueMachineInfo() {
       axios__WEBPACK_IMPORTED_MODULE_1___default().get('/update/getQueueMachineInfo/').then(function (response) {
-        console.log(response.data);
+        response.data.forEach(function (id, index) {
+          listIdMachine = [];
+          listIdMachine.push({
+            id_mc: id,
+            staffLast: '-',
+            timeLast: '-',
+            count: 0
+          });
+        });
+        console.log(listIdMachine);
       });
     } ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -6887,7 +6949,8 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
               children: ["Date:", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(react_date_picker__WEBPACK_IMPORTED_MODULE_3__["default"], {
                 name: "Date",
                 onChange: this.onChangeDate,
-                value: this.state.nowDate
+                value: this.state.nowDate,
+                clearIcon: null
               })]
             }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("input", {
               type: "submit",
