@@ -118,7 +118,7 @@ class TimelineV2 extends Component {
                               +' </label>'
                               +'<input type="submit" />'
                               +'</form>'
-                            +'</div>'
+                              +'</div>'
                             )
                           }
                         }
@@ -137,7 +137,7 @@ class TimelineV2 extends Component {
     getTimeline = () => {
         let self = this;
         axios.get('/update/timelineAll/').then(function (response) {
-            console.log(response.data);
+            // console.log(response.data);
             let resultData = response.data;
             let dataLength = Object.keys(resultData).length;
             for(let i = 0 ; i<dataLength ; i++){
@@ -150,6 +150,7 @@ class TimelineV2 extends Component {
             self.setState({
               timeline: allData
           });
+          // console.log(allData);
 
         });
         
@@ -157,16 +158,17 @@ class TimelineV2 extends Component {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     getQueueMachineInfo(){
       axios.get('/update/getQueueMachineInfo/').then(function (response) {
-        response.data.forEach(function (id,index){
-          listIdMachine = [];
+        // console.log(response.data);
+        listIdMachine = [];
+        response.data.map(function (id,index){
           listIdMachine.push({
             id_mc : id,
             staffLast : '-',
             timeLast : '-',
             count: 0})
         });
-        console.log(listIdMachine);
     });
+    // console.log(listIdMachine);
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -230,14 +232,18 @@ class TimelineV2 extends Component {
       console.log(shifDateUnix);
       console.log(unixDate);
       this.getQueueMachineInfo();
-      var dateDaySelect = this.state.selectDate;
-      console.log(dateDaySelect);
+      var dateDaySelect = this.state.selectDate.split('/');
+      // console.log(dateDaySelect);
       this.state.timeline.map(function (x, i) {
-        listIdMachine.forEach(function(id_mc){
+        listIdMachine.map(function(id_mc){
           if(((new Date(x.time_start).getTime()) > unixDate) && ((new Date(x.time_start).getTime()) < unixDate + (12*60*60*1000))){
             
             if(x.id_machine == id_mc.id_mc){
-              if(id_mc.count>0){
+              if(id_mc.timeLast == '0000-00-00 00:00:00'){
+                id_mc.timeLast = x.time_start;
+              }
+              if((id_mc.count>0) && (id_mc.timeLast != '-')){
+                console.log(id_mc.timeLast);
                 dataSeries[0].data.push({
                 x: 'ID : '+id_mc.id_mc,
                 y: [
@@ -252,7 +258,7 @@ class TimelineV2 extends Component {
                 dataSeries[0].data.push({
                   x: 'ID : '+id_mc.id_mc,
                   y: [
-                    new Date(dateDaySelect+' '+shifDateUnix).getTime(),
+                    new Date(dateDaySelect[2]+'-'+dateDaySelect[1]+'-'+dateDaySelect[0]+' '+shifDateUnix).getTime(),
                     new Date(x.time_start).getTime()
                   ],
                   staff : id_mc.staffLast,
@@ -260,7 +266,7 @@ class TimelineV2 extends Component {
                 });
               }
               
-              if( x.id_activity!=null ){
+              if( x.id_activity!=null){
                     if(x.id_break != 0){
         
                         dataSeries[1].data.push({
@@ -293,6 +299,17 @@ class TimelineV2 extends Component {
                           count : parseInt(x.no_pulse1) / parseInt(x.divider)
                         });
                     }
+                    else{
+                      dataSeries[1].data.push({
+                        x: 'ID : '+x.id_machine,
+                        y: [
+                          new Date(x.time_start).getTime(),
+                          new Date(x.time_close).getTime()
+                        ],
+                        staff : x.id_staff,
+                        count : parseInt(x.no_pulse1) / parseInt(x.divider)
+                      });
+                    }
                   }
         
                   else{
@@ -303,15 +320,13 @@ class TimelineV2 extends Component {
                         new Date(x.time_close).getTime()
                       ],
                       staff : x.id_staff,
-                      count : parseInt(x.no_pulse1) / parseInt(x.divider)
+                      count : '-'
                     });
                   }
 
                   id_mc.timeLast = x.time_close;
                   id_mc.staffLast= x.id_staff;
                   id_mc.count = id_mc.count + 1;
-              
-
             }
       }})
       
@@ -387,8 +402,8 @@ class TimelineV2 extends Component {
           
         // }
       })
-      console.log(listIdMachine);
-      console.log('OK'); 
+      // console.log(listIdMachine);
+      // console.log('OK'); 
     this.setState({
       series:dataSeries
     });

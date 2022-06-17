@@ -6635,7 +6635,7 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
       var self = _assertThisInitialized(_this);
 
       axios__WEBPACK_IMPORTED_MODULE_1___default().get('/update/timelineAll/').then(function (response) {
-        console.log(response.data);
+        // console.log(response.data);
         var resultData = response.data;
         var dataLength = Object.keys(resultData).length;
 
@@ -6650,7 +6650,7 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
         });
         self.setState({
           timeline: allData
-        });
+        }); // console.log(allData);
       });
     });
 
@@ -6708,14 +6708,19 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
 
       _this.getQueueMachineInfo();
 
-      var dateDaySelect = _this.state.selectDate;
-      console.log(dateDaySelect);
+      var dateDaySelect = _this.state.selectDate.split('/'); // console.log(dateDaySelect);
+
 
       _this.state.timeline.map(function (x, i) {
-        listIdMachine.forEach(function (id_mc) {
+        listIdMachine.map(function (id_mc) {
           if (new Date(x.time_start).getTime() > unixDate && new Date(x.time_start).getTime() < unixDate + 12 * 60 * 60 * 1000) {
             if (x.id_machine == id_mc.id_mc) {
-              if (id_mc.count > 0) {
+              if (id_mc.timeLast == '0000-00-00 00:00:00') {
+                id_mc.timeLast = x.time_start;
+              }
+
+              if (id_mc.count > 0 && id_mc.timeLast != '-') {
+                console.log(id_mc.timeLast);
                 dataSeries[0].data.push({
                   x: 'ID : ' + id_mc.id_mc,
                   y: [new Date(id_mc.timeLast).getTime(), new Date(x.time_start).getTime()],
@@ -6725,7 +6730,7 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
               } else {
                 dataSeries[0].data.push({
                   x: 'ID : ' + id_mc.id_mc,
-                  y: [new Date(dateDaySelect + ' ' + shifDateUnix).getTime(), new Date(x.time_start).getTime()],
+                  y: [new Date(dateDaySelect[2] + '-' + dateDaySelect[1] + '-' + dateDaySelect[0] + ' ' + shifDateUnix).getTime(), new Date(x.time_start).getTime()],
                   staff: id_mc.staffLast,
                   count: '-'
                 });
@@ -6751,13 +6756,20 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
                     staff: x.id_staff,
                     count: parseInt(x.no_pulse1) / parseInt(x.divider)
                   });
+                } else {
+                  dataSeries[1].data.push({
+                    x: 'ID : ' + x.id_machine,
+                    y: [new Date(x.time_start).getTime(), new Date(x.time_close).getTime()],
+                    staff: x.id_staff,
+                    count: parseInt(x.no_pulse1) / parseInt(x.divider)
+                  });
                 }
               } else {
                 dataSeries[3].data.push({
                   x: 'ID : ' + x.id_machine,
                   y: [new Date(x.time_start).getTime(), new Date(x.time_close).getTime()],
                   staff: x.id_staff,
-                  count: parseInt(x.no_pulse1) / parseInt(x.divider)
+                  count: '-'
                 });
               }
 
@@ -6822,10 +6834,9 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
         //   }
         //   count++;
         // }
-      });
+      }); // console.log(listIdMachine);
+      // console.log('OK'); 
 
-      console.log(listIdMachine);
-      console.log('OK');
 
       _this.setState({
         series: dataSeries
@@ -6900,8 +6911,9 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
     value: ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     function getQueueMachineInfo() {
       axios__WEBPACK_IMPORTED_MODULE_1___default().get('/update/getQueueMachineInfo/').then(function (response) {
-        response.data.forEach(function (id, index) {
-          listIdMachine = [];
+        // console.log(response.data);
+        listIdMachine = [];
+        response.data.map(function (id, index) {
           listIdMachine.push({
             id_mc: id,
             staffLast: '-',
@@ -6909,8 +6921,7 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
             count: 0
           });
         });
-        console.log(listIdMachine);
-      });
+      }); // console.log(listIdMachine);
     } ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   }, {
