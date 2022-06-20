@@ -11,6 +11,7 @@
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="{{ asset(css/app.css) }}">
 
         <!-- Styles -->
         <style>
@@ -27,8 +28,8 @@
         </style>
     </head>
     <body class="antialiased">
-        <div id="chart" >
-        <div id="homepage" apexcharts-tooltip="padding: 5px 10px;, opacity: 1 !important;" ></div>
+        <div id="homepage">
+            
         </div>
     </body>
 </html>
