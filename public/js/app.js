@@ -6742,26 +6742,26 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
                     x: 'ID : ' + x.id_machine,
                     y: [new Date(x.time_start).getTime(), new Date(x.break_start).getTime()],
                     staff: x.id_staff,
-                    count: parseInt(x.no_pulse1) / parseInt(x.divider)
+                    count: parseInt(x.no_pulse1) / parseFloat(x.divider)
                   });
                   dataSeries[2].data.push({
                     x: 'ID : ' + x.id_machine,
                     y: [new Date(x.break_start).getTime(), new Date(x.break_stop).getTime()],
                     staff: x.id_staff,
-                    count: parseInt(x.no_pulse1) / parseInt(x.divider)
+                    count: parseInt(x.no_pulse1) / parseFloat(x.divider)
                   });
                   dataSeries[1].data.push({
                     x: 'ID : ' + x.id_machine,
                     y: [new Date(x.break_stop).getTime(), new Date(x.time_close).getTime()],
                     staff: x.id_staff,
-                    count: parseInt(x.no_pulse1) / parseInt(x.divider)
+                    count: parseInt(x.no_pulse1) / parseFloat(x.divider)
                   });
                 } else {
                   dataSeries[1].data.push({
                     x: 'ID : ' + x.id_machine,
                     y: [new Date(x.time_start).getTime(), new Date(x.time_close).getTime()],
                     staff: x.id_staff,
-                    count: parseInt(x.no_pulse1) / parseInt(x.divider)
+                    count: parseInt(x.no_pulse1) / parseFloat(x.divider)
                   });
                 }
               } else {
@@ -6873,7 +6873,12 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
           type: 'solid'
         },
         xaxis: {
-          type: 'datetime'
+          type: 'datetime',
+          labels: {
+            rotate: -45,
+            format: 'HH:mm:ss',
+            datetimeUTC: false
+          }
         },
         legend: {
           position: 'right'

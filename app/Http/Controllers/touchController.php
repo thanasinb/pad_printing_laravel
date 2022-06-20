@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 use App\Models\ActivityDowntime;
+use App\Models\MachineQueue;
 use Log;
 use Exception;
 use App\Models\Staff;
@@ -40,6 +41,14 @@ class touchController extends Controller
                                                 ->first();
                 if(!empty($dataDowntime->id_staff)){
                     $dataStaffDowntime = Staff::where('id_staff', $queryTouch[0]->machineQueue_id_staff)->first();
+
+                    // //เพิ่มใหม่ 17-06-2565
+                    // MachineQueue::where('id_machine',$idMach)->where('queue_number','1')
+                    // ->update([
+                    //     'id_activity' => '0',
+                    //     'id_activity_downtime' => $dataDowntime->id_acctivity_downtime,
+                    //     'id_activity_rework' => '0',
+                    // ]);
                     
                     if(($queryTouch[0]->id_role == 2) and ($dataStaffDowntime->id_role == 1)){
                         $dataPlanning = DB::select($sqlPlanning);

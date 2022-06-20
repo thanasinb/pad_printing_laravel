@@ -76,7 +76,12 @@ class TimelineV2 extends Component {
                           type: 'solid'
                         },
                         xaxis: {
-                          type: 'datetime'
+                          type: 'datetime',
+                          labels: {
+                            rotate: -45,
+                            format: 'HH:mm:ss',
+                            datetimeUTC: false,
+                          }
                         },
                         legend: {
                           position: 'right'
@@ -276,7 +281,7 @@ class TimelineV2 extends Component {
                             new Date(x.break_start).getTime()
                           ],
                           staff : x.id_staff,
-                          count : parseInt(x.no_pulse1) / parseInt(x.divider)
+                          count : parseInt(x.no_pulse1) / parseFloat(x.divider)
                         });
         
                         dataSeries[2].data.push({
@@ -286,7 +291,7 @@ class TimelineV2 extends Component {
                             new Date(x.break_stop).getTime()
                           ],
                           staff : x.id_staff,
-                          count : parseInt(x.no_pulse1) / parseInt(x.divider)
+                          count : parseInt(x.no_pulse1) / parseFloat(x.divider)
                         });
         
                         dataSeries[1].data.push({
@@ -296,7 +301,7 @@ class TimelineV2 extends Component {
                             new Date(x.time_close).getTime()
                           ],
                           staff : x.id_staff,
-                          count : parseInt(x.no_pulse1) / parseInt(x.divider)
+                          count : parseInt(x.no_pulse1) / parseFloat(x.divider)
                         });
                     }
                     else{
@@ -307,7 +312,7 @@ class TimelineV2 extends Component {
                           new Date(x.time_close).getTime()
                         ],
                         staff : x.id_staff,
-                        count : parseInt(x.no_pulse1) / parseInt(x.divider)
+                        count : parseInt(x.no_pulse1) / parseFloat(x.divider)
                       });
                     }
                   }
