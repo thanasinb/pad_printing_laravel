@@ -97,11 +97,19 @@ class activityController extends Controller
                         'status_work'=> '1',
                         'time_start'=> now(),
                     ]);
+
+                    //เพิ่มใหม่ 17-06-2565
+
+                    $tempActivityID = Activity::orderBy('id_activity','desc')->first();
                     MachineQueue::where('id_machine', $idMach)
                         ->where('queue_number','1')
                         ->update([
                         'id_staff'   =>  $dataStaff['id_staff'],
+                        'id_activity' => $tempActivityID->id_activity,
+                        'id_activity_downtime' => '0',
+                        'id_activity_rework' => '0',
                     ]);
+                    //////////////////////////////////////////////////////////
                     echo "OK";
 
                 }
@@ -116,11 +124,19 @@ class activityController extends Controller
                         'status_work'=> '1',
                         'time_start'=> now(),
                     ]);
+
+                    //เพิ่มใหม่ 19-06-2565
+
+                    $tempActivityID = ActivityRework::orderBy('id_activity','desc')->first();
                     MachineQueue::where('id_machine', $idMach)
                         ->where('queue_number','1')
                         ->update([
                         'id_staff'   =>  $dataStaff['id_staff'],
+                        'id_activity' => '0',
+                        'id_activity_downtime' => '0',
+                        'id_activity_rework' => $tempActivityID->id_activity,
                     ]);
+                    //////////////////////////////////////////////////////////
                     echo "OK";
                 }
 

@@ -223,10 +223,16 @@ class dashboardRefreshController extends Controller
                 $data_machine_queue = MachineQueue::where('id_machine',$id_mc[$i])->where('queue_number','1')->get();
                 
                 $data_activity_sum = DB::select('SELECT SUM(no_pulse1) AS qty_process, SUM(num_repeat) AS qty_repeat FROM activity WHERE status_work<6 AND id_task='.$data_machine_queue[0]->id_task);
-                
-                $data_planning = DB::select('SELECT task_complete, status_backup, qty_order, p.datetime_update, p.operation,
+                if($data_activity_sum[0]->qty_process == null){
+                    $data_activity_sum[0]->qty_process = 0;
+                }
+                if($data_activity_sum[0]->qty_repeat == null){
+                    $data_activity_sum[0]->qty_repeat = 0;
+                }
+
+                $data_planning = DB::select('SELECT task_complete, status_backup, qty_order, p.datetime_update, p.operation, p.run_time_actual,
                 qty_comp AS qty_complete, qty_open, run_time_std, divider.divider as divider,
-                p.op_color, p.op_side, p.op_des, p.item_no
+                p.op_color, p.op_side, p.op_des, p.item_no, p.date_due
                 FROM planning as p, divider
                 where p.op_color=divider.op_color
                 AND p.op_side=divider.op_side
@@ -244,12 +250,15 @@ class dashboardRefreshController extends Controller
                 if($data_machine_queue[0]->id_activity != 0){
                     $number_count++;
                     $data_activity = Activity::where('id_activity',$data_machine_queue[0]->id_activity)->get();
-                    
+
                 }  
                 if($data_machine_queue[0]->id_activity_downtime != 0){
                     $number_count++;
                     $data_activity = ActivityDowntime::where('id_activity_downtime',$data_machine_queue[0]->id_activity_downtime)->get();
-                    
+                    $data_activity[0]->status_work=$data_activity[0]->status_downtime;
+                    if ($data_activity[0]->run_time_actual == null) {
+                        $data_activity[0]->run_time_actual = 0;
+                    }
                     $data_code_downtime = CodeDowntime::where('id_code_downtime',$data_activity[0]->id_code_downtime)->get();
                     // return response() -> json($data_activity);
                     $id_code_downtime = $data_code_downtime[0]->id_code_downtime;
@@ -262,13 +271,14 @@ class dashboardRefreshController extends Controller
                     $number_count++;
                     $data_activity = ActivityRework::where('id_activity',$data_machine_queue[0]->id_activity_rework)->get();
 
+
                 }
+                
 
                 ////////////////////////////////////////////
                 foreach($id_mc_queue_2 as $values){
                     if($values == $id_mc[$i]){
-                        $data_machine_queue_2 = MachineQueue::where('id_machine',$id_mc[$i])->get();
-
+                        $data_machine_queue_2 = MachineQueue::where('id_machine',$id_mc[$i])->where('queue_number','2')->get();
                         $data_planning_queue_2 = DB::select('SELECT operation, item_no FROM planning where id_task=' . $data_machine_queue_2[0]->id_task);
                         $item_no_2 = $data_planning_queue_2[0]->item_no;
                         $operation_2 = $data_planning_queue_2[0]->operation;
@@ -286,35 +296,39 @@ class dashboardRefreshController extends Controller
                 } 
                 else{
                     // return response() -> json($data_planning[0]->operation);
+                    
                     $sumResult[$i] = array(
                         "id_machine"=>$id_mc[$i],
                         "id_task"=>$data_machine_queue[0]->id_task,
-                        "qty_process"=> $data_activity_sum[0]->qty_process,
-                        "qty_repeat"=> $data_activity_sum[0]->qty_repeat,
+                        "id_staff"=> $data_activity[0]->id_staff,
+                        "status_work"=> $data_activity[0]->status_work,
                         "task_complete"=> $data_planning[0]->task_complete,
                         "status_backup"=> $data_planning[0]->status_backup,
+                        "qty_repeat"=> $data_activity_sum[0]->qty_repeat,
                         "qty_order"=> $data_planning[0]->qty_order,
+                        "qty_process"=> $data_activity_sum[0]->qty_process,
                         "qty_complete"=> $data_planning[0]->qty_complete,
+                        "qty_accum"=> $data_planning[0]->qty_complete + $data_activity_sum[0]->qty_process,
+                        "percent" => round(($data_planning[0]->qty_complete + $data_activity_sum[0]->qty_process / $data_planning[0]->qty_order) * 100,0),
                         "qty_open"=> $data_planning[0]->qty_open,
-                        "run_time_std"=> $data_planning[0]->run_time_std,
                         "divider"=> $data_planning[0]->divider,
+                        "item_no" => $data_planning[0]->item_no,
+                        "operation" => $data_planning[0]->operation,
                         "op_color" => $data_planning[0]->op_color,
                         "op_side" => $data_planning[0]->op_side,
                         "op_des" => $data_planning[0]->op_des,
-                        "item_no" => $data_planning[0]->item_no,
-                        "status_work"=> $data_activity[0]->status_work,
-                        "id_staff"=> $data_activity[0]->id_staff,
+                        "date_due" =>$data_planning[0]->date_due,
                         "run_time_actual"=> $data_activity[0]->run_time_actual,
+                        "run_time_std"=> $data_planning[0]->run_time_std,
+                        "datetime_update" => $data_planning[0]->datetime_update,
                         "id_code_downtime"=> $id_code_downtime,
                         "code_downtime"=> $code_downtime,
                         "des_downtime"=> $des_downtime,
                         "des_downtime_thai"=> $des_downtime_thai,
-                        "oparation" => $data_planning[0]->datetime_update,
-                        "datetime_update" => $data_planning[0]->operation,
                         "item_no_2" => $item_no_2,
                         "operation_2" => $operation_2
-                        
-                );
+
+                     );
 
                 }
                 

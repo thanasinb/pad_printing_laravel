@@ -21,6 +21,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/update/touch/',   
+    [touchController::class, 'getTouchInfo']
+);
+
 Route::get('/update/activity/',   
     [activityController::class, 'getInfoActivity']);
 
