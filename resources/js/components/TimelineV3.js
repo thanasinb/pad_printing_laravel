@@ -7,6 +7,7 @@ import moment from 'moment';
 import 'react-datepicker/dist/react-datepicker.css';
 import { forEach, isEmpty } from 'lodash';
 // import 'bootstrap/dist/css/bootstrap.min.css';
+
 var allData =[];
 var listIdMachine = [];
 var dataSeries = [
@@ -43,6 +44,7 @@ else{
 let InitialTime = new Date();
 // console.log(InitialTime);
 let InitialTimeDate = InitialTime.getDate()+"/"+(InitialTime.getMonth()+1)+"/"+InitialTime.getFullYear();
+var refreshCount = 1000;
 // console.log(new Date(parseInt(InitialTime.getFullYear()),parseInt(InitialTime.getMonth()),parseInt(InitialTime.getDate())).getTime());
 class TimelineV2 extends Component {
     constructor(props) {
@@ -60,7 +62,12 @@ class TimelineV2 extends Component {
                 options: {
                         chart: {
                           height: 350,
-                          type: 'rangeBar'
+                          type: 'rangeBar',
+                          events: {
+                            dataPointSelection: (event, chartContext, config) => {
+                              console.log(chartContext, config);
+                            }
+                          }
                         },
                         plotOptions: {
                           bar: {
@@ -92,9 +99,12 @@ class TimelineV2 extends Component {
                             highlightDataSeries: false,
             
                         },
-                        style:{
-                          padding: '5px 10px'
-                        },
+                        // events: {
+                        //   dataPointSelection: (event, chartContext, config) => {
+                        //     console.log(chartContext);
+                        //     console.log(event);
+                        //     console.log(config);
+                        // },
                           theme:'dark',
                           custom: function(opts) {
                             var data = opts.ctx.w.globals.initialSeries[opts.seriesIndex].data[opts.dataPointIndex];
@@ -113,17 +123,7 @@ class TimelineV2 extends Component {
                               '<div>Time Start : '+timeStart+' '+'</div>'+
                               '<div>Time Close :'+timeEnd+' '+'</div>'+
                               '<div>ID Staff: '+data.staff+' '+'</div>'+
-                              '<div>Item Count: '+data.count+' '+'</div>'+
-                              '<div>'
-                              +'<form >'
-                              +'<label>Enter Comment :'
-                              +'  <input '
-                              +'    type="text" '
-                              +'  />'
-                              +' </label>'
-                              +'<input type="submit" />'
-                              +'</form>'
-                              +'</div>'
+                              '<div>Item Count: '+data.count+' '+'</div>'
                             )
                           }
                         }
@@ -133,8 +133,19 @@ class TimelineV2 extends Component {
     
 
     componentDidMount = () => {
-        this.getTimeline();
-        this.submitTimeline();
+
+        this.interval = setInterval(() => {
+          this.getTimeline();
+          this.submitTimeline();  
+          refreshCount = 10000;
+        }, refreshCount+110000);
+        
+    }
+    // UNSAFE_componentWillMount = () =>{
+    //     this.submitTimeline();
+    // }
+    componentWillUnmount() {
+      clearInterval(this.interval);
     }
  
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -239,8 +250,10 @@ class TimelineV2 extends Component {
       this.getQueueMachineInfo();
       var dateDaySelect = this.state.selectDate.split('/');
       // console.log(dateDaySelect);
+      console.log(this.state.timeline);
       this.state.timeline.map(function (x, i) {
         listIdMachine.map(function(id_mc){
+          
           if(((new Date(x.time_start).getTime()) > unixDate) && ((new Date(x.time_start).getTime()) < unixDate + (12*60*60*1000))){
             
             if(x.id_machine == id_mc.id_mc){
@@ -248,7 +261,7 @@ class TimelineV2 extends Component {
                 id_mc.timeLast = x.time_start;
               }
               if((id_mc.count>0) && (id_mc.timeLast != '-')){
-                console.log(id_mc.timeLast);
+                // console.log(id_mc.timeLast);
                 dataSeries[0].data.push({
                 x: 'ID : '+id_mc.id_mc,
                 y: [
@@ -416,7 +429,6 @@ class TimelineV2 extends Component {
     console.log(dataSeries);
     window.dispatchEvent(new Event('resize'))
 
-
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -425,10 +437,11 @@ class TimelineV2 extends Component {
         return (
             <>
                 <div id="chart_timeline" >
-                    <ReactApexChart options={this.state.options} series={this.state.series} type="rangeBar" height={350}  />                
+                    <ReactApexChart options={this.state.options} series={this.state.series} type="rangeBar" height={400}  />                
                     {window.dispatchEvent(new Event('resize'))}
                 </div> 
-            <div>
+            <div className='ui container stackable two column grid'>
+            <div className='column'>
               <form onSubmit={this.submitTimeline}>
                     <label>
                       Shif : 
@@ -438,6 +451,7 @@ class TimelineV2 extends Component {
                         <option value="19:00:00">Night</option>
                     </select>
                     </label>
+              
               <div>
                 Date:
                 <DatePicker name='Date' onChange={this.onChangeDate} value={this.state.nowDate} clearIcon={null} />
@@ -445,7 +459,10 @@ class TimelineV2 extends Component {
               <input type="submit" value="Submit" />
             </form>
             </div>
-            
+            <div className='column'>
+                
+            </div>
+            </div>
             </>
             
         );

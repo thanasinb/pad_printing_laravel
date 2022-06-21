@@ -6611,7 +6611,8 @@ if (intDate >= 7 && intDate <= 19) {
 
 var InitialTime = new Date(); // console.log(InitialTime);
 
-var InitialTimeDate = InitialTime.getDate() + "/" + (InitialTime.getMonth() + 1) + "/" + InitialTime.getFullYear(); // console.log(new Date(parseInt(InitialTime.getFullYear()),parseInt(InitialTime.getMonth()),parseInt(InitialTime.getDate())).getTime());
+var InitialTimeDate = InitialTime.getDate() + "/" + (InitialTime.getMonth() + 1) + "/" + InitialTime.getFullYear();
+var refreshCount = 1000; // console.log(new Date(parseInt(InitialTime.getFullYear()),parseInt(InitialTime.getMonth()),parseInt(InitialTime.getDate())).getTime());
 
 var TimelineV2 = /*#__PURE__*/function (_Component) {
   _inherits(TimelineV2, _Component);
@@ -6626,9 +6627,13 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
     _this = _super.call(this, props);
 
     _defineProperty(_assertThisInitialized(_this), "componentDidMount", function () {
-      _this.getTimeline();
+      _this.interval = setInterval(function () {
+        _this.getTimeline();
 
-      _this.submitTimeline();
+        _this.submitTimeline();
+
+        refreshCount = 10000;
+      }, refreshCount + 110000);
     });
 
     _defineProperty(_assertThisInitialized(_this), "getTimeline", function () {
@@ -6711,6 +6716,8 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
       var dateDaySelect = _this.state.selectDate.split('/'); // console.log(dateDaySelect);
 
 
+      console.log(_this.state.timeline);
+
       _this.state.timeline.map(function (x, i) {
         listIdMachine.map(function (id_mc) {
           if (new Date(x.time_start).getTime() > unixDate && new Date(x.time_start).getTime() < unixDate + 12 * 60 * 60 * 1000) {
@@ -6720,7 +6727,7 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
               }
 
               if (id_mc.count > 0 && id_mc.timeLast != '-') {
-                console.log(id_mc.timeLast);
+                // console.log(id_mc.timeLast);
                 dataSeries[0].data.push({
                   x: 'ID : ' + id_mc.id_mc,
                   y: [new Date(id_mc.timeLast).getTime(), new Date(x.time_start).getTime()],
@@ -6859,7 +6866,12 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
       options: {
         chart: {
           height: 350,
-          type: 'rangeBar'
+          type: 'rangeBar',
+          events: {
+            dataPointSelection: function dataPointSelection(event, chartContext, config) {
+              console.log(chartContext, config);
+            }
+          }
         },
         plotOptions: {
           bar: {
@@ -6888,9 +6900,12 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
           onDatasetHover: {
             highlightDataSeries: false
           },
-          style: {
-            padding: '5px 10px'
-          },
+          // events: {
+          //   dataPointSelection: (event, chartContext, config) => {
+          //     console.log(chartContext);
+          //     console.log(event);
+          //     console.log(config);
+          // },
           theme: 'dark',
           custom: function custom(opts) {
             var data = opts.ctx.w.globals.initialSeries[opts.seriesIndex].data[opts.dataPointIndex];
@@ -6903,7 +6918,7 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
             var timeEnd = moment__WEBPACK_IMPORTED_MODULE_4___default()(timeEndTemp).format("DD/MM/yyyy HH:mm:ss"); // console.log(opts);
             // console.log(data);
 
-            return '<div>Time Start : ' + timeStart + ' ' + '</div>' + '<div>Time Close :' + timeEnd + ' ' + '</div>' + '<div>ID Staff: ' + data.staff + ' ' + '</div>' + '<div>Item Count: ' + data.count + ' ' + '</div>' + '<div>' + '<form >' + '<label>Enter Comment :' + '  <input ' + '    type="text" ' + '  />' + ' </label>' + '<input type="submit" />' + '</form>' + '</div>';
+            return '<div>Time Start : ' + timeStart + ' ' + '</div>' + '<div>Time Close :' + timeEnd + ' ' + '</div>' + '<div>ID Staff: ' + data.staff + ' ' + '</div>' + '<div>Item Count: ' + data.count + ' ' + '</div>';
           }
         }
       }
@@ -6912,6 +6927,15 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
   }
 
   _createClass(TimelineV2, [{
+    key: "componentWillUnmount",
+    value: // UNSAFE_componentWillMount = () =>{
+    //     this.submitTimeline();
+    // }
+    function componentWillUnmount() {
+      clearInterval(this.interval);
+    } ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  }, {
     key: "getQueueMachineInfo",
     value: ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     function getQueueMachineInfo() {
@@ -6940,39 +6964,45 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
             options: this.state.options,
             series: this.state.series,
             type: "rangeBar",
-            height: 350
+            height: 400
           }), window.dispatchEvent(new Event('resize'))]
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("form", {
-            onSubmit: this.submitTimeline,
-            children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("label", {
-              children: ["Shif :", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("select", {
-                id: "lang",
-                onChange: this.onChangeShif,
-                value: this.state.selectShif,
-                children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("option", {
-                  value: "Select",
-                  children: "---Select---"
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("option", {
-                  value: "07:00:00",
-                  children: "Day"
-                }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("option", {
-                  value: "19:00:00",
-                  children: "Night"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+          className: "ui container stackable two column grid",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+            className: "column",
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("form", {
+              onSubmit: this.submitTimeline,
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("label", {
+                children: ["Shif :", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("select", {
+                  id: "lang",
+                  onChange: this.onChangeShif,
+                  value: this.state.selectShif,
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("option", {
+                    value: "Select",
+                    children: "---Select---"
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("option", {
+                    value: "07:00:00",
+                    children: "Day"
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("option", {
+                    value: "19:00:00",
+                    children: "Night"
+                  })]
                 })]
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+                children: ["Date:", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(react_date_picker__WEBPACK_IMPORTED_MODULE_3__["default"], {
+                  name: "Date",
+                  onChange: this.onChangeDate,
+                  value: this.state.nowDate,
+                  clearIcon: null
+                })]
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("input", {
+                type: "submit",
+                value: "Submit"
               })]
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
-              children: ["Date:", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(react_date_picker__WEBPACK_IMPORTED_MODULE_3__["default"], {
-                name: "Date",
-                onChange: this.onChangeDate,
-                value: this.state.nowDate,
-                clearIcon: null
-              })]
-            }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("input", {
-              type: "submit",
-              value: "Submit"
-            })]
-          })
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+            className: "column"
+          })]
         })]
       });
     }
