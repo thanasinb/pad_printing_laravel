@@ -330,6 +330,116 @@ class dashboardRefreshController extends Controller
             Log::error($error);
         }
     }
+
+
+    public function dashboardRefreshQueue2(){
+        // return response() -> json($sumResult);
+        try{
+            $machineId = MachineQueue::where('queue_number' ,'1')->get();
+            $machineId_queue_2 = MachineQueue::where('queue_number' ,'2')->get();
+            
+            $id_mc = array();
+            $id_mc_queue_2 =array();
+
+            $sumResult = array();
+            $count = $machineId->count();
+            $count2 = $machineId_queue_2->count();
+
+            for ($i=0;$i<$count;$i++){
+                array_push($id_mc,$machineId[$i]->id_machine);
+                }
+            for ($i=0;$i<$count2;$i++){
+                array_push($id_mc_queue_2,$machineId_queue_2[$i]->id_machine);
+                }
+                
+            // $data_activity = DB::select('SELECT * FROM (select max(id_activity) as id_activity_max FROM activity GROUP by id_machine) as max_activity , activity as a where a.id_activity = max_activity.id_activity_max');
+            // return response() -> json($id_mc_queue_2);
+            // print_r($count);
+            $check = 0;
+            for($i = 0 ; $i<$count ; $i++){
+                foreach($id_mc_queue_2 as $values){
+                    if($values == $id_mc[$i]){
+                        $data_machine_queue = MachineQueue::where('id_machine',$id_mc_queue_2[$i])->where('queue_number','2')->get();
+                        $data_activity_sum = DB::select('SELECT SUM(no_pulse1) AS qty_process, SUM(num_repeat) AS qty_repeat FROM activity WHERE status_work<6 AND id_task='.$data_machine_queue[0]->id_task);
+                        $data_planning = DB::select('SELECT task_complete, status_backup, qty_order, p.datetime_update, p.operation,
+                        qty_comp AS qty_complete, qty_open, run_time_std, divider.divider as divider,
+                        p.op_color, p.op_side, p.op_des, p.item_no
+                        FROM planning as p, divider
+                        where p.op_color=divider.op_color
+                        AND p.op_side=divider.op_side
+                        and id_task=' . $data_machine_queue[0]->id_task);
+                        $data_planning[0]->run_time_std = number_format((floatval($data_planning[0]->run_time_std)*3600)-2, 2);
+                        $check = 1;
+                        $sumResult[$i] = array(
+                            "id_machine"=>$id_mc_queue_2[$i],
+                            "id_task"=>$data_machine_queue[0]->id_task,
+                            "oparation" => $data_planning[0]->datetime_update,
+                            "qty_process"=> $data_activity_sum[0]->qty_process,
+                            "qty_repeat"=> $data_activity_sum[0]->qty_repeat,
+                            "task_complete"=> $data_planning[0]->task_complete,
+                            "status_backup"=> $data_planning[0]->status_backup,
+                            "qty_order"=> $data_planning[0]->qty_order,
+                            "qty_complete"=> $data_planning[0]->qty_complete,
+                            "qty_open"=> $data_planning[0]->qty_open,
+                            "run_time_std"=> $data_planning[0]->run_time_std,
+                            "divider"=> $data_planning[0]->divider,
+                            "op_color" => $data_planning[0]->op_color,
+                            "op_side" => $data_planning[0]->op_side,
+                            "op_des" => $data_planning[0]->op_des,
+                            "item_no" => $data_planning[0]->item_no,
+                            "status_work"=> '-',
+                            "id_staff"=> '-',
+                            "run_time_actual"=> '-',
+                            "id_code_downtime"=> '-',
+                            "code_downtime"=> '-',
+                            "des_downtime"=> '-',
+                            "des_downtime_thai"=> '-',
+                            "datetime_update" => $data_planning[0]->datetime_update,
+                            
+                        );
+                        
+                    }
+                }
+                if($check == 1){
+                    $check = 0;
+                    continue;
+                }
+                else{
+                    $sumResult[$i] = array(
+                        "id_machine"=>$id_mc[$i],
+                        "id_task"=>'-',
+                        "oparation" => '-',
+                        "qty_process"=> '-',
+                        "qty_repeat"=> '-',
+                        "task_complete"=> '-',
+                        "status_backup"=> '-',
+                        "qty_order"=> '-',
+                        "qty_complete"=> '-',
+                        "qty_open"=> '-',
+                        "run_time_std"=> '-',
+                        "divider"=> '-',
+                        "op_color" => '-',
+                        "op_side" => '-',
+                        "op_des" => '-',
+                        "item_no" => '-',
+                        "status_work"=> '-',
+                        "id_staff"=> '-',
+                        "run_time_actual"=> '-',
+                        "id_code_downtime"=> '-',
+                        "code_downtime"=> '-',
+                        "des_downtime"=> '-',
+                        "des_downtime_thai"=> '-',
+                        "datetime_update" => '-',
+                        
+                    );
+                }
+            }
+            return response() -> json($sumResult);
+        }
+        catch(Exception $error){
+            Log::error($error);
+        }
+    }
     
 }
 

@@ -70,3 +70,7 @@ Route::get('/update/timelineBreakRework/',
 Route::get('/update/DashboardRefresh/',
     [dashboardRefreshController::class, 'dashboardRefreshV3']
 );
+
+Route::get('/update/DashboardRefreshQueue2/',
+    [dashboardRefreshController::class, 'dashboardRefreshQueue2']
+);

@@ -6627,13 +6627,9 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
     _this = _super.call(this, props);
 
     _defineProperty(_assertThisInitialized(_this), "componentDidMount", function () {
-      _this.interval = setInterval(function () {
-        _this.getTimeline();
+      _this.getTimeline();
 
-        _this.submitTimeline();
-
-        refreshCount = 10000;
-      }, refreshCount + 110000);
+      _this.submitTimeline();
     });
 
     _defineProperty(_assertThisInitialized(_this), "getTimeline", function () {
@@ -6731,7 +6727,7 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
                 dataSeries[0].data.push({
                   x: 'ID : ' + id_mc.id_mc,
                   y: [new Date(id_mc.timeLast).getTime(), new Date(x.time_start).getTime()],
-                  staff: id_mc.staffLast,
+                  staff: id_mc.staffLast + '(Latest)',
                   count: '-'
                 });
               } else {
@@ -6931,9 +6927,7 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
     value: // UNSAFE_componentWillMount = () =>{
     //     this.submitTimeline();
     // }
-    function componentWillUnmount() {
-      clearInterval(this.interval);
-    } ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    function componentWillUnmount() {} ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   }, {
     key: "getQueueMachineInfo",

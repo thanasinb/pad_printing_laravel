@@ -134,18 +134,14 @@ class TimelineV2 extends Component {
 
     componentDidMount = () => {
 
-        this.interval = setInterval(() => {
           this.getTimeline();
           this.submitTimeline();  
-          refreshCount = 10000;
-        }, refreshCount+110000);
         
     }
     // UNSAFE_componentWillMount = () =>{
     //     this.submitTimeline();
     // }
     componentWillUnmount() {
-      clearInterval(this.interval);
     }
  
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -268,7 +264,7 @@ class TimelineV2 extends Component {
                   new Date(id_mc.timeLast).getTime(),
                   new Date(x.time_start).getTime()
                 ],
-                staff : id_mc.staffLast,
+                staff : id_mc.staffLast+'(Latest)',
                 count : '-'
               });
               }
