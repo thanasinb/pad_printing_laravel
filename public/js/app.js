@@ -6727,15 +6727,13 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
                 dataSeries[0].data.push({
                   x: 'ID : ' + id_mc.id_mc,
                   y: [new Date(id_mc.timeLast).getTime(), new Date(x.time_start).getTime()],
-                  staff: id_mc.staffLast + '(Latest)',
-                  count: '-'
+                  staff: id_mc.staffLast + '(Latest)'
                 });
               } else {
                 dataSeries[0].data.push({
                   x: 'ID : ' + id_mc.id_mc,
                   y: [new Date(dateDaySelect[2] + '-' + dateDaySelect[1] + '-' + dateDaySelect[0] + ' ' + shifDateUnix).getTime(), new Date(x.time_start).getTime()],
-                  staff: id_mc.staffLast,
-                  count: '-'
+                  staff: id_mc.staffLast
                 });
               }
 
@@ -6745,26 +6743,40 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
                     x: 'ID : ' + x.id_machine,
                     y: [new Date(x.time_start).getTime(), new Date(x.break_start).getTime()],
                     staff: x.id_staff,
-                    count: parseInt(x.no_pulse1) / parseFloat(x.divider)
+                    count: parseInt(x.no_pulse1) / parseFloat(x.divider),
+                    item_no: x.item_no,
+                    id_job: x.id_job,
+                    id_task: x.id_task,
+                    total_work: x.total_work
                   });
                   dataSeries[2].data.push({
                     x: 'ID : ' + x.id_machine,
                     y: [new Date(x.break_start).getTime(), new Date(x.break_stop).getTime()],
                     staff: x.id_staff,
-                    count: parseInt(x.no_pulse1) / parseFloat(x.divider)
+                    count: parseInt(x.no_pulse1) / parseFloat(x.divider),
+                    break_code: x.break_code,
+                    break_duration: x.break_duration
                   });
                   dataSeries[1].data.push({
                     x: 'ID : ' + x.id_machine,
                     y: [new Date(x.break_stop).getTime(), new Date(x.time_close).getTime()],
                     staff: x.id_staff,
-                    count: parseInt(x.no_pulse1) / parseFloat(x.divider)
+                    count: parseInt(x.no_pulse1) / parseFloat(x.divider),
+                    item_no: x.item_no,
+                    id_job: x.id_job,
+                    id_task: x.id_task,
+                    total_work: x.total_work
                   });
                 } else {
                   dataSeries[1].data.push({
                     x: 'ID : ' + x.id_machine,
                     y: [new Date(x.time_start).getTime(), new Date(x.time_close).getTime()],
                     staff: x.id_staff,
-                    count: parseInt(x.no_pulse1) / parseFloat(x.divider)
+                    count: parseInt(x.no_pulse1) / parseFloat(x.divider),
+                    item_no: x.item_no,
+                    id_job: x.id_job,
+                    id_task: x.id_task,
+                    total_work: x.total_work
                   });
                 }
               } else {
@@ -6772,7 +6784,7 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
                   x: 'ID : ' + x.id_machine,
                   y: [new Date(x.time_start).getTime(), new Date(x.time_close).getTime()],
                   staff: x.id_staff,
-                  count: '-'
+                  code_dt: x.id_code_downtime
                 });
               }
 
@@ -6912,9 +6924,21 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
             var timeEndTemp = new Date(parseInt(values.end));
             var timeStart = moment__WEBPACK_IMPORTED_MODULE_4___default()(timeStartTemp).format("DD/MM/yyyy HH:mm:ss");
             var timeEnd = moment__WEBPACK_IMPORTED_MODULE_4___default()(timeEndTemp).format("DD/MM/yyyy HH:mm:ss"); // console.log(opts);
-            // console.log(data);
+            // console.log(opts.seriesIndex);
 
-            return '<div>Time Start : ' + timeStart + ' ' + '</div>' + '<div>Time Close :' + timeEnd + ' ' + '</div>' + '<div>ID Staff: ' + data.staff + ' ' + '</div>' + '<div>Item Count: ' + data.count + ' ' + '</div>';
+            var returnValues;
+
+            if (opts.seriesIndex == 1) {
+              returnValues = '<div>Time Start : ' + timeStart + ' ' + '</div>' + '<div>Time Close :' + timeEnd + ' ' + '</div>' + '<div>ID Staff   : ' + data.staff + ' ' + '</div>' + '<div>ID Job     : ' + data.id_job + ' ' + '</div>' + '<div>ID Task    : ' + data.id_task + ' ' + '</div>' + '<div>Item Count : ' + data.count + ' ' + '</div>' + '<div>Item No.   : ' + data.item_no + ' ' + '</div>' + '<div>Total Work : ' + data.total_work + ' ' + '</div>';
+            } else if (opts.seriesIndex == 2) {
+              returnValues = '<div>Time Start : ' + timeStart + ' ' + '</div>' + '<div>Time Close :' + timeEnd + ' ' + '</div>' + '<div>ID Staff   : ' + data.staff + ' ' + '</div>' + '<div>Break Code : ' + data.break_code + ' ' + '</div>' + '<div>Total Break  : ' + data.break_duration + ' ' + '</div>';
+            } else if (opts.seriesIndex == 3) {
+              returnValues = '<div>Time Start : ' + timeStart + ' ' + '</div>' + '<div>Time Close :' + timeEnd + ' ' + '</div>' + '<div>ID Staff   : ' + data.staff + ' ' + '</div>' + '<div>Code DT    : ' + data.code_dt + ' ' + '</div>';
+            } else if (opts.seriesIndex == 0) {
+              returnValues = '<div>Time Start : ' + timeStart + ' ' + '</div>' + '<div>Time Close :' + timeEnd + ' ' + '</div>' + '<div>ID Staff   : ' + data.staff + ' ' + '</div>';
+            }
+
+            return returnValues;
           }
         }
       }

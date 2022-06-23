@@ -116,15 +116,38 @@ class TimelineV2 extends Component {
                             const timeStart = moment(timeStartTemp).format("DD/MM/yyyy HH:mm:ss");
                             const timeEnd = moment(timeEndTemp).format("DD/MM/yyyy HH:mm:ss");
                             // console.log(opts);
-                            // console.log(data);
+                            // console.log(opts.seriesIndex);
+                            var returnValues;
+                            if(opts.seriesIndex == 1){
+                              returnValues = '<div>Time Start : '+timeStart+' '+'</div>'+
+                                                 '<div>Time Close :'+timeEnd+' '+'</div>'+
+                                                 '<div>ID Staff   : '+data.staff+' '+'</div>'+
+                                                 '<div>ID Job     : '+data.id_job+' '+'</div>'+
+                                                 '<div>ID Task    : '+data.id_task+' '+'</div>'+
+                                                 '<div>Item Count : '+data.count+' '+'</div>'+
+                                                 '<div>Item No.   : '+data.item_no+' '+'</div>'+
+                                                 '<div>Total Work : '+data.total_work+' '+'</div>' ;
+                            }
+                            else if(opts.seriesIndex == 2){
+                              returnValues = '<div>Time Start : '+timeStart+' '+'</div>'+
+                                                   '<div>Time Close :'+timeEnd+' '+'</div>'+
+                                                   '<div>ID Staff   : '+data.staff+' '+'</div>'+
+                                                   '<div>Break Code : '+data.break_code+' '+'</div>'+
+                                                   '<div>Total Break  : '+data.break_duration+' '+'</div>' ;
+                            }
+                            else if(opts.seriesIndex == 3){
+                              returnValues = '<div>Time Start : '+timeStart+' '+'</div>'+
+                                                   '<div>Time Close :'+timeEnd+' '+'</div>'+
+                                                   '<div>ID Staff   : '+data.staff+' '+'</div>'+
+                                                   '<div>Code DT    : '+data.code_dt+' '+'</div>' ;
+                            }
+                            else if(opts.seriesIndex == 0){
+                              returnValues = '<div>Time Start : '+timeStart+' '+'</div>'+
+                                                   '<div>Time Close :'+timeEnd+' '+'</div>'+
+                                                   '<div>ID Staff   : '+data.staff+' '+'</div>' ;
+                            }
                         
-                            return (
-                              
-                              '<div>Time Start : '+timeStart+' '+'</div>'+
-                              '<div>Time Close :'+timeEnd+' '+'</div>'+
-                              '<div>ID Staff: '+data.staff+' '+'</div>'+
-                              '<div>Item Count: '+data.count+' '+'</div>'
-                            )
+                            return returnValues
                           }
                         }
                       },
@@ -265,7 +288,6 @@ class TimelineV2 extends Component {
                   new Date(x.time_start).getTime()
                 ],
                 staff : id_mc.staffLast+'(Latest)',
-                count : '-'
               });
               }
               else{
@@ -276,7 +298,6 @@ class TimelineV2 extends Component {
                     new Date(x.time_start).getTime()
                   ],
                   staff : id_mc.staffLast,
-                  count : '-'
                 });
               }
               
@@ -290,7 +311,11 @@ class TimelineV2 extends Component {
                             new Date(x.break_start).getTime()
                           ],
                           staff : x.id_staff,
-                          count : parseInt(x.no_pulse1) / parseFloat(x.divider)
+                          count : parseInt(x.no_pulse1) / parseFloat(x.divider),
+                          item_no: x.item_no,
+                          id_job: x.id_job,
+                          id_task: x.id_task,
+                          total_work: x.total_work
                         });
         
                         dataSeries[2].data.push({
@@ -300,7 +325,9 @@ class TimelineV2 extends Component {
                             new Date(x.break_stop).getTime()
                           ],
                           staff : x.id_staff,
-                          count : parseInt(x.no_pulse1) / parseFloat(x.divider)
+                          count : parseInt(x.no_pulse1) / parseFloat(x.divider),
+                          break_code : x.break_code,
+                          break_duration : x.break_duration,
                         });
         
                         dataSeries[1].data.push({
@@ -310,7 +337,11 @@ class TimelineV2 extends Component {
                             new Date(x.time_close).getTime()
                           ],
                           staff : x.id_staff,
-                          count : parseInt(x.no_pulse1) / parseFloat(x.divider)
+                          count : parseInt(x.no_pulse1) / parseFloat(x.divider),
+                          item_no: x.item_no,
+                          id_job: x.id_job,
+                          id_task: x.id_task,
+                          total_work: x.total_work
                         });
                     }
                     else{
@@ -321,7 +352,11 @@ class TimelineV2 extends Component {
                           new Date(x.time_close).getTime()
                         ],
                         staff : x.id_staff,
-                        count : parseInt(x.no_pulse1) / parseFloat(x.divider)
+                        count : parseInt(x.no_pulse1) / parseFloat(x.divider),
+                        item_no: x.item_no,
+                        id_job: x.id_job,
+                        id_task: x.id_task,
+                        total_work: x.total_work
                       });
                     }
                   }
@@ -334,7 +369,7 @@ class TimelineV2 extends Component {
                         new Date(x.time_close).getTime()
                       ],
                       staff : x.id_staff,
-                      count : '-'
+                      code_dt : x.id_code_downtime
                     });
                   }
 
