@@ -124,7 +124,7 @@ class TimelineV2 extends Component {
                                                  '<div>ID Staff   : '+data.staff+' '+'</div>'+
                                                  '<div>ID Job     : '+data.id_job+' '+'</div>'+
                                                  '<div>ID Task    : '+data.id_task+' '+'</div>'+
-                                                 '<div>Item Count : '+data.count+' '+'</div>'+
+                                                 '<div>Item Count : '+Math.round(data.count)+' '+'</div>'+
                                                  '<div>Item No.   : '+data.item_no+' '+'</div>'+
                                                  '<div>Total Work : '+data.total_work+' '+'</div>' ;
                             }
