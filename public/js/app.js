@@ -6694,6 +6694,7 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
         data: []
       }];
       var shifDateUnix = _this.state.selectShif;
+      var selectDate = _this.state.selectDate;
 
       if (shifDateUnix == '07:00:00') {
         var unixDate = _this.state.unixDate + 7 * 60 * 60 * 1000;
@@ -6705,7 +6706,8 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
       }
 
       console.log(shifDateUnix);
-      console.log(unixDate);
+      console.log(unixDate); // console.log(InitialTimeDate);
+      // console.log(this.state.selectDate);
 
       _this.getQueueMachineInfo();
 
@@ -6751,9 +6753,15 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
                     id_task: x.id_task,
                     total_work: x.total_work
                   });
+                  var y_breakStop = new Date(x.break_stop).getTime();
+
+                  if (x.break_stop == '0000-00-00 00:00:00' && selectDate == InitialTimeDate) {
+                    y_breakStop = new Date().getTime();
+                  }
+
                   dataSeries[2].data.push({
                     x: 'ID : ' + x.id_machine,
-                    y: [new Date(x.break_start).getTime(), new Date(x.break_stop).getTime()],
+                    y: [new Date(x.break_start).getTime(), y_breakStop],
                     staff: x.id_staff,
                     count: calculateCount,
                     break_code: x.break_code,
@@ -6770,9 +6778,15 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
                     total_work: x.total_work
                   });
                 } else {
+                  var y_timeClose = new Date(x.time_close).getTime();
+
+                  if (x.time_close == '0000-00-00 00:00:00' && selectDate == InitialTimeDate) {
+                    y_timeClose = new Date().getTime();
+                  }
+
                   dataSeries[1].data.push({
                     x: 'ID : ' + x.id_machine,
-                    y: [new Date(x.time_start).getTime(), new Date(x.time_close).getTime()],
+                    y: [new Date(x.time_start).getTime(), y_timeClose],
                     staff: x.id_staff,
                     count: calculateCount,
                     item_no: x.item_no,
@@ -6782,9 +6796,15 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
                   });
                 }
               } else {
+                var y_timeCloseDt = new Date(x.time_close).getTime();
+
+                if (x.time_close == '0000-00-00 00:00:00' && selectDate == InitialTimeDate) {
+                  y_timeCloseDt = new Date().getTime();
+                }
+
                 dataSeries[3].data.push({
                   x: 'ID : ' + x.id_machine,
-                  y: [new Date(x.time_start).getTime(), new Date(x.time_close).getTime()],
+                  y: [new Date(x.time_start).getTime(), y_timeCloseDt],
                   staff: x.id_staff,
                   code_dt: x.id_code_downtime
                 });
@@ -6953,7 +6973,10 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
     value: // UNSAFE_componentWillMount = () =>{
     //     this.submitTimeline();
     // }
-    function componentWillUnmount() {} ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    function componentWillUnmount() {
+      this.getTimeline();
+      this.submitTimeline();
+    } ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   }, {
     key: "getQueueMachineInfo",

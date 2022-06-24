@@ -156,15 +156,15 @@ class TimelineV2 extends Component {
     
 
     componentDidMount = () => {
-
           this.getTimeline();
           this.submitTimeline();  
-        
     }
     // UNSAFE_componentWillMount = () =>{
     //     this.submitTimeline();
     // }
     componentWillUnmount() {
+      this.getTimeline();
+      this.submitTimeline(); 
     }
  
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -254,6 +254,7 @@ class TimelineV2 extends Component {
         },
         ];
       var shifDateUnix = this.state.selectShif;
+      var selectDate = this.state.selectDate;
       if(shifDateUnix == '07:00:00'){
         var unixDate = this.state.unixDate+(7*60*60*1000);
       }
@@ -266,6 +267,8 @@ class TimelineV2 extends Component {
       }
       console.log(shifDateUnix);
       console.log(unixDate);
+      // console.log(InitialTimeDate);
+      // console.log(this.state.selectDate);
       this.getQueueMachineInfo();
       var dateDaySelect = this.state.selectDate.split('/');
       // console.log(dateDaySelect);
@@ -275,6 +278,7 @@ class TimelineV2 extends Component {
           
           if(((new Date(x.time_start).getTime()) > unixDate) && ((new Date(x.time_start).getTime()) < unixDate + (12*60*60*1000))){
             var calculateCount = Math.round(parseInt(x.no_pulse1) / parseFloat(x.divider));
+            
             if(x.id_machine == id_mc.id_mc){
               if(id_mc.timeLast == '0000-00-00 00:00:00'){
                 id_mc.timeLast = x.time_start;
@@ -317,12 +321,15 @@ class TimelineV2 extends Component {
                           id_task: x.id_task,
                           total_work: x.total_work
                         });
-        
+                        var y_breakStop = new Date(x.break_stop).getTime();
+                        if(x.break_stop == '0000-00-00 00:00:00' && selectDate == InitialTimeDate){
+                          y_breakStop = new Date().getTime();
+                        }
                         dataSeries[2].data.push({
                           x: 'ID : '+x.id_machine,
                           y: [
                             new Date(x.break_start).getTime(),
-                            new Date(x.break_stop).getTime()
+                            y_breakStop
                           ],
                           staff : x.id_staff,
                           count : calculateCount,
@@ -345,11 +352,15 @@ class TimelineV2 extends Component {
                         });
                     }
                     else{
+                      var y_timeClose = new Date(x.time_close).getTime();
+                      if(x.time_close == '0000-00-00 00:00:00' && selectDate == InitialTimeDate){ 
+                        y_timeClose = new Date().getTime();
+                      }
                       dataSeries[1].data.push({
                         x: 'ID : '+x.id_machine,
                         y: [
                           new Date(x.time_start).getTime(),
-                          new Date(x.time_close).getTime()
+                          y_timeClose
                         ],
                         staff : x.id_staff,
                         count : calculateCount,
@@ -362,11 +373,15 @@ class TimelineV2 extends Component {
                   }
         
                   else{
+                    var y_timeCloseDt = new Date(x.time_close).getTime();
+                      if(x.time_close == '0000-00-00 00:00:00' && selectDate == InitialTimeDate){
+                        y_timeCloseDt = new Date().getTime();
+                      }
                     dataSeries[3].data.push({
                       x: 'ID : '+x.id_machine,
                       y: [
                         new Date(x.time_start).getTime(),
-                        new Date(x.time_close).getTime()
+                        y_timeCloseDt
                       ],
                       staff : x.id_staff,
                       code_dt : x.id_code_downtime
