@@ -6931,7 +6931,7 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
             var returnValues;
 
             if (opts.seriesIndex == 1) {
-              returnValues = '<div>Time Start : ' + timeStart + ' ' + '</div>' + '<div>Time Close :' + timeEnd + ' ' + '</div>' + '<div>ID Staff   : ' + data.staff + ' ' + '</div>' + '<div>ID Job     : ' + data.id_job + ' ' + '</div>' + '<div>ID Task    : ' + data.id_task + ' ' + '</div>' + '<div>Item Count : ' + data.count + ' ' + '</div>' + '<div>Item No.   : ' + data.item_no + ' ' + '</div>' + '<div>Total Work : ' + data.total_work + ' ' + '</div>';
+              returnValues = '<div>Time Start : ' + timeStart + ' ' + '</div>' + '<div>Time Close :' + timeEnd + ' ' + '</div>' + '<div>ID Staff   : ' + data.staff + ' ' + '</div>' + '<div>ID Job     : ' + data.id_job + ' ' + '</div>' + '<div>ID Task    : ' + data.id_task + ' ' + '</div>' + '<div>Item Count : ' + Math.round(data.count) + ' ' + '</div>' + '<div>Item No.   : ' + data.item_no + ' ' + '</div>' + '<div>Total Work : ' + data.total_work + ' ' + '</div>';
             } else if (opts.seriesIndex == 2) {
               returnValues = '<div>Time Start : ' + timeStart + ' ' + '</div>' + '<div>Time Close :' + timeEnd + ' ' + '</div>' + '<div>ID Staff   : ' + data.staff + ' ' + '</div>' + '<div>Break Code : ' + data.break_code + ' ' + '</div>' + '<div>Total Break  : ' + data.break_duration + ' ' + '</div>';
             } else if (opts.seriesIndex == 3) {
