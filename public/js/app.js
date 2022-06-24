@@ -6717,6 +6717,8 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
       _this.state.timeline.map(function (x, i) {
         listIdMachine.map(function (id_mc) {
           if (new Date(x.time_start).getTime() > unixDate && new Date(x.time_start).getTime() < unixDate + 12 * 60 * 60 * 1000) {
+            var calculateCount = Math.round(parseInt(x.no_pulse1) / parseFloat(x.divider));
+
             if (x.id_machine == id_mc.id_mc) {
               if (id_mc.timeLast == '0000-00-00 00:00:00') {
                 id_mc.timeLast = x.time_start;
@@ -6743,7 +6745,7 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
                     x: 'ID : ' + x.id_machine,
                     y: [new Date(x.time_start).getTime(), new Date(x.break_start).getTime()],
                     staff: x.id_staff,
-                    count: parseInt(x.no_pulse1) / parseFloat(x.divider),
+                    count: calculateCount,
                     item_no: x.item_no,
                     id_job: x.id_job,
                     id_task: x.id_task,
@@ -6753,7 +6755,7 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
                     x: 'ID : ' + x.id_machine,
                     y: [new Date(x.break_start).getTime(), new Date(x.break_stop).getTime()],
                     staff: x.id_staff,
-                    count: parseInt(x.no_pulse1) / parseFloat(x.divider),
+                    count: calculateCount,
                     break_code: x.break_code,
                     break_duration: x.break_duration
                   });
@@ -6761,7 +6763,7 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
                     x: 'ID : ' + x.id_machine,
                     y: [new Date(x.break_stop).getTime(), new Date(x.time_close).getTime()],
                     staff: x.id_staff,
-                    count: parseInt(x.no_pulse1) / parseFloat(x.divider),
+                    count: calculateCount,
                     item_no: x.item_no,
                     id_job: x.id_job,
                     id_task: x.id_task,
@@ -6772,7 +6774,7 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
                     x: 'ID : ' + x.id_machine,
                     y: [new Date(x.time_start).getTime(), new Date(x.time_close).getTime()],
                     staff: x.id_staff,
-                    count: parseInt(x.no_pulse1) / parseFloat(x.divider),
+                    count: calculateCount,
                     item_no: x.item_no,
                     id_job: x.id_job,
                     id_task: x.id_task,
