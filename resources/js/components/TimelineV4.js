@@ -309,7 +309,6 @@ class TimelineV2 extends Component {
               
               if( x.id_activity!=null){
                     if(x.id_break != 0){
-        
                         dataSeries[1].data.push({
                           x: 'ID : '+x.id_machine,
                           y: [
@@ -338,12 +337,15 @@ class TimelineV2 extends Component {
                           break_code : x.break_code,
                           break_duration : x.break_duration,
                         });
-        
+                        var y_AfterBreak = new Date(x.time_close).getTime()
+                        if(x.break_stop == '0000-00-00 00:00:00' && selectDate == InitialTimeDate){
+                          y_AfterBreak = new Date().getTime();
+                        }
                         dataSeries[1].data.push({
                           x: 'ID : '+x.id_machine,
                           y: [
                             new Date(x.break_stop).getTime(),
-                            new Date(x.time_close).getTime()
+                            y_AfterBreak
                           ],
                           staff : x.id_staff,
                           count : calculateCount,

@@ -5861,7 +5861,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Timeline__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Timeline */ "./resources/js/components/Timeline.js");
 /* harmony import */ var _TimelineV2__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./TimelineV2 */ "./resources/js/components/TimelineV2.js");
 /* harmony import */ var _TimelineV3__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./TimelineV3 */ "./resources/js/components/TimelineV3.js");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+/* harmony import */ var _TimelineV4__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./TimelineV4 */ "./resources/js/components/TimelineV4.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+
 
 
 
@@ -5870,11 +5872,11 @@ __webpack_require__.r(__webpack_exports__);
 
 
 function Home() {
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
     className: "container",
-    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)("div", {
+    children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
       className: "row justify-content-center",
-      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_4__.jsx)(_TimelineV3__WEBPACK_IMPORTED_MODULE_3__["default"], {})
+      children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_TimelineV4__WEBPACK_IMPORTED_MODULE_4__["default"], {})
     })
   });
 }
@@ -6629,6 +6631,8 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
     _defineProperty(_assertThisInitialized(_this), "componentDidMount", function () {
       _this.getTimeline();
 
+      console.log(123);
+
       _this.submitTimeline();
     });
 
@@ -6651,7 +6655,11 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
         });
         self.setState({
           timeline: allData
-        }); // console.log(allData);
+        }, function () {
+          console.log(this.state.timeline);
+          console.log('this set timeline');
+        }); // let x = this.state.timeline;
+        // console.log(x);
       });
     });
 
@@ -6815,75 +6823,24 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
               id_mc.count = id_mc.count + 1;
             }
           }
-        }); // if(((new Date(x.time_start).getTime()) > unixDate) && ((new Date(x.time_start).getTime()) < unixDate + (12*60*60*1000))){
-        //   if(count>0){
-        //     dataSeries[0].data.push({
-        //       x: 'ID : '+tempMachine,
-        //       y: [
-        //         new Date(tempCloseDate).getTime(),
-        //         new Date(x.time_start).getTime()
-        //       ],
-        //       staff : tempStaff,
-        //       count : '-'
-        //     });
-        //   }
-        //   if( x.id_activity!=null ){
-        //     if(x.id_break != 0){
-        //         dataSeries[1].data.push({
-        //           x: 'ID : '+x.id_machine,
-        //           y: [
-        //             new Date(x.time_start).getTime(),
-        //             new Date(x.break_start).getTime()
-        //           ],
-        //           staff : x.id_staff,
-        //           count : parseInt(x.no_pulse1) / parseInt(x.divider)
-        //         });
-        //         dataSeries[2].data.push({
-        //           x: 'ID : '+x.id_machine,
-        //           y: [
-        //             new Date(x.break_start).getTime(),
-        //             new Date(x.break_stop).getTime()
-        //           ],
-        //           staff : x.id_staff,
-        //           count : parseInt(x.no_pulse1) / parseInt(x.divider)
-        //         });
-        //         dataSeries[1].data.push({
-        //           x: 'ID : '+x.id_machine,
-        //           y: [
-        //             new Date(x.break_stop).getTime(),
-        //             new Date(x.time_close).getTime()
-        //           ],
-        //           staff : x.id_staff,
-        //           count : parseInt(x.no_pulse1) / parseInt(x.divider)
-        //         });
-        //     }
-        //   }
-        //   else{
-        //     dataSeries[3].data.push({
-        //       x: 'ID : '+x.id_machine,
-        //       y: [
-        //         new Date(x.time_start).getTime(),
-        //         new Date(x.time_close).getTime()
-        //       ],
-        //       staff : x.id_staff,
-        //       count : parseInt(x.no_pulse1) / parseInt(x.divider)
-        //     });
-        //   }
-        //   count++;
-        // }
+        });
       }); // console.log(listIdMachine);
       // console.log('OK'); 
 
 
-      _this.setState({
-        series: dataSeries
-      });
+      var self = _assertThisInitialized(_this);
 
+      self.setState({
+        series: dataSeries
+      }, function () {
+        console.log(this.state.series);
+        console.log('this set series');
+      });
       console.log('OK');
-      console.log(dataSeries);
       window.dispatchEvent(new Event('resize'));
     });
 
+    _this.submitTimeline = _this.submitTimeline.bind(_assertThisInitialized(_this));
     _this.state = {
       selectShif: shif,
       selectDate: InitialTimeDate,
@@ -6970,10 +6927,497 @@ var TimelineV2 = /*#__PURE__*/function (_Component) {
 
   _createClass(TimelineV2, [{
     key: "componentWillUnmount",
-    value: // UNSAFE_componentWillMount = () =>{
-    //     this.submitTimeline();
-    // }
-    function componentWillUnmount() {
+    value: function componentWillUnmount() {
+      this.getTimeline();
+      this.submitTimeline();
+    } ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  }, {
+    key: "getQueueMachineInfo",
+    value: ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    function getQueueMachineInfo() {
+      axios__WEBPACK_IMPORTED_MODULE_1___default().get('/update/getQueueMachineInfo/').then(function (response) {
+        // console.log(response.data);
+        listIdMachine = [];
+        response.data.map(function (id, index) {
+          listIdMachine.push({
+            id_mc: id,
+            staffLast: '-',
+            timeLast: '-',
+            count: 0
+          });
+        });
+      }); // console.log(listIdMachine);
+    } ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  }, {
+    key: "render",
+    value: ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    function render() {
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.Fragment, {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+          id: "chart_timeline",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(react_apexcharts__WEBPACK_IMPORTED_MODULE_2__["default"], {
+            options: this.state.options,
+            series: this.state.series,
+            type: "rangeBar",
+            height: 400
+          }), window.dispatchEvent(new Event('resize'))]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+          className: "ui container stackable two column grid",
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+            className: "column",
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("form", {
+              onSubmit: this.submitTimeline,
+              children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("label", {
+                children: ["Shif :", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("select", {
+                  id: "lang",
+                  onChange: this.onChangeShif,
+                  value: this.state.selectShif,
+                  children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("option", {
+                    value: "Select",
+                    children: "---Select---"
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("option", {
+                    value: "07:00:00",
+                    children: "Day"
+                  }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("option", {
+                    value: "19:00:00",
+                    children: "Night"
+                  })]
+                })]
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsxs)("div", {
+                children: ["Date:", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)(react_date_picker__WEBPACK_IMPORTED_MODULE_3__["default"], {
+                  name: "Date",
+                  onChange: this.onChangeDate,
+                  value: this.state.nowDate,
+                  clearIcon: null
+                })]
+              }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("input", {
+                type: "submit",
+                value: "Submit"
+              })]
+            })
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__.jsx)("div", {
+            className: "column"
+          })]
+        })]
+      });
+    }
+  }]);
+
+  return TimelineV2;
+}(react__WEBPACK_IMPORTED_MODULE_0__.Component);
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (TimelineV2);
+
+/***/ }),
+
+/***/ "./resources/js/components/TimelineV4.js":
+/*!***********************************************!*\
+  !*** ./resources/js/components/TimelineV4.js ***!
+  \***********************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react_apexcharts__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-apexcharts */ "./node_modules/react-apexcharts/dist/react-apexcharts.min.js");
+/* harmony import */ var react_date_picker__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-date-picker */ "./node_modules/react-date-picker/dist/entry.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var react_datepicker_dist_react_datepicker_css__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react-datepicker/dist/react-datepicker.css */ "./node_modules/react-datepicker/dist/react-datepicker.css");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! react/jsx-runtime */ "./node_modules/react/jsx-runtime.js");
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+
+
+
+
+
+
+
+ // import 'bootstrap/dist/css/bootstrap.min.css';
+
+
+
+
+var allData = [];
+var listIdMachine = [];
+var dataSeries = [{
+  name: 'Idle',
+  data: []
+}, {
+  name: 'Used',
+  data: []
+}, {
+  name: 'Break',
+  data: []
+}, {
+  name: 'Downtime',
+  data: []
+}];
+var tempCurrentDate = new Date();
+var shif = '';
+var intDate = parseInt(tempCurrentDate.getHours());
+
+if (intDate >= 7 && intDate <= 19) {
+  shif = '07:00:00';
+} else {
+  shif = '19:00:00';
+}
+
+var InitialTime = new Date(); // console.log(InitialTime);
+
+var InitialTimeDate = InitialTime.getDate() + "/" + (InitialTime.getMonth() + 1) + "/" + InitialTime.getFullYear();
+var refreshCount = 1000; // console.log(new Date(parseInt(InitialTime.getFullYear()),parseInt(InitialTime.getMonth()),parseInt(InitialTime.getDate())).getTime());
+
+var TimelineV2 = /*#__PURE__*/function (_Component) {
+  _inherits(TimelineV2, _Component);
+
+  var _super = _createSuper(TimelineV2);
+
+  function TimelineV2(props) {
+    var _this;
+
+    _classCallCheck(this, TimelineV2);
+
+    _this = _super.call(this, props);
+
+    _defineProperty(_assertThisInitialized(_this), "componentDidMount", function () {
+      _this.getTimeline();
+
+      console.log(123);
+
+      _this.submitTimeline();
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "getTimeline", function () {
+      var self = _assertThisInitialized(_this);
+
+      axios__WEBPACK_IMPORTED_MODULE_1___default().get('/update/timelineAll/').then(function (response) {
+        // console.log(response.data);
+        var resultData = response.data;
+        var dataLength = Object.keys(resultData).length;
+
+        for (var i = 0; i < dataLength; i++) {
+          for (var j = 0; j < resultData[i].length; j++) {
+            allData.push(resultData[i][j]);
+          }
+        }
+
+        allData.sort(function (a, b) {
+          return a.time_start > b.time_start ? 1 : -1;
+        });
+        self.setState({
+          timeline: allData
+        }, function () {
+          console.log(this.state.timeline);
+          console.log('this set timeline');
+        }); // let x = this.state.timeline;
+        // console.log(x);
+      });
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "onChangeDate", function (e) {
+      console.log(e);
+      var temp = String(e);
+      var toUnix = new Date(temp).getTime();
+      var toStringDate = new Date(toUnix);
+      var stringDate = toStringDate.getDate() + "/" + (toStringDate.getMonth() + 1) + "/" + toStringDate.getFullYear();
+
+      _this.setState({
+        unixDate: toUnix,
+        nowDate: toStringDate,
+        selectDate: stringDate
+      });
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "onChangeShif", function (e) {
+      _this.setState({
+        selectShif: e.target.value
+      });
+    });
+
+    _defineProperty(_assertThisInitialized(_this), "submitTimeline", function (e) {
+      if (e != null) {
+        e.preventDefault();
+      }
+
+      dataSeries = [{
+        name: 'Idle',
+        data: []
+      }, {
+        name: 'Used',
+        data: []
+      }, {
+        name: 'Break',
+        data: []
+      }, {
+        name: 'Downtime',
+        data: []
+      }];
+      var shifDateUnix = _this.state.selectShif;
+      var selectDate = _this.state.selectDate;
+
+      if (shifDateUnix == '07:00:00') {
+        var unixDate = _this.state.unixDate + 7 * 60 * 60 * 1000;
+      } else if (shifDateUnix == '19:00:00') {
+        var unixDate = _this.state.unixDate + 19 * 60 * 60 * 1000;
+      } else {
+        alert('Select Shif !!');
+        return;
+      }
+
+      console.log(shifDateUnix);
+      console.log(unixDate); // console.log(InitialTimeDate);
+      // console.log(this.state.selectDate);
+
+      _this.getQueueMachineInfo();
+
+      var dateDaySelect = _this.state.selectDate.split('/'); // console.log(dateDaySelect);
+
+
+      console.log(_this.state.timeline);
+
+      _this.state.timeline.map(function (x, i) {
+        listIdMachine.map(function (id_mc) {
+          if (new Date(x.time_start).getTime() > unixDate && new Date(x.time_start).getTime() < unixDate + 12 * 60 * 60 * 1000) {
+            var calculateCount = Math.round(parseInt(x.no_pulse1) / parseFloat(x.divider));
+
+            if (x.id_machine == id_mc.id_mc) {
+              if (id_mc.timeLast == '0000-00-00 00:00:00') {
+                id_mc.timeLast = x.time_start;
+              }
+
+              if (id_mc.count > 0 && id_mc.timeLast != '-') {
+                // console.log(id_mc.timeLast);
+                dataSeries[0].data.push({
+                  x: 'ID : ' + id_mc.id_mc,
+                  y: [new Date(id_mc.timeLast).getTime(), new Date(x.time_start).getTime()],
+                  staff: id_mc.staffLast + '(Latest)'
+                });
+              } else {
+                dataSeries[0].data.push({
+                  x: 'ID : ' + id_mc.id_mc,
+                  y: [new Date(dateDaySelect[2] + '-' + dateDaySelect[1] + '-' + dateDaySelect[0] + ' ' + shifDateUnix).getTime(), new Date(x.time_start).getTime()],
+                  staff: id_mc.staffLast
+                });
+              }
+
+              if (x.id_activity != null) {
+                if (x.id_break != 0) {
+                  dataSeries[1].data.push({
+                    x: 'ID : ' + x.id_machine,
+                    y: [new Date(x.time_start).getTime(), new Date(x.break_start).getTime()],
+                    staff: x.id_staff,
+                    count: calculateCount,
+                    item_no: x.item_no,
+                    id_job: x.id_job,
+                    id_task: x.id_task,
+                    total_work: x.total_work
+                  });
+                  var y_breakStop = new Date(x.break_stop).getTime();
+
+                  if (x.break_stop == '0000-00-00 00:00:00' && selectDate == InitialTimeDate) {
+                    y_breakStop = new Date().getTime();
+                  }
+
+                  dataSeries[2].data.push({
+                    x: 'ID : ' + x.id_machine,
+                    y: [new Date(x.break_start).getTime(), y_breakStop],
+                    staff: x.id_staff,
+                    count: calculateCount,
+                    break_code: x.break_code,
+                    break_duration: x.break_duration
+                  });
+                  var y_AfterBreak = new Date(x.time_close).getTime();
+
+                  if (x.break_stop == '0000-00-00 00:00:00' && selectDate == InitialTimeDate) {
+                    y_AfterBreak = new Date().getTime();
+                  }
+
+                  dataSeries[1].data.push({
+                    x: 'ID : ' + x.id_machine,
+                    y: [new Date(x.break_stop).getTime(), y_AfterBreak],
+                    staff: x.id_staff,
+                    count: calculateCount,
+                    item_no: x.item_no,
+                    id_job: x.id_job,
+                    id_task: x.id_task,
+                    total_work: x.total_work
+                  });
+                } else {
+                  var y_timeClose = new Date(x.time_close).getTime();
+
+                  if (x.time_close == '0000-00-00 00:00:00' && selectDate == InitialTimeDate) {
+                    y_timeClose = new Date().getTime();
+                  }
+
+                  dataSeries[1].data.push({
+                    x: 'ID : ' + x.id_machine,
+                    y: [new Date(x.time_start).getTime(), y_timeClose],
+                    staff: x.id_staff,
+                    count: calculateCount,
+                    item_no: x.item_no,
+                    id_job: x.id_job,
+                    id_task: x.id_task,
+                    total_work: x.total_work
+                  });
+                }
+              } else {
+                var y_timeCloseDt = new Date(x.time_close).getTime();
+
+                if (x.time_close == '0000-00-00 00:00:00' && selectDate == InitialTimeDate) {
+                  y_timeCloseDt = new Date().getTime();
+                }
+
+                dataSeries[3].data.push({
+                  x: 'ID : ' + x.id_machine,
+                  y: [new Date(x.time_start).getTime(), y_timeCloseDt],
+                  staff: x.id_staff,
+                  code_dt: x.id_code_downtime
+                });
+              }
+
+              id_mc.timeLast = x.time_close;
+              id_mc.staffLast = x.id_staff;
+              id_mc.count = id_mc.count + 1;
+            }
+          }
+        });
+      }); // console.log(listIdMachine);
+      // console.log('OK'); 
+
+
+      var self = _assertThisInitialized(_this);
+
+      self.setState({
+        series: dataSeries
+      }, function () {
+        console.log(this.state.series);
+        console.log('this set series');
+      });
+      console.log('OK');
+      window.dispatchEvent(new Event('resize'));
+    });
+
+    _this.submitTimeline = _this.submitTimeline.bind(_assertThisInitialized(_this));
+    _this.state = {
+      selectShif: shif,
+      selectDate: InitialTimeDate,
+      unixDate: new Date(parseInt(InitialTime.getFullYear()), parseInt(InitialTime.getMonth()), parseInt(InitialTime.getDate())).getTime(),
+      nowDate: new Date(),
+      timeline: [],
+      resultTimeline: [],
+      id_machine: [],
+      series: dataSeries,
+      options: {
+        chart: {
+          height: 350,
+          type: 'rangeBar',
+          events: {
+            dataPointSelection: function dataPointSelection(event, chartContext, config) {
+              console.log(chartContext, config);
+            }
+          }
+        },
+        plotOptions: {
+          bar: {
+            horizontal: true,
+            barHeight: '50%',
+            rangeBarGroupRows: true
+          }
+        },
+        colors: ["#008FFB", "#00E36E", "#F0E040", "#DA4747"],
+        fill: {
+          type: 'solid'
+        },
+        xaxis: {
+          type: 'datetime',
+          labels: {
+            rotate: -45,
+            format: 'HH:mm:ss',
+            datetimeUTC: false
+          }
+        },
+        legend: {
+          position: 'right'
+        },
+        tooltip: {
+          enabled: true,
+          onDatasetHover: {
+            highlightDataSeries: false
+          },
+          // events: {
+          //   dataPointSelection: (event, chartContext, config) => {
+          //     console.log(chartContext);
+          //     console.log(event);
+          //     console.log(config);
+          // },
+          theme: 'dark',
+          custom: function custom(opts) {
+            var data = opts.ctx.w.globals.initialSeries[opts.seriesIndex].data[opts.dataPointIndex];
+            var fromYear = new Date(opts.y1).getFullYear();
+            var toYear = new Date(opts.y2).getFullYear();
+            var values = opts.ctx.rangeBar.getTooltipValues(opts);
+            var timeStartTemp = new Date(parseInt(values.start));
+            var timeEndTemp = new Date(parseInt(values.end));
+            var timeStart = moment__WEBPACK_IMPORTED_MODULE_4___default()(timeStartTemp).format("DD/MM/yyyy HH:mm:ss");
+            var timeEnd = moment__WEBPACK_IMPORTED_MODULE_4___default()(timeEndTemp).format("DD/MM/yyyy HH:mm:ss"); // console.log(opts);
+            // console.log(opts.seriesIndex);
+
+            var returnValues;
+
+            if (opts.seriesIndex == 1) {
+              returnValues = '<div>Time Start : ' + timeStart + ' ' + '</div>' + '<div>Time Close :' + timeEnd + ' ' + '</div>' + '<div>ID Staff   : ' + data.staff + ' ' + '</div>' + '<div>ID Job     : ' + data.id_job + ' ' + '</div>' + '<div>ID Task    : ' + data.id_task + ' ' + '</div>' + '<div>Item Count : ' + Math.round(data.count) + ' ' + '</div>' + '<div>Item No.   : ' + data.item_no + ' ' + '</div>' + '<div>Total Work : ' + data.total_work + ' ' + '</div>';
+            } else if (opts.seriesIndex == 2) {
+              returnValues = '<div>Time Start : ' + timeStart + ' ' + '</div>' + '<div>Time Close :' + timeEnd + ' ' + '</div>' + '<div>ID Staff   : ' + data.staff + ' ' + '</div>' + '<div>Break Code : ' + data.break_code + ' ' + '</div>' + '<div>Total Break  : ' + data.break_duration + ' ' + '</div>';
+            } else if (opts.seriesIndex == 3) {
+              returnValues = '<div>Time Start : ' + timeStart + ' ' + '</div>' + '<div>Time Close :' + timeEnd + ' ' + '</div>' + '<div>ID Staff   : ' + data.staff + ' ' + '</div>' + '<div>Code DT    : ' + data.code_dt + ' ' + '</div>';
+            } else if (opts.seriesIndex == 0) {
+              returnValues = '<div>Time Start : ' + timeStart + ' ' + '</div>' + '<div>Time Close :' + timeEnd + ' ' + '</div>' + '<div>ID Staff   : ' + data.staff + ' ' + '</div>';
+            }
+
+            return returnValues;
+          }
+        }
+      }
+    };
+    return _this;
+  }
+
+  _createClass(TimelineV2, [{
+    key: "componentWillUnmount",
+    value: function componentWillUnmount() {
       this.getTimeline();
       this.submitTimeline();
     } ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
