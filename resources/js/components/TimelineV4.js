@@ -55,7 +55,7 @@ class TimelineV2 extends Component {
                 selectDate: InitialTimeDate,
                 unixDate: new Date(parseInt(InitialTime.getFullYear()),parseInt(InitialTime.getMonth()),parseInt(InitialTime.getDate())).getTime(),
                 nowDate : new Date(),
-                timeline : [],
+                timeline : this.props.data,
                 resultTimeline:[],
                 id_machine :[],
                 series: dataSeries,
@@ -156,9 +156,7 @@ class TimelineV2 extends Component {
     
 
     componentDidMount = () => {
-
       this.getTimeline();
-      console.log(123);
       this.submitTimeline();
 
     }
@@ -184,8 +182,8 @@ class TimelineV2 extends Component {
             
 
             self.setState({ timeline: allData}, function () {
-              console.log(this.state.timeline);
-              console.log('this set timeline');
+              // console.log(this.state.timeline);
+              // console.log('this set timeline');
             });
           // let x = this.state.timeline;
           // console.log(x);
@@ -231,6 +229,8 @@ class TimelineV2 extends Component {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
     submitTimeline = (e) => {
+      console.log('----------V----------');
+      console.log(this.state.timeline);
       if(e != null){
         e.preventDefault();
       }

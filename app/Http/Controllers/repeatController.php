@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-use Illuminate\Http\Request;
 use App\Models\Activity;
 use App\Models\ActivityRework;
 use App\Models\Repeat;
@@ -104,13 +103,13 @@ class repeatController extends countController
             }
 
             // ------------------- END getInfoCount from countController ----------------------
-
+ 
             Repeat::create([
                 'id_activity' => $dataActivity->id_activity,
+                'count_repeat' => '1',
                 ]);
 
             return response() -> json([
-                'id_activity' => $dataActivity->id_activity,
                 'message' => 'OK'
             ]);
         
@@ -214,11 +213,11 @@ class repeatController extends countController
             // ------------------- END getInfoCount from countController ----------------------
 
             Repeat::create([
-                'id_activity' => $dataActivity->id_activity,
+                'id_activity' => $idActivity,
+                'count_repeat' => '1',
                 ]);
 
-            return response() -> json([
-                'id_activity' => $dataActivity->id_activity,
+            return response() -> json([                
                 'message' => 'OK'
             ]);
         
@@ -229,6 +228,5 @@ class repeatController extends countController
             
         }
     }
-
 
 }

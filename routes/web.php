@@ -74,3 +74,14 @@ Route::get('/update/DashboardRefresh/',
 Route::get('/update/DashboardRefreshQueue2/',
     [dashboardRefreshController::class, 'dashboardRefreshQueue2']
 );
+
+Route::get('/update/DashboardRefresh/',
+    [dashboardRefreshController::class, 'dashboardRefreshV5']
+);
+
+Route::post('/get/indivvidual/dashboard/details',
+[dashboardRefreshController::class, 'getDashboardDetails'])->name('dashboard.details');
+
+Route::get('/update/DashboardRefreshQueue2/',
+    [dashboardRefreshController::class, 'dashboardRefreshQueue2']
+);

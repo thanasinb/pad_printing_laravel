@@ -1,15 +1,18 @@
 import React, { Component } from 'react';
 import Navbars from './Dashboard/Navbars';
-import DataDashboard from './Dashboard/DataDashboard';
-
+import ReactDom from 'react-dom';
+// import DataDashboard from './Dashboard/DataDashboard';
+import DashboardCard from './Dashboard/DashboardCard';
 
 class Dashboard extends Component{
 
 render() {
     return (
-        <div>
+        <div id="layoutSidenav_content">
+        
             <Navbars/>
-            <DataDashboard />
+            {/* <DataDashboard /> */}
+            <DashboardCard/>
         </div>
         );
     }
