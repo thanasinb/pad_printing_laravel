@@ -46,7 +46,7 @@ let InitialTime = new Date();
 let InitialTimeDate = InitialTime.getDate()+"/"+(InitialTime.getMonth()+1)+"/"+InitialTime.getFullYear();
 var refreshCount = 1000;
 // console.log(new Date(parseInt(InitialTime.getFullYear()),parseInt(InitialTime.getMonth()),parseInt(InitialTime.getDate())).getTime());
-class TimelineV2 extends Component {
+class TimelineV4 extends Component {
     constructor(props) {
             super(props);
             this.submitTimeline = this.submitTimeline.bind(this);
@@ -55,7 +55,7 @@ class TimelineV2 extends Component {
                 selectDate: InitialTimeDate,
                 unixDate: new Date(parseInt(InitialTime.getFullYear()),parseInt(InitialTime.getMonth()),parseInt(InitialTime.getDate())).getTime(),
                 nowDate : new Date(),
-                timeline : this.props.data,
+                timeline : [],
                 resultTimeline:[],
                 id_machine :[],
                 series: dataSeries,
@@ -452,4 +452,4 @@ class TimelineV2 extends Component {
     }
 }
 
-export default TimelineV2;
+export default TimelineV4;

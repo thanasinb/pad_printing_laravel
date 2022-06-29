@@ -14,6 +14,9 @@ use Illuminate\Support\Facades\Redirect;
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('/timeline', function () {
+    return view('timeline');
+});
 
 Route::get('/update/touch/',   
     [touchController::class, 'getTouchInfo']

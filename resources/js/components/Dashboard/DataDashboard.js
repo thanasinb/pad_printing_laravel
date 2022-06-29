@@ -13,6 +13,7 @@ class DataDashboard extends Component{
 }
 
 componentDidMount() {
+  console.log(123);
  this.getDashboardRefresh();
 }
 
@@ -22,6 +23,8 @@ axios.get('/update/DashboardRefresh/').then(function (response) {
     self.setState({                                                                                                                                                                                                                                                                                                                       
       DashboardRefresh: response.data
     });
+    console.log(response.data);
+    
 });
 }
 

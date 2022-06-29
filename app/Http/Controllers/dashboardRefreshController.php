@@ -396,7 +396,33 @@ class dashboardRefreshController extends Controller
                     $sumResult[$i] = array(
                         "id_machine" => $id_mc[$i],
                         "code" => "020",
-                        "message" => "The activity exists in both activity and activity_downtime tables or not found in both"
+                        "message" => "The activity exists in both activity and activity_downtime tables or not found in both",
+                        "id_task"=>'-',
+                        "id_staff"=> '-',
+                        "status_work"=> '-',
+                        "qty_process"=> '-',
+                        "qty_repeat"=> '-',
+                        "task_complete"=> '-',
+                        "status_backup"=> '-',
+                        "qty_order"=> '0',
+                        "qty_complete"=> '0',
+                        "qty_open"=> '-',
+                        "divider"=> '-',
+                        "item_no" => '-',
+                        "operation" => '-',
+                        "op_color" => '-',
+                        "op_side" => '-',
+                        "op_des" => '-',
+                        "date_due" =>'-',
+                        "run_time_actual"=> '0',
+                        "run_time_std"=> '0',
+                        "datetime_update" => '-',
+                        "id_code_downtime"=> $id_code_downtime,
+                        "code_downtime"=> $code_downtime,
+                        "des_downtime"=> $des_downtime,
+                        "des_downtime_thai"=> $des_downtime_thai,
+                        "item_no_2" => $item_no_2,
+                        "operation_2" => $operation_2
                     );
                     continue;
                 }
@@ -480,6 +506,7 @@ class dashboardRefreshController extends Controller
         try{
             $machineId = MachineQueue::where('queue_number' ,'1')->get();
             $machineId_queue_2 = MachineQueue::where('queue_number' ,'2')->get();
+            // return response() ->json($machineId);
             $id_mc = array();
             $id_mc_queue_2 =array();
             $sumResult = array();
@@ -556,7 +583,33 @@ class dashboardRefreshController extends Controller
                     $sumResult[$i] = array(
                         "id_machine" => $id_mc[$i],
                         "code" => "020",
-                        "message" => "The activity exists in both activity and activity_downtime tables or not found in both"
+                        "message" => "The activity exists in both activity and activity_downtime tables or not found in both",
+                        "id_task"=>'-',
+                        "id_staff"=> '-',
+                        "status_work"=> '-',
+                        "qty_process"=> '0',
+                        "qty_repeat"=> '0',
+                        "task_complete"=> '-',
+                        "status_backup"=> '-',
+                        "qty_order"=> '0',
+                        "qty_complete"=> '0',
+                        "qty_open"=> '0',
+                        "divider"=> '-',
+                        "item_no" => '-',
+                        "operation" => '-',
+                        "op_color" => '-',
+                        "op_side" => '-',
+                        "op_des" => '-',
+                        "date_due" =>'00-00-00',
+                        "run_time_actual"=> '0',
+                        "run_time_std"=> '0',
+                        "datetime_update" => '00-00-00',
+                        "id_code_downtime"=> $id_code_downtime,
+                        "code_downtime"=> $code_downtime,
+                        "des_downtime"=> $des_downtime,
+                        "des_downtime_thai"=> $des_downtime_thai,
+                        "item_no_2" => $item_no_2,
+                        "operation_2" => $operation_2
                     );
                     continue;
                 }
