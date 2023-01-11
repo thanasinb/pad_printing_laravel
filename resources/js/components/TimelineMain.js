@@ -46,7 +46,7 @@ let InitialTime = new Date();
 let InitialTimeDate = InitialTime.getDate()+"/"+(InitialTime.getMonth()+1)+"/"+InitialTime.getFullYear();
 var refreshCount = 1000;
 // console.log(new Date(parseInt(InitialTime.getFullYear()),parseInt(InitialTime.getMonth()),parseInt(InitialTime.getDate())).getTime());
-class TimelineV4 extends Component {
+class TimelineMain extends Component {
     constructor(props) {
             super(props);
             this.submitTimeline = this.submitTimeline.bind(this);
@@ -452,4 +452,4 @@ class TimelineV4 extends Component {
     }
 }
 
-export default TimelineV4;
+export default TimelineMain;
