@@ -1,0 +1,49 @@
+.modal {
+  display: none; /* Hide the modal by default */
+  position: fixed; /* Position the modal in the center of the screen */
+  z-index: 1; /* Set the z-index to ensure the modal is displayed on top of other elements */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgba(0, 0, 0, 0.4); /* Dark background color */
+}
+
+.modal-dialog {
+  position: relative;
+  width: 80%; /* Full width */
+  max-width: 600px;
+  margin: auto; /* Center the modal */
+  padding: 20px;
+  /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 5px 0 rgba(0, 0, 0, 0.19); */
+  -webkit-animation-name: animatetop;
+  -webkit-animation-duration: 0.4s;
+  animation-name: animatetop;
+  animation-duration: 0.4s;
+}
+
+@-webkit-keyframes animatetop {
+  from { top: -300px; opacity: 0 }
+  to { top: 0; opacity: 1 }
+}
+
+@keyframes animatetop {
+  from { top: -300px; opacity: 0 }
+  to { top: 0; opacity: 1 }
+}
+
+.modal-header {
+  background-color: #bbbbbb;
+  color: white;
+}
+
+.modal-body {
+  background-color: white;
+  color: black;
+}
+
+.modal-footer {
+  background-color: #bbbbbb;
+  color: white;
+}

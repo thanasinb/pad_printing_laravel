@@ -17,6 +17,7 @@ class BreakRework extends Model
         'break_start',
         'break_stop',
         'break_duration',
+        'comment'
     ];
     public $timestamps = false;
 }

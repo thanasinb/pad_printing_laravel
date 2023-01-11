@@ -30,7 +30,8 @@ class Activity extends Model
         'no_pulse2',
         'no_pulse3',
         'num_repeat',
-        'run_time_actual'
+        'run_time_actual',
+        'comment'
     ];
     public $timestamps = false;
 }

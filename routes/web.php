@@ -1,19 +1,59 @@
 <?php
 
-use App\Http\Controllers\activityController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\touchController;
-use App\Http\Controllers\countController;
-use App\Http\Controllers\repeatController;
 use App\Http\Controllers\timelineController;
-use App\Http\Controllers\dashboardController;
-use App\Http\Controllers\dashboardRefreshController;
+use App\Http\Controllers\machinesController;
+use App\Http\Controllers\employeesController;
+use App\Http\Controllers\productsController;
 use Illuminate\Support\Facades\Redirect;
 
+//Part  Route Page >>>>>>>>>>>>>>>>>>>>>>>
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('majorette.timeline');
 });
+
+// Route::resource('majorette', timelineController::class);
+
+Route::get('/import', function () {
+    return view('majorette.import');
+});
+
+Route::get('/export', function () {
+    return view('majorette.export');
+});
+
+Route::get('/productTimeline', function () {
+    return view('majorette.productTimeline');
+});
+
+Route::get('/humanTimeline', function () {
+    return view('majorette.humanTimeline');
+});
+
+Route::get('/machineTimeline', function () {
+    return view('majorette.machineTimeline');
+});
+
+Route::get('/update/machinesAll',
+    [machinesController::class, 'getMachinesAll']
+);
+
+Route::get('/update/employeesAll',
+    [employeesController::class, 'getEmployeesAll']
+);
+
+Route::get('/update/planningAll',
+    [productsController::class, 'getPlanningAll']
+);
+
+Route::get('/update/create/comment/',
+    [timelineController::class, 'addComment']
+);
+
+Route::get('/update/comment/',
+    [timelineController::class, 'getComment']
+);
 
 Route::get('/update/timelineAll/',
     [timelineController::class, 'getInfoAllActivityAndAllBreak']

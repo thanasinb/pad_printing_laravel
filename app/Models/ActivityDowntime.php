@@ -20,7 +20,8 @@ class ActivityDowntime extends Model
         'date_eff',
         'time_start',
         'time_close',
-        'total_work'
+        'total_work',
+        'comment'
     ];
     public $timestamps = false;
 }

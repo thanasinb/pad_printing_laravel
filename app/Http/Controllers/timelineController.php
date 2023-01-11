@@ -11,6 +11,7 @@ use App\Models\ActivityRework;
 use App\Models\BreakRework;
 use App\Models\BreakTable;
 use App\Models\MachineQueue;
+use App\Models\Comment;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -125,6 +126,38 @@ class timelineController extends Controller
         try
         {
             $queryActivity = DB::select('SELECT a.id_machine, b.break_start, b.break_stop  FROM break_rework as b,activity as a WHERE a.id_activity = b.id_activity');
+            return response() -> json($queryActivity);
+        }
+        catch(Exception $error)
+        {
+            Log::error($error);
+        }
+    }
+
+    public function addComment(Request $request){
+        try
+        {
+            $start = $request->input('unix_start');
+            $stop = $request->input('unix_stop');
+            $data = $request->input('comment_data');
+            $result = Comment::create([
+                'unix_time_start' => $start,
+                'unix_time_stop' => $stop,
+                'comment_data' => $data
+            ]);
+
+            return response() -> json('ok');
+        }
+        catch(Exception $error)
+        {
+            Log::error($error);
+        }
+    }
+
+    public function getComment(){
+        try
+        {
+            $queryActivity = Comment::all();
             return response() -> json($queryActivity);
         }
         catch(Exception $error)
