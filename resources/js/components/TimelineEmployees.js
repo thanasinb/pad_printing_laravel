@@ -10,6 +10,9 @@ import DatePicker from 'react-date-picker';
 import moment from 'moment';
 import 'react-datepicker/dist/react-datepicker.css';
 import "./Modal/modalTimelineMain.css";
+import Form from 'react-bootstrap/Form';
+// import Fab from '@mui/material/Fab';
+// import AddIcon from '@mui/icons-material/Add';
 
 var dataSeries = [
     {
@@ -174,10 +177,20 @@ class TimelineEmployees extends Component {
         })
     }
 
+    backModal = () =>{
+      this.setState({
+        showEmployeeModal:true,
+        showEmployeeEdit:false
+    })
+  }
+
 
 render() {
     return (
         <div>
+          {/* <Fab color="error" aria-label="add" position="sticky" bottom="20px" right="20px" >
+        <AddIcon />
+        </Fab> */}
         {this.state.dataEmployees.map((row, index) => (
         <div key={index + '-' + row.id_staff}>
         <Button
@@ -191,9 +204,9 @@ render() {
                                         <a style={{ color: '#CBCBCB', opacity:0.5}}>Click to see more information</a></Col>
                     <Col xs={6} md={4}> ID Staff : {row.id_staff}<p/>
                                         ID-RFID : {row.id_rfid}<p/>
-                                        Name : {row.name_first+"  "+row.name_last}</Col>
+                                        Name : {row.prefix+row.name_first+"  "+row.name_last}</Col>
                     <Col xs={3} md={2} style={{textAlign:'canter'}}>Site: {row.site?row.site:"-"} <p/>
-                                        Role : {row.id_role}<p/>
+                                        Role : {row.role}<p/>
                                         Shif : {row.id_shif?row.id_shif:"-"}</Col>
                 </Row>
             </Container>
@@ -211,15 +224,28 @@ render() {
                 </button>
               </div>
               <div className="modal-body">
-                Enter ID Staff : {this.state.dataOnModal.id_staff}
+                <Row>
+                <Col>
+                  ID Staff : {this.state.dataOnModal.id_staff}<p/>
+                  ID RFID : {this.state.dataOnModal.id_rfid}<p/>
+                  Name : {this.state.dataOnModal.prefix+this.state.dataOnModal.name_first+" "+this.state.dataOnModal.name_last}<p/>
+                  Site : {this.state.dataOnModal.site}<p/>
+                  Shif : {this.state.dataOnModal.id_shif}<p/>
+                  Role : {this.state.dataOnModal.role}<p/>
+                </Col>
+                <Col>
+                  <HiOutlineUser size={220}/>
+                </Col>
+                </Row>
+                
               </div>
               <div className="modal-footer">
                 <button type="button" className="btn btn-primary" onClick={this.employeesEdit}>Edit</button>
                 <button type="button" className="btn btn-secondary" onClick={this.closeModal}>Close</button>
               </div>
               <div className='container' id={"chart_timeline_main"} >
-                Product : {this.state.dataOnModal.id_staff}
-                    <ReactApexChart options={this.state.options} series={this.state.series} type="rangeBar" height={150}  />                
+                Timeline today Activity : {this.state.dataOnModal.prefix+this.state.dataOnModal.name_first+" "+this.state.dataOnModal.name_last}
+                    <ReactApexChart options={this.state.options} series={this.state.series} type="rangeBar" height={250}  />                
                     {window.dispatchEvent(new Event('resize'))}
                 </div> 
             </div>
@@ -236,16 +262,72 @@ render() {
                 </button>
               </div>
               <div className="modal-body">
-                Enter ID Staff : {this.state.dataOnModal.id_staff}
+              <Form>
+                <Form.Group className="mb-3" controlId="idStaff">
+                  <Form.Label className='text-black'>ID Staff</Form.Label>
+                  <Form.Control type="text" placeholder="Search..." value={this.state.dataOnModal.id_staff} />
+                </Form.Group>
+                  <Form.Group className="mb-3" controlId="idRfid">
+                  <Form.Label className='text-black'>ID RFID</Form.Label>
+                <Form.Control type="text" placeholder="Search..." value={this.state.dataOnModal.id_rfid}/>
+                </Form.Group>
+                  <Form.Group className="mb-3" controlId="prefixName">
+                  <Form.Label className='text-black'>Prefix</Form.Label>
+                  <Form.Select aria-label="Default select example">
+                      <option>Open this select prefix</option>
+                      <option value="1">นาย</option>
+                      <option value="2">นาง</option>
+                      <option value="3">นางสาว</option>
+                  </Form.Select>
+                </Form.Group>
+                  <Form.Group className="mb-3" controlId="firstName">
+                  <Form.Label className='text-black'>First Name</Form.Label>
+                <Form.Control type="text" placeholder="Search..." value={this.state.dataOnModal.name_first}/>
+                </Form.Group>
+                  <Form.Group className="mb-3" controlId="lastName">
+                  <Form.Label className='text-black'>Last Name</Form.Label>
+                <Form.Control type="text" placeholder="Search..." value={this.state.dataOnModal.name_last}/>
+                </Form.Group>
+                  <Form.Group className="mb-3" controlId="site">
+                  <Form.Label className='text-black'>Site</Form.Label>
+                <Form.Control type="text" placeholder="Search..." value={this.state.dataOnModal.site?this.state.dataOnModal.site:"-"}/>
+                </Form.Group>
+                  <Form.Group className="mb-3" controlId="shif">
+                  <Form.Label className='text-black'>Shif</Form.Label>
+                  <Form.Select aria-label="Default select example">
+                      <option>Open this select shif</option>
+                      <option value="A">A</option>
+                      <option value="B">B</option>
+                      <option value="C">C</option>
+                  </Form.Select>
+                </Form.Group>
+                  <Form.Group className="mb-3" controlId="role">
+                  <Form.Label className='text-black'>Role</Form.Label>
+                  <Form.Select aria-label="Default select example">
+                      <option>Open this select role</option>
+                      <option value="1">Operator</option>
+                      <option value="2">Technician</option>
+                      <option value="3">Production Support</option>
+                      <option value="4">Instructor</option>
+                      <option value="5">Senior Instructor</option>
+                      <option value="6">Foreman</option>
+                      <option value="7">Leader</option>
+                      <option value="8">Senior Technician</option>
+                      <option value="9">Manager</option>
+                      <option value="10">Engineering</option>
+                  </Form.Select>
+                </Form.Group>
+            </Form>
               </div>
               <div className="modal-footer">
+              <button type="button" className="btn btn-primary" onClick={this.backModal}>Back</button>
                 <button type="button" className="btn btn-primary" onClick={this.closeModal}>Save</button>
                 <button type="button" className="btn btn-secondary" onClick={this.closeModal}>Close</button>
               </div>
             </div>
           </div>
         </div>
-
+        
     </div>
     );
 

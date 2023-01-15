@@ -24,6 +24,11 @@
         "sass-loader": "^11.0.1"
     },
     "dependencies": {
+        "@emotion/react": "^11.10.5",
+        "@emotion/styled": "^11.10.5",
+        "@material-ui/styles": "^4.11.5",
+        "@mui/icons-material": "^5.11.0",
+        "@mui/material": "^5.11.4",
         "apexcharts": "^3.35.3",
         "autoprefixer": "10.4.5",
         "moment": "^2.29.3",
