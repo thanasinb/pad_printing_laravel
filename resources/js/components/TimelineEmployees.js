@@ -184,6 +184,18 @@ class TimelineEmployees extends Component {
     })
   }
 
+  handleSubmitEditModal = (event) =>{
+    event.preventDefault();
+    console.log(event.target.idStaff.value);
+    axios.get('/update/employeesAll').then(response => {
+      this.setState({
+        showEmployeeModal:true,
+        showEmployeeEdit:false,
+        dataEmployees : response.data});
+      console.log(response.data);
+  });
+  }
+
 
 render() {
     return (
@@ -262,14 +274,14 @@ render() {
                 </button>
               </div>
               <div className="modal-body">
-              <Form>
+              <Form onSubmit={this.handleSubmitEditModal}>
                 <Form.Group className="mb-3" controlId="idStaff">
                   <Form.Label className='text-black'>ID Staff</Form.Label>
-                  <Form.Control type="text" placeholder="Search..." value={this.state.dataOnModal.id_staff} />
+                  <Form.Control placeholder="Search..." value={this.state.dataOnModal.id_staff} />
                 </Form.Group>
                   <Form.Group className="mb-3" controlId="idRfid">
                   <Form.Label className='text-black'>ID RFID</Form.Label>
-                <Form.Control type="text" placeholder="Search..." value={this.state.dataOnModal.id_rfid}/>
+                <Form.Control placeholder="Search..." value={this.state.dataOnModal.id_rfid}/>
                 </Form.Group>
                   <Form.Group className="mb-3" controlId="prefixName">
                   <Form.Label className='text-black'>Prefix</Form.Label>
@@ -282,15 +294,15 @@ render() {
                 </Form.Group>
                   <Form.Group className="mb-3" controlId="firstName">
                   <Form.Label className='text-black'>First Name</Form.Label>
-                <Form.Control type="text" placeholder="Search..." value={this.state.dataOnModal.name_first}/>
+                <Form.Control placeholder="Search..." value={this.state.dataOnModal.name_first}/>
                 </Form.Group>
                   <Form.Group className="mb-3" controlId="lastName">
                   <Form.Label className='text-black'>Last Name</Form.Label>
-                <Form.Control type="text" placeholder="Search..." value={this.state.dataOnModal.name_last}/>
+                <Form.Control placeholder="Search..." value={this.state.dataOnModal.name_last}/>
                 </Form.Group>
                   <Form.Group className="mb-3" controlId="site">
                   <Form.Label className='text-black'>Site</Form.Label>
-                <Form.Control type="text" placeholder="Search..." value={this.state.dataOnModal.site?this.state.dataOnModal.site:"-"}/>
+                <Form.Control placeholder="Search..." value={this.state.dataOnModal.site?this.state.dataOnModal.site:"-"}/>
                 </Form.Group>
                   <Form.Group className="mb-3" controlId="shif">
                   <Form.Label className='text-black'>Shif</Form.Label>
@@ -317,11 +329,11 @@ render() {
                       <option value="10">Engineering</option>
                   </Form.Select>
                 </Form.Group>
+                <input className="btn btn-primary" type="submit" value="Save" />
             </Form>
               </div>
               <div className="modal-footer">
               <button type="button" className="btn btn-primary" onClick={this.backModal}>Back</button>
-                <button type="button" className="btn btn-primary" onClick={this.closeModal}>Save</button>
                 <button type="button" className="btn btn-secondary" onClick={this.closeModal}>Close</button>
               </div>
             </div>

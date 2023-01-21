@@ -27,4 +27,8 @@ class employeesController extends Controller
             Log::error($error);
         }
     }
+
+    public function editEmployee(){
+        
+    }
 }
