@@ -42,6 +42,11 @@ Route::get('/update/machinesAll',
 Route::get('/update/employeesAll',
     [employeesController::class, 'getEmployeesAll']
 );
+Route::post('/update/editEmployee',
+    [employeesController::class, 'editEmployee']
+);
+
+
 
 Route::get('/update/planningAll',
     [productsController::class, 'getPlanningAll']

@@ -66,10 +66,11 @@ render() {
                 <Form.Group className="mb-3" controlId="typeSearch">
                 <Form.Label className='text-white'>SEARCH</Form.Label>
                 <Form.Select aria-label="Default select example">
-                    <option>Open this select type menu</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
+                    <option value="0">All</option>
+                    <option value="1">By ID Machine</option>
+                    <option value="2">By MC-DES</option>
+                    <option value="3">By MC TYPE</option>
+                    <option value="4">By Work Mode</option>
                 </Form.Select>
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="search">

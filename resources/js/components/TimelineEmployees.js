@@ -37,6 +37,16 @@ var dataSeries = [
     ];
 
 var allActivity = [];
+var tempEditData = {
+  id_staff:'',
+  id_rfid:'',
+  prefix:'',
+  name_first:'',
+  name_last:'',
+  site:'',
+  id_shif:'',
+  role:'',
+};
 
 class TimelineEmployees extends Component {
     constructor(props) {
@@ -184,14 +194,95 @@ class TimelineEmployees extends Component {
     })
   }
 
+  handleIdStaff = (event) => {
+    this.setState({
+      dataOnModal: {
+        ...this.state.dataOnModal,
+        id_staff: event.target.value
+      }
+    })
+  }
+
+  handleIdRfid = (event) => {
+    this.setState({
+      dataOnModal: {
+        ...this.state.dataOnModal,
+        id_rfid: event.target.value
+      }
+    })
+  }
+
+  handleNameFirst = (event) => {
+    this.setState({
+      dataOnModal: {
+        ...this.state.dataOnModal,
+        name_first: event.target.value
+      }
+    })
+  }
+
+  handleNameLast = (event) => {
+    this.setState({
+      dataOnModal: {
+        ...this.state.dataOnModal,
+        name_last: event.target.value
+      }
+    })
+  }
+
+  handleSite = (event) => {
+    this.setState({
+      dataOnModal: {
+        ...this.state.dataOnModal,
+        site: event.target.value
+      }
+    })
+  }
+
+  handlePrefix = (event) => {
+    this.setState({
+      dataOnModal: {
+        ...this.state.dataOnModal,
+        prefix: event.target.value
+      }
+    })
+  }
+
+  handleShif = (event) => {
+    this.setState({
+      dataOnModal: {
+        ...this.state.dataOnModal,
+        id_shif: event.target.value
+      }
+    })
+  }
+
+  handleRole = (event) => {
+    this.setState({
+      dataOnModal: {
+        ...this.state.dataOnModal,
+        id_role: event.target.value
+      }
+    })
+  }
+
   handleSubmitEditModal = (event) =>{
     event.preventDefault();
-    console.log(event.target.idStaff.value);
-    axios.get('/update/employeesAll').then(response => {
+    tempEditData['id_staff'] = event.target.idStaff.value;
+    tempEditData['id_rfid'] = event.target.idRfid.value;
+    tempEditData['prefix'] = event.target.prefixName.value;
+    tempEditData['name_first'] = event.target.firstName.value;
+    tempEditData['name_last'] = event.target.lastName.value;
+    tempEditData['site'] = event.target.site.value;
+    tempEditData['id_shif'] = event.target.shif.value;
+    tempEditData['id_role'] = event.target.role.value;
+    // console.log(event.target.idStaff.value);
+    axios.post('/update/editEmployee',tempEditData).then(response => {
       this.setState({
         showEmployeeModal:true,
-        showEmployeeEdit:false,
-        dataEmployees : response.data});
+        showEmployeeEdit:false
+      });
+      this.getEmployees();
       console.log(response.data);
   });
   }
@@ -277,16 +368,16 @@ render() {
               <Form onSubmit={this.handleSubmitEditModal}>
                 <Form.Group className="mb-3" controlId="idStaff">
                   <Form.Label className='text-black'>ID Staff</Form.Label>
-                  <Form.Control placeholder="Search..." value={this.state.dataOnModal.id_staff} />
+                  <Form.Control placeholder="Search..." value={this.state.dataOnModal.id_staff} onChange={(event) => this.handleIdStaff(event)}/>
                 </Form.Group>
                   <Form.Group className="mb-3" controlId="idRfid">
                   <Form.Label className='text-black'>ID RFID</Form.Label>
-                <Form.Control placeholder="Search..." value={this.state.dataOnModal.id_rfid}/>
+                <Form.Control placeholder="Search..." value={this.state.dataOnModal.id_rfid} onChange={(event) => this.handleIdRfid(event)}/>
                 </Form.Group>
                   <Form.Group className="mb-3" controlId="prefixName">
                   <Form.Label className='text-black'>Prefix</Form.Label>
-                  <Form.Select aria-label="Default select example">
-                      <option>Open this select prefix</option>
+                  <Form.Select aria-label="Default select example" value={this.state.dataOnModal.id_prefix} onChange={(event) => this.handlePrefix(event)}>
+                      {/* <option value={this.state.dataOnModal.id_prefix}>{this.state.dataOnModal.prefix+' (ค่าเริ่มต้น)'}</option> */}
                       <option value="1">นาย</option>
                       <option value="2">นาง</option>
                       <option value="3">นางสาว</option>
@@ -294,20 +385,20 @@ render() {
                 </Form.Group>
                   <Form.Group className="mb-3" controlId="firstName">
                   <Form.Label className='text-black'>First Name</Form.Label>
-                <Form.Control placeholder="Search..." value={this.state.dataOnModal.name_first}/>
+                <Form.Control placeholder="Search..." value={this.state.dataOnModal.name_first} onChange={(event) => this.handleNameFirst(event)}/>
                 </Form.Group>
                   <Form.Group className="mb-3" controlId="lastName">
                   <Form.Label className='text-black'>Last Name</Form.Label>
-                <Form.Control placeholder="Search..." value={this.state.dataOnModal.name_last}/>
+                <Form.Control placeholder="Search..." value={this.state.dataOnModal.name_last} onChange={(event) => this.handleNameLast(event)}/>
                 </Form.Group>
                   <Form.Group className="mb-3" controlId="site">
                   <Form.Label className='text-black'>Site</Form.Label>
-                <Form.Control placeholder="Search..." value={this.state.dataOnModal.site?this.state.dataOnModal.site:"-"}/>
+                <Form.Control placeholder="Search..." value={this.state.dataOnModal.site?this.state.dataOnModal.site:"-"} onChange={(event) => this.handleSite(event)}/>
                 </Form.Group>
                   <Form.Group className="mb-3" controlId="shif">
                   <Form.Label className='text-black'>Shif</Form.Label>
-                  <Form.Select aria-label="Default select example">
-                      <option>Open this select shif</option>
+                  <Form.Select aria-label="Default select example" value={this.state.dataOnModal.id_shif} onChange={(event) => this.handleShif(event)}>
+                      {/* <option value={this.state.dataOnModal.id_shif}>{this.state.dataOnModal.id_shif+' (ค่าเริ่มต้น)'}</option> */}
                       <option value="A">A</option>
                       <option value="B">B</option>
                       <option value="C">C</option>
@@ -315,8 +406,8 @@ render() {
                 </Form.Group>
                   <Form.Group className="mb-3" controlId="role">
                   <Form.Label className='text-black'>Role</Form.Label>
-                  <Form.Select aria-label="Default select example">
-                      <option>Open this select role</option>
+                  <Form.Select aria-label="Default select example" value={this.state.dataOnModal.id_role} onChange={(event) => this.handleRole(event)}>
+                      {/* <option value={this.state.dataOnModal.id_role}>{this.state.dataOnModal.role+' (ค่าเริ่มต้น)'}</option> */}
                       <option value="1">Operator</option>
                       <option value="2">Technician</option>
                       <option value="3">Production Support</option>
