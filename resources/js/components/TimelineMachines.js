@@ -10,11 +10,13 @@ import { GiSewingMachine } from "react-icons/gi";
 import { HiX } from "react-icons/hi";
 import "./Modal/modalTimelineMain.css";
 import Form from 'react-bootstrap/Form';
+import { ThirtyFpsSelect } from '@mui/icons-material';
 
 export class TimelineMachines extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            searchType : "0",
             dataMachinesTemp : [],
             dataMachines : [],
             dataOnModal : [],
@@ -28,7 +30,8 @@ export class TimelineMachines extends Component {
     
     getMachines = () =>{
         axios.get('/update/machinesAll').then(response => {
-            this.setState({dataMachines : response.data});
+            this.setState({dataMachines : response.data,
+                            dataMachinesTemp : response.data});
             console.log(response.data);
         });
     }
@@ -57,6 +60,56 @@ export class TimelineMachines extends Component {
         })
     }
 
+    handleSearchType = (event) => {
+      this.filterSearch();
+      this.setState({
+        searchType : event.target.value
+      })
+    }
+    filterSearch = (event) => {
+      var tempFilter = event.target.value;
+      var tempResult;
+      // console.log(tempFilter);
+        if(tempFilter.length <= 0){
+          tempResult = this.state.dataMachinesTemp;
+        }
+        else if(this.state.searchType === "0"){
+            tempResult = this.state.dataMachinesTemp.filter(x =>{
+              return x.id_mc.toLowerCase().includes(tempFilter.toLowerCase()) ||
+                x.mc_des.toLowerCase().includes(tempFilter.toLowerCase()) || 
+                x.id_mc_type.toString().includes(tempFilter.toLowerCase()) ||
+                x.id_workmode.toString().includes(tempFilter.toLowerCase())
+            })
+        }
+        else if(this.state.searchType === "1"){
+          tempResult = this.state.dataMachinesTemp.filter(x =>{
+            return x.id_mc.toLowerCase().includes(tempFilter.toLowerCase())
+          })
+        }
+        else if(this.state.searchType === "2"){
+          tempResult = this.state.dataMachinesTemp.filter(x =>{
+            return x.mc_des.toLowerCase().includes(tempFilter.toLowerCase()) 
+          })
+        }
+        else if(this.state.searchType === "3"){
+          tempResult = this.state.dataMachinesTemp.filter(x =>{
+            return x.id_mc_type.toString().includes(tempFilter.toLowerCase())
+          })
+        }
+        else if(this.state.searchType === "4"){
+          tempResult = this.state.dataMachinesTemp.filter(x =>{
+            return x.id_workmode.toString().includes(tempFilter.toLowerCase())
+          })
+        }
+      
+      // console.log(test);
+      this.setState({
+        dataMachines : tempResult,
+      })
+      tempResult = [];
+      
+    }
+
 render() {
     return (
         <div>
@@ -65,24 +118,24 @@ render() {
             <Form>
                 <Form.Group className="mb-3" controlId="typeSearch">
                 <Form.Label className='text-white'>SEARCH</Form.Label>
-                <Form.Select aria-label="Default select example">
+                <Form.Select aria-label="Default select example" onChange={this.handleSearchType}>
                     <option value="0">All</option>
-                    <option value="1">By ID Machine</option>
+                    <option value="1">By ID-Machine</option>
                     <option value="2">By MC-DES</option>
-                    <option value="3">By MC TYPE</option>
-                    <option value="4">By Work Mode</option>
+                    <option value="3">By MC-TYPE</option>
+                    <option value="4">By Work-Mode</option>
                 </Form.Select>
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="search">
                     
-                    <Form.Control type="email" placeholder="Search..." />
+                    <Form.Control type="text" placeholder="Search..." onChange={this.filterSearch}/>
                     <Form.Text className="text-muted">
                     ค้นหาเครื่องจักรที่ต้องการโดยเลือกหมวดหมู่ของการค้นหา จากนั้นเติมคำที่ต้องลงในช่องว่าง กรณีไม่เลือกหมวดหมู่จะค้นหาจากทุกหมวด
                     </Form.Text>
                 </Form.Group>
-                <Button  variant="primary" type="submit">
+                {/* <Button  variant="primary" type="submit">
                     Search
-                </Button>
+                </Button> */}
             </Form>
             </Container>
             </div>
