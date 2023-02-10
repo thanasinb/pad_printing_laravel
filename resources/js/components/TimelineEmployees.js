@@ -443,11 +443,15 @@ class TimelineEmployees extends Component {
   else{
     var result = dataSeriesTemp;
   }
-  
+  var showDatatime = "-";
+    // console.log(dataSeriesEmployee[0]);
+  if(dataSeriesEmployee[0].data[0]!=null){
+    showDatatime = dataSeriesEmployee[0].data[0].time_start;
+  }
   // console.log(response.data[1][0].item_no);
   this.setState({
     series : result,
-    startAt : dataSeriesEmployee[0].data[0].time_start?dataSeriesEmployee[0].data[0].time_start:"-",
+    startAt : showDatatime,
     dataTimelineEmployees : response.data[0],
     dataTimelineEmployeesTemp : response.data[0],
     itemNo:response.data[1],
@@ -506,10 +510,15 @@ class TimelineEmployees extends Component {
     else{
       var result = dataSeriesTemp;
     }
+    var showDatatime = "-";
+    // console.log(dataSeriesEmployee[0]);
+    if(dataSeriesEmployee[0].data[0]!=null){
+      showDatatime = dataSeriesEmployee[0].data[0].time_start;
+    }
     
     // console.log(dataSeriesEmployee[0].data[0].time_start);
     this.setState({
-      startAt : dataSeriesEmployee[0].data[0].time_start?dataSeriesEmployee[0].data[0].time_start:"-",
+      startAt : showDatatime,
       series : result
     })
 
