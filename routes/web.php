@@ -39,13 +39,17 @@ Route::get('/update/machinesAll',
     [machinesController::class, 'getMachinesAll']
 );
 
+
+
 Route::get('/update/employeesAll',
     [employeesController::class, 'getEmployeesAll']
 );
 Route::post('/update/editEmployee',
     [employeesController::class, 'editEmployee']
 );
-
+Route::post('/update/timelineEmployees/',
+    [employeesController::class, 'getActivityEmployees']
+);
 
 
 Route::get('/update/planningAll',

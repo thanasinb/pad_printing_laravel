@@ -61,7 +61,7 @@ export class TimelineMachines extends Component {
     }
 
     handleSearchType = (event) => {
-      this.filterSearch();
+      // this.filterSearch();
       this.setState({
         searchType : event.target.value
       })
@@ -121,8 +121,8 @@ render() {
                 <Form.Select aria-label="Default select example" onChange={this.handleSearchType}>
                     <option value="0">All</option>
                     <option value="1">By ID-Machine</option>
-                    <option value="2">By MC-DES</option>
-                    <option value="3">By MC-TYPE</option>
+                    <option value="2">By Machine-Destination</option>
+                    <option value="3">By Machine-TYPE</option>
                     <option value="4">By Work-Mode</option>
                 </Form.Select>
                 </Form.Group>

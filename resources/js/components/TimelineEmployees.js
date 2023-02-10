@@ -13,28 +13,48 @@ import "./Modal/modalTimelineMain.css";
 import Form from 'react-bootstrap/Form';
 // import Fab from '@mui/material/Fab';
 // import AddIcon from '@mui/icons-material/Add';
-
 var dataSeries = [
     {
-      name: 'Idle',
+      name: 'Working',
       data: []
     },
+
+    // {
+    //   name: 'Used',
+    //   data: []
+    // },
   
-    {
-      name: 'Used',
-      data: []
-    },
+    // {
+    //   name: 'Break',
+    //   data: []
+    // },
   
-    {
-      name: 'Break',
-      data: []
-    },
-  
-    {
-      name: 'Downtime',
-      data: []
-    },
+    // {
+    //   name: 'Downtime',
+    //   data: []
+    // },
     ];
+    var dataSeriesTemp = [
+      {
+        name: 'Working',
+        data: []
+      },
+      
+      // {
+      //   name: 'Used',
+      //   data: []
+      // },
+    
+      // {
+      //   name: 'Break',
+      //   data: []
+      // },
+    
+      // {
+      //   name: 'Downtime',
+      //   data: []
+      // },
+      ];
 
 var allActivity = [];
 var tempEditData = {
@@ -53,6 +73,13 @@ class TimelineEmployees extends Component {
         super(props);
         this.state = {
             dataEmployees : [],
+            dataEmployeesTemp : [],
+            dataTimelineEmployees : [],
+            dataTimelineEmployeesTemp : [],
+            itemNo:[],
+            startAt:'',
+            searchType : "0",
+            typeSearchBox : "",
             dataOnModal : [],
             allActivityList : [],
             showEmployeeModal : false,
@@ -76,7 +103,10 @@ class TimelineEmployees extends Component {
                             }
                             },
                             colors: [
-                            "#008FFB", "#00E36E", "#F0E040", "#DA4747"
+                            // "#008FFB",
+                            "#00E36E", 
+                            // "#F0E040", 
+                            // "#DA4747"
                             ],
                             fill: {
                             type: 'solid'
@@ -100,9 +130,9 @@ class TimelineEmployees extends Component {
                             },
                             theme:'dark',
                             custom: function(opts) {
-                                var data = opts.ctx.w.globals.initialSeries[opts.seriesIndex].data[opts.dataPointIndex];
-                                const fromYear = new Date(opts.y1).getFullYear()
-                                const toYear = new Date(opts.y2).getFullYear()
+                                var data = opts.ctx.w.globals.initialSeries[0].data[opts.dataPointIndex];
+                                // const fromYear = new Date(opts.y1).getFullYear()
+                                // const toYear = new Date(opts.y2).getFullYear()
                                 const timeStartTemp = new Date(parseInt(opts.y1))
                                 const timeEndTemp = new Date(parseInt(opts.y2))
                                 const timeStart = moment(timeStartTemp).format("DD/MM/yyyy HH:mm:ss");
@@ -110,17 +140,17 @@ class TimelineEmployees extends Component {
                                 
                                 // console.log(opts.seriesIndex);
                                 var returnValues;
-                                if(opts.seriesIndex == 1){
-                                returnValues = '<div>Time Start : '+timeStart+' '+'</div>' ;
-                                }
-                                else if(opts.seriesIndex == 2){
-                                returnValues = '<div>Time Start : '+timeStart+' '+'</div>' ;
-                                }
-                                else if(opts.seriesIndex == 3){
-                                returnValues = '<div>Time Start : '+timeStart+' '+'</div>';
-                                }
-                                else if(opts.seriesIndex == 0){
-                                returnValues = '<div>Time Start : '+timeStart+' '+'</div>';
+                                // console.log(opts);
+                                if(opts.seriesIndex == 0){
+                                returnValues = '<div>Time Start : '+timeStart+' '+'</div>'+
+                                  '<div>Time Close :'+timeEnd+' '+'</div>'+
+                                  '<div>ID Staff :'+data.id_staff+' '+'</div>'+
+                                  '<div>ID Activity :'+data.id_activity+' '+'</div>'+
+                                  '<div>ID Task :'+data.id_task+' '+'</div>'+
+                                  '<div>item No. :'+data.item_no+' '+'</div>'+
+                                  '<div>Item Complete :'+data.qty_comp+' '+'</div>'+
+                                  '<div>Item Remaining :'+data.qty_open+' '+'</div>'+
+                                  '<div>Item Order :'+data.qty_order+' '+'</div>';
                                 }
                                 // console.log(data.staff)
                                 return returnValues
@@ -152,27 +182,20 @@ class TimelineEmployees extends Component {
             }
             allActivity.sort((a, b) => (a.time_start > b.time_start) ? 1 : -1)
             this.setState({ allActivityList: allActivity});
+            // console.log(response.data);
         });
         
     }
 
     getEmployees = () =>{
         axios.get('/update/employeesAll').then(response => {
-            this.setState({dataEmployees : response.data});
+            this.setState({dataEmployees : response.data,
+                            dataEmployeesTemp : response.data});
             console.log(response.data);
         });
     }
 
-    employeesSelect = (event,row) =>{
-        console.log("EM SELECTION");
-        console.log(row);
-        console.log(event);
-        this.setState({
-            dataOnModal:row,
-            showEmployeeModal:true,
-            showEmployeeEdit:false
-        })
-    }
+    
     employeesEdit = (event) =>{
         this.setState({
             showEmployeeModal:false,
@@ -183,7 +206,8 @@ class TimelineEmployees extends Component {
     closeModal = () =>{
         this.setState({
             showEmployeeModal:false,
-            showEmployeeEdit:false
+            showEmployeeEdit:false,
+            series:dataSeriesTemp
         })
     }
 
@@ -240,10 +264,11 @@ class TimelineEmployees extends Component {
   }
 
   handlePrefix = (event) => {
+    // console.log(event.target.value)
     this.setState({
       dataOnModal: {
         ...this.state.dataOnModal,
-        prefix: event.target.value
+        id_prefix: event.target.value
       }
     })
   }
@@ -279,12 +304,215 @@ class TimelineEmployees extends Component {
     // console.log(event.target.idStaff.value);
     axios.post('/update/editEmployee',tempEditData).then(response => {
       this.setState({
-        showEmployeeModal:true,
+        showEmployeeModal:false,
         showEmployeeEdit:false
       });
       this.getEmployees();
-      console.log(response.data);
+      // console.log(response.data);
   });
+  }
+
+  handleSearchType = (event) => {
+    this.setState({
+      searchType : event.target.value
+    })
+  }
+  
+  filterSearch = (event) => {
+
+    var tempFilter = event.target.value;
+    var tempResult;
+    // console.log(tempFilter);
+      if(tempFilter.length <= 0){
+        tempResult = this.state.dataEmployeesTemp;
+      }
+      else if(this.state.searchType === "0"){
+          tempResult = this.state.dataEmployeesTemp.filter(x =>{
+            return x.id_rfid.toLowerCase().includes(tempFilter.toLowerCase()) ||
+              x.role.toLowerCase().includes(tempFilter.toLowerCase()) || 
+              x.name_first.toLowerCase().includes(tempFilter.toLowerCase()) ||
+              x.name_last.toLowerCase().includes(tempFilter.toLowerCase()) ||
+              x.site.toLowerCase().includes(tempFilter.toLowerCase()) ||
+              x.id_staff.toLowerCase().includes(tempFilter.toLowerCase()) ||
+              x.id_shif.toLowerCase().includes(tempFilter.toLowerCase()) ||
+              x.name_last.toLowerCase().includes(tempFilter.toLowerCase())
+          })
+      }
+      else if(this.state.searchType === "1"){
+        tempResult = this.state.dataEmployeesTemp.filter(x =>{
+          return x.id_staff.toLowerCase().includes(tempFilter.toLowerCase())
+        })
+      }
+      else if(this.state.searchType === "2"){
+        tempResult = this.state.dataEmployeesTemp.filter(x =>{
+          return x.id_rfid.toLowerCase().includes(tempFilter.toLowerCase()) 
+        })
+      }
+      else if(this.state.searchType === "3"){
+        tempResult = this.state.dataEmployeesTemp.filter(x =>{
+          return x.name_first.toLowerCase().includes(tempFilter.toLowerCase())
+        })
+      }
+      else if(this.state.searchType === "4"){
+        tempResult = this.state.dataEmployeesTemp.filter(x =>{
+          return x.name_last.toLowerCase().includes(tempFilter.toLowerCase())
+        })
+      }
+      else if(this.state.searchType === "5"){
+        tempResult = this.state.dataEmployeesTemp.filter(x =>{
+          return x.role.toLowerCase().includes(tempFilter.toLowerCase())
+        })
+      }
+      else if(this.state.searchType === "6"){
+        tempResult = this.state.dataEmployeesTemp.filter(x =>{
+          return x.site.toLowerCase().includes(tempFilter.toLowerCase()) 
+        })
+      }
+      else if(this.state.searchType === "7"){
+        tempResult = this.state.dataEmployeesTemp.filter(x =>{
+          return x.id_shif.toLowerCase().includes(tempFilter.toLowerCase())
+        })
+      }
+      else if(this.state.searchType === "8"){
+        tempResult = this.state.dataEmployeesTemp.filter(x =>{
+          return x.prefix.toLowerCase().includes(tempFilter.toLowerCase())
+        })
+      }
+    
+    // console.log(test);
+    this.setState({
+      dataEmployees : tempResult,
+      typeSearchBox : tempFilter
+    })
+    tempResult = [];
+    
+  }
+  employeesSelect = (event,row) =>{
+    // console.log("EM SELECTION");
+    var dataSeriesEmployee = [
+      {
+        name: 'Working',
+        data: []
+      },
+  
+      // {
+      //   name: 'Used',
+      //   data: []
+      // },
+    
+      // {
+      //   name: 'Break',
+      //   data: []
+      // },
+    
+      // {
+      //   name: 'Downtime',
+      //   data: []
+      // },
+      ];
+    dataSeries = dataSeriesTemp;
+    console.log(row);
+    console.log(event);
+    var staffSelect = {id_staff:''}
+    staffSelect['id_staff'] = row.id_staff;
+    axios.post('/update/timelineEmployees/',staffSelect).then(response => {
+      // console.log(response.data[0]);
+      // console.log(response.data[1]);
+  if(response.data[0]){
+    response.data[0].map((data, index)=>{
+      if(data.item_no == response.data[1][0].item_no){
+        dataSeriesEmployee[0].data.push({
+          x: 'ID : '+data.id_staff,
+          y: [
+            new Date(data.time_start).getTime(),
+            new Date(data.time_close).getTime()
+          ],
+          id_staff : data.id_staff,
+          id_activity : data.id_activity,
+          id_task : data.id_task,
+          item_no : data.item_no,
+          qty_comp: data.qty_comp,
+          qty_open: data.qty_open,
+          qty_order: data.qty_order,
+          time_start: data.time_start,
+        });
+      }
+    })
+    result = dataSeriesEmployee;
+  }
+  else{
+    var result = dataSeriesTemp;
+  }
+  
+  // console.log(response.data[1][0].item_no);
+  this.setState({
+    series : result,
+    startAt : dataSeriesEmployee[0].data[0].time_start?dataSeriesEmployee[0].data[0].time_start:"-",
+    dataTimelineEmployees : response.data[0],
+    dataTimelineEmployeesTemp : response.data[0],
+    itemNo:response.data[1],
+    dataOnModal:row,
+    showEmployeeModal:true,
+    showEmployeeEdit:false
+  })
+});
+}
+  handleChangeItemNo = (event) => {
+    var dataSeriesEmployee = [
+      {
+        name: 'Working',
+        data: []
+      },
+  
+      // {
+      //   name: 'Used',
+      //   data: []
+      // },
+    
+      // {
+      //   name: 'Break',
+      //   data: []
+      // },
+    
+      // {
+      //   name: 'Downtime',
+      //   data: []
+      // },
+      ];
+    var item_no = parseInt(event.target.value);
+    console.log(this.state.dataTimelineEmployeesTemp);
+    if(this.state.dataTimelineEmployeesTemp){
+      this.state.dataTimelineEmployeesTemp.map((data, index)=>{
+        if(data.item_no == this.state.itemNo[item_no].item_no){
+          dataSeriesEmployee[0].data.push({
+            x: 'ID : '+data.id_staff,
+            y: [
+              new Date(data.time_start).getTime(),
+              new Date(data.time_close).getTime()
+            ],
+            id_staff : data.id_staff,
+            id_activity : data.id_activity,
+            id_task : data.id_task,
+            item_no : data.item_no,
+            qty_comp: data.qty_comp,
+            qty_open: data.qty_open,
+            qty_order: data.qty_order,
+            time_start: data.time_start,
+          });
+        }
+      })
+      result = dataSeriesEmployee;
+    }
+    else{
+      var result = dataSeriesTemp;
+    }
+    
+    // console.log(dataSeriesEmployee[0].data[0].time_start);
+    this.setState({
+      startAt : dataSeriesEmployee[0].data[0].time_start?dataSeriesEmployee[0].data[0].time_start:"-",
+      series : result
+    })
+
   }
 
 
@@ -294,6 +522,37 @@ render() {
           {/* <Fab color="error" aria-label="add" position="sticky" bottom="20px" right="20px" >
         <AddIcon />
         </Fab> */}
+        <div>
+                <Container className="bg-dark rounded p-4 m-1 mx-auto">
+            <Form>
+                <Form.Group className="mb-3" controlId="typeSearch">
+                <Form.Label className='text-white'>SEARCH</Form.Label>
+                <Form.Select aria-label="Default select example" onChange={this.handleSearchType}>
+                    <option value="0">All</option>
+                    <option value="1">By ID-Staff</option>
+                    <option value="2">By MC-RFID</option>
+                    <option value="3">By First Name</option>
+                    <option value="4">By Last Name</option>
+                    <option value="5">By Role</option>
+                    <option value="6">By Site</option>
+                    <option value="7">By Shif</option>
+                    <option value="8">By Prefix</option>
+                </Form.Select>
+                </Form.Group>
+                <Form.Group className="mb-3" controlId="search">
+                    
+                    <Form.Control type="text" placeholder="Search..." onChange={this.filterSearch}/>
+                    <Form.Text className="text-muted">
+                    ค้นหาพนักงานที่ต้องการโดยเลือกหมวดหมู่ของการค้นหา จากนั้นเติมคำที่ต้องลงในช่องว่าง กรณีไม่เลือกหมวดหมู่จะค้นหาจากทุกหมวด
+                    </Form.Text>
+                </Form.Group>
+                {/* <Button  variant="primary" type="submit">
+                    Search
+                </Button> */}
+            </Form>
+            </Container>
+        </div>
+
         {this.state.dataEmployees.map((row, index) => (
         <div key={index + '-' + row.id_staff}>
         <Button
@@ -347,7 +606,20 @@ render() {
                 <button type="button" className="btn btn-secondary" onClick={this.closeModal}>Close</button>
               </div>
               <div className='container' id={"chart_timeline_main"} >
-                Timeline today Activity : {this.state.dataOnModal.prefix+this.state.dataOnModal.name_first+" "+this.state.dataOnModal.name_last}
+              Timeline : {this.state.dataOnModal.prefix+this.state.dataOnModal.name_first+" "+this.state.dataOnModal.name_last}
+              <Form>
+                <Form.Group className="mb-3" controlId="type">
+                <Form.Label className='text-black'>Item Description</Form.Label>
+                <Form.Select aria-label="Default select example" onChange={this.handleChangeItemNo}>
+                {this.state.itemNo ? 
+                  this.state.itemNo.map((data, index)=>(
+                    <option key={index} value={index}>{data.item_des+" // "+data.item_no}</option>
+                  )) : <option>No data found</option>
+                }
+                </Form.Select>
+                <Form.Label className='text-black'>{"Date Start : "+this.state.startAt}</Form.Label>
+                </Form.Group>
+            </Form>
                     <ReactApexChart options={this.state.options} series={this.state.series} type="rangeBar" height={250}  />                
                     {window.dispatchEvent(new Event('resize'))}
                 </div> 
@@ -430,8 +702,7 @@ render() {
             </div>
           </div>
         </div>
-        
-    </div>
+      </div>
     );
 
 }

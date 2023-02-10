@@ -47,4 +47,40 @@ class employeesController extends Controller
             Log::error($error);
         }
     }
+
+    public function getActivityEmployees (Request $request){
+        try{
+            $data = $request->all();
+            // print_r($data['id_staff']);
+            $result1 = DB::select('select * from activity as b, planning as p where 
+            b.id_task = p.id_task and 
+            b.id_staff = '.$data['id_staff'].' order by b.time_start');
+            $result2 = DB::select('select * from activity_rework as r, planning as p where 
+            r.id_task = p.id_task and 
+            r.id_staff = '.$data['id_staff'].' order by r.time_start');
+            $resultI1 = DB::select('select p.item_no, p.item_des from activity as b, planning as p where 
+            b.id_task = p.id_task and 
+            b.id_staff = '.$data['id_staff'].'
+            group by p.item_no
+            order by b.time_start desc');
+            $resultI2 = DB::select('select p.item_no, p.item_des from activity_rework as r, planning as p where 
+            r.id_task = p.id_task and 
+            r.id_staff = '.$data['id_staff'].'
+            group by p.item_no
+            order by r.time_start desc');
+                $resultData = array_merge(  
+                    ($result1),
+                    ($result2));
+                $resultItem = array_merge(  
+                    ($resultI1),
+                    ($resultI2));
+                $result = [$resultData,$resultItem];
+
+            return response() -> json($result);
+            
+        }
+        catch(Exception $error){
+            Log::error($error);
+        }
+    }
 }
