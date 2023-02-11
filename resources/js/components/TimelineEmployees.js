@@ -614,7 +614,7 @@ render() {
                 <button type="button" className="btn btn-primary" onClick={this.employeesEdit}>Edit</button>
                 <button type="button" className="btn btn-secondary" onClick={this.closeModal}>Close</button>
               </div>
-              <div className='container' id={"chart_timeline_main"} >
+              <div className='container' id={"chart_timeline_employees"} >
               Timeline : {this.state.dataOnModal.prefix+this.state.dataOnModal.name_first+" "+this.state.dataOnModal.name_last}
               <Form>
                 <Form.Group className="mb-3" controlId="type">

@@ -15,7 +15,7 @@ class machinesController extends Controller
     //
     public function getMachinesAll(){
         try{
-            $result = Machine::All();
+            $result = Machine::join('machine_type','machine.id_mc_type','=','machine_type.id_mc_type')->get();
             return response() -> json($result);
         }
         catch(Exception $error){

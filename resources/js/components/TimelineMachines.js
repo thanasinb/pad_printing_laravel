@@ -11,6 +11,7 @@ import { HiX } from "react-icons/hi";
 import "./Modal/modalTimelineMain.css";
 import Form from 'react-bootstrap/Form';
 import { ThirtyFpsSelect } from '@mui/icons-material';
+import SideTimelineMachine from './Side_Timeline/timeline_machineV1';
 
 export class TimelineMachines extends Component {
     constructor(props) {
@@ -101,6 +102,11 @@ export class TimelineMachines extends Component {
             return x.id_workmode.toString().includes(tempFilter.toLowerCase())
           })
         }
+        else if(this.state.searchType === "5"){
+          tempResult = this.state.dataMachinesTemp.filter(x =>{
+            return x.mc_type.toLowerCase().includes(tempFilter.toLowerCase())
+          })
+        }
       
       // console.log(test);
       this.setState({
@@ -122,8 +128,9 @@ render() {
                     <option value="0">All</option>
                     <option value="1">By ID-Machine</option>
                     <option value="2">By Machine-Destination</option>
-                    <option value="3">By Machine-TYPE</option>
+                    <option value="3">By ID-Machine-TYPE</option>
                     <option value="4">By Work-Mode</option>
+                    <option value="5">By Machine-TYPE</option>
                 </Form.Select>
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="search">
@@ -154,9 +161,9 @@ render() {
                                         MC-DES : {row.mc_des?row.mc_des:"-"}
                                         {/* Name: {row.name_first+"  "+row.name_last} */}
                                         </Col>
-                    <Col xs={3} md={2} style={{textAlign:'canter'}}>
+                    <Col xs={6} md={4} style={{textAlign:'canter'}}>
                                         Work Mode : {row.id_workmode?row.id_workmode:"-"} <p/>
-                                        MC TYPE : {row.id_mc_type}
+                                        MC TYPE : {row.mc_type}
                                         {/* Shif: {row.id_shif?row.id_shif:"-"} */}
                                         </Col>
                 </Row>
@@ -174,12 +181,28 @@ render() {
                 </button>
               </div>
               <div className="modal-body">
-                ITEM NO. : {this.state.dataOnModal.id_mc}
+              <Row>
+                <Col>
+                  ID Machine : {this.state.dataOnModal.id_mc}<p/>
+                  Macnine Type : {this.state.dataOnModal.mc_type}<p/>
+                  ID Machine Type : {this.state.dataOnModal.id_mc_type}<p/>
+                  Machine Destination : {this.state.dataOnModal.mc_des}<p/>
+                  Workmode : {this.state.dataOnModal.id_workmode}<p/>
+                  Time Contact : {this.state.dataOnModal.time_contact}<p/>
+                </Col>
+                <Col>
+                  <GiSewingMachine size={200}/>
+                </Col>
+                </Row>
               </div>
               <div className="modal-footer">
                 <button type="button" className="btn btn-primary" onClick={this.machineEdit}>Edit</button>
                 <button type="button" className="btn btn-secondary" onClick={this.closeModal}>Close</button>
               </div>
+              <div className='container' id={"chart_timeline_machine"} >
+                {this.state.showMachineModal? <SideTimelineMachine data={this.state.dataOnModal.id_mc}/> : "-"}
+                    
+                </div> 
             </div>
           </div>
         </div>

@@ -57,7 +57,7 @@ var emptyData = [
     ];
 
 var todayEffect = new Date();
-todayEffect.setHours(9, 0, 0, 0);
+todayEffect.setHours(7, 0, 0, 0);
 if (new Date() < todayEffect){
   console.log("Day - 1");
   todayEffect.setDate(todayEffect.getDate()-1);
