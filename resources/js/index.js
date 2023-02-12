@@ -4,6 +4,8 @@ import TimelineMain from './components/TimelineMain'
 import TimelineEmployees from './components/TimelineEmployees'; 
 import TimelineMachines from './components/TimelineMachines';
 import TimelineProducts from './components/TimelineProducts';
+import TimelineExport from './components/TimelineExport';
+import TimelineImport from './components/TimelineImport';
 
 
 // if (document.getElementById('homepage')) {
@@ -13,10 +15,10 @@ if(document.getElementById('timeline')){
     ReactDOM.render(<TimelineMain />, document.getElementById('timeline'));
 }
 else if(document.getElementById('import')){
-    // ReactDOM.render(<TimelineMain />, document.getElementById('import'));
+    ReactDOM.render(<TimelineImport />, document.getElementById('import'));
 }
 else if(document.getElementById('export')){
-    // ReactDOM.render(<TimelineMain />, document.getElementById('export'));
+    ReactDOM.render(<TimelineExport />, document.getElementById('export'));
 }
 else if(document.getElementById('products')){
     ReactDOM.render(<TimelineProducts />, document.getElementById('products'));
