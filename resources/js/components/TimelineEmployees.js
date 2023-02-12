@@ -72,6 +72,7 @@ class TimelineEmployees extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            tempIdStaff:"",
             dataEmployees : [],
             dataEmployeesTemp : [],
             dataTimelineEmployees : [],
@@ -293,6 +294,7 @@ class TimelineEmployees extends Component {
 
   handleSubmitEditModal = (event) =>{
     event.preventDefault();
+    tempEditData['id_staff_old'] = this.state.tempIdStaff;
     tempEditData['id_staff'] = event.target.idStaff.value;
     tempEditData['id_rfid'] = event.target.idRfid.value;
     tempEditData['prefix'] = event.target.prefixName.value;
@@ -450,6 +452,7 @@ class TimelineEmployees extends Component {
   }
   // console.log(response.data[1][0].item_no);
   this.setState({
+    tempIdStaff: row.id_staff,
     series : result,
     startAt : showDatatime,
     dataTimelineEmployees : response.data[0],

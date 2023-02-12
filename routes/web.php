@@ -38,6 +38,15 @@ Route::get('/machineTimeline', function () {
 Route::get('/update/machinesAll',
     [machinesController::class, 'getMachinesAll']
 );
+Route::post('/update/addMachine',
+    [machinesController::class, 'addMachine']
+);
+Route::post('/update/deleteMachine',
+    [machinesController::class, 'deleteMachine']
+);
+Route::post('/update/editMachine',
+    [machinesController::class, 'editMachine']
+);
 
 
 

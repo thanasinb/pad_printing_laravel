@@ -31,7 +31,7 @@ class employeesController extends Controller
     public function editEmployee(Request $request){
         try{
             $data = $request->all();
-            $result = Staff::where('id_staff','=',$data['id_staff'])->update([
+            $result = Staff::where('id_staff','=',$data['id_staff_old'])->update([
                 'id_staff'=> $data['id_staff'],
                 'id_rfid'=> $data['id_rfid'],
                 'prefix'=> (int)$data['prefix'],

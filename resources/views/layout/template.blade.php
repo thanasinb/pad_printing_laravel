@@ -65,7 +65,8 @@
         
 
         <div class="container rounded  mx-auto"
-            style="background-color: #ff8f8f;
+            style="background-color: #a81f1f;
+                    border: 5px solid rgb(233, 187, 59);
                     margin-top:20px;
                     padding-top:15px;">
                     <div class="row">

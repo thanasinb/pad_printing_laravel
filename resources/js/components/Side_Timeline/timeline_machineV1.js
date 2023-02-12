@@ -7,7 +7,7 @@ import DatePicker from 'react-date-picker';
 import moment from 'moment';
 import 'react-datepicker/dist/react-datepicker.css';
 import { forEach, isEmpty } from 'lodash';
-import "./modalTimelineMain.css"
+import "./modalTimelineMachine.css"
 // import 'bootstrap/dist/css/bootstrap.min.css';
 
 var allDataSort =[];
