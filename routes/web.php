@@ -65,6 +65,10 @@ Route::get('/update/planningAll',
     [productsController::class, 'getPlanningAll']
 );
 
+Route::post('/update/planningSelect',
+    [productsController::class, 'getPlanningSelect']
+);
+
 Route::get('/update/create/comment/',
     [timelineController::class, 'addComment']
 );

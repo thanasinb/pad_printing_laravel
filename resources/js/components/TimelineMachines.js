@@ -107,6 +107,7 @@ export class TimelineMachines extends Component {
         searchType : event.target.value
       })
     }
+    
     filterSearch = (event) => {
       var tempFilter = event.target.value;
       var tempResult;
