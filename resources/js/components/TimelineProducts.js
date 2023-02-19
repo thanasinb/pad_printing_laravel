@@ -10,6 +10,19 @@ import { AiFillCar } from "react-icons/ai";
 import { HiX } from "react-icons/hi";
 import "./Modal/modalTimelineMain.css";
 import Form from 'react-bootstrap/Form';
+import { assign } from 'lodash';
+import { width } from '@mui/system';
+
+  var dataSeriesTemp = [
+    {
+      name: 'Backflush',
+      data: []
+    },
+    {
+      name: 'Rework',
+      data: []
+    },
+    ];
 
 export class TimelineProducts extends Component {
     constructor(props) {
@@ -23,6 +36,78 @@ export class TimelineProducts extends Component {
             itemSelectValueModal : 0,
             showItemModal : false,
             showItemEdit : false,
+            // datetimeStartAll : "",
+            // datetimeCloseAll : "",
+            series: dataSeriesTemp,
+                options: {
+                        chart: {
+                            height: 350,
+                            type: 'rangeBar',
+                            events: {
+                                dataPointSelection: (event, chartContext, config) => {
+                                console.log(event);
+                                }
+                            }
+                            },
+                            plotOptions: {
+                            bar: {
+                                horizontal: true,
+                                barHeight: '60%',
+                                rangeBarGroupRows: true
+                            }
+                            },
+                            colors: [
+                            // "#008FFB",
+                            "#00E36E", 
+                            "#F0E040", 
+                            // "#DA4747"
+                            ],
+                            fill: {
+                            type: 'solid'
+                            },
+                            xaxis: {
+                            type: 'datetime',
+                            labels: {
+                                rotate: -45,
+                                format: 'dd/MM HH:mm:ss',
+                                datetimeUTC: false,
+                            }
+                            },
+                            legend: {
+                            position: 'right'
+                            },
+                            tooltip: {
+                            enabled:true,
+                            onDatasetHover: {
+                                highlightDataSeries: false,
+                
+                            },
+                            theme:'dark',
+                            custom: function(opts) {
+                                var data = opts.ctx.w.globals.initialSeries[opts.seriesIndex].data[opts.dataPointIndex];
+                                // const fromYear = new Date(opts.y1).getFullYear()
+                                // const toYear = new Date(opts.y2).getFullYear()
+                                const timeStartTemp = new Date(parseInt(opts.y1))
+                                const timeEndTemp = new Date(parseInt(opts.y2))
+                                const timeStart = moment(timeStartTemp).format("DD/MM/yyyy HH:mm:ss");
+                                const timeEnd = moment(timeEndTemp).format("DD/MM/yyyy HH:mm:ss");
+                                
+                                // console.log(opts.seriesIndex);
+                                // console.log(opts);
+                                var returnValues = '<div>Time Start : '+timeStart+' '+'</div>'+
+                                  '<div>Time Close :'+timeEnd+' '+'</div>'+
+                                  '<div>ID Staff :'+data.staff+' '+'</div>'+
+                                  '<div>ID Machine :'+data.machine+' '+'</div>'+
+                                  '<div>Quantity :'+data.value+' '+'</div>'
+                                  // '<div>item No. :'+data.item_no+' '+'</div>'+
+                                  // '<div>Item Complete :'+data.qty_comp+' '+'</div>'+
+                                  // '<div>Item Remaining :'+data.qty_open+' '+'</div>'+
+                                  // '<div>Item Order :'+data.qty_order+' '+'</div>';
+                                // console.log(data.staff)
+                                return returnValues
+                            }
+                            }
+                        },
         }
     }
     componentDidMount() {
@@ -45,6 +130,8 @@ export class TimelineProducts extends Component {
                           showItemEdit:false,
                           itemSelectValueModal : 0, });
           // console.log(response.data);
+          var id_task = response.data[this.state.itemSelectValueModal].id_task;
+          this.makeTimelineTask(id_task);
         });
         // console.log("EM SELECTION");
         // console.log(row);
@@ -103,12 +190,71 @@ export class TimelineProducts extends Component {
       
     }
 
-    handleChangeJob = (event) =>{
+    handleChangeTask  = (event) =>{
       var valueSelect = parseInt(event.target.value);
       console.log(valueSelect);
       this.setState({
         itemSelectValueModal : valueSelect,
       })
+      var id_task = this.state.itemSelectModal[valueSelect].id_task;
+      this.makeTimelineTask(id_task);
+
+    }
+
+    makeTimelineTask = (id_task) => {
+      var temp = {id:id_task}
+      // var tempSeries = dataSeries;
+      var dataSeries = [
+        {
+          name: 'Backflush',
+          data: []
+        },
+        {
+          name: 'Rework',
+          data: []
+        },
+        ];
+      axios.post('/update/getDetailTask',temp).then((response)=>{
+        console.log(temp);
+        console.log(response.data);
+        if(response.data[0].length>0){
+          response.data[0].map((data)=>{
+            dataSeries[0].data.push({
+              x: 'ID Task : '+data.id_task,
+              y: [
+                new Date(data.time_start).getTime(),
+                new Date(data.time_close).getTime()
+              ],
+              staff : data.id_staff,
+              machine : data.id_machine,
+              value : data.no_pulse1,
+
+            });
+        })}
+        if(response.data[1].length>0){
+          response.data[1].map((data)=>{
+            dataSeries[1].data.push({
+              x: 'ID Task : '+data.id_task,
+              y: [
+                new Date(data.time_start).getTime(),
+                new Date(data.time_close).getTime()
+              ],
+              staff : data.id_staff,
+              machine : data.id_machine,
+              value : data.no_pulse1,
+              
+            });
+        })}
+        if(response.data[0].length==0 && response.data[1].length==0 ){
+          dataSeries = [];
+          console.log("Empty Data");
+        }
+        this.setState({
+          series : dataSeries,
+        })
+        console.log(this.state.series);
+        
+    })
     }
 
 
@@ -163,7 +309,7 @@ render() {
         </Button>
         ))}
         <div className="modal" tabIndex="-1" role="dialog" style={{ display: this.state.showItemModal ? 'block' : 'none'}}>
-          <div className="modal-dialog" role="document">
+          <div className="modal-dialog-xl"  role="document">
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">Information</h5>
@@ -172,15 +318,15 @@ render() {
                 </button>
               </div>
               <div className="modal-body">
-                ITEM NO. : {this.state.dataOnModal.item_no}<p/>
-                ITEM Description : {this.state.dataOnModal.item_des}<p/>
+              <b>ITEM NO. : </b>{this.state.dataOnModal.item_no}<p/>
+              <b>ITEM Description : </b>{this.state.dataOnModal.item_des}<p/>
                 <Form>
                   <Form.Group className="mb-3" controlId="type">
-                  <Form.Label className='text-black'>Item Description</Form.Label>
-                  <Form.Select aria-label="Default select example" onChange={this.handleChangeJob}>
+                  <Form.Label className='text-black' style={{ fontWeight: 'bold' }} >Select Task Detail</Form.Label>
+                  <Form.Select aria-label="Default select example" onChange={this.handleChangeTask}>
                   {this.state.itemSelectModal ? 
                     this.state.itemSelectModal.map((data, index)=>(
-                      <option key={index} value={index}>{"Date Due: "+data.date_due+" // id_job: "+data.id_job+" // id_task: "+data.id_task}</option>
+                      <option key={index} value={index}>{"ID Task: "+data.id_task+" || ID Job: "+data.id_job+" || Date Due: "+data.date_due}</option>
                     )) : <option>No data found</option>
                   }
                   </Form.Select>
@@ -188,23 +334,35 @@ render() {
                 </Form>
                 {this.state.showItemModal?
                   <div>
-                  ID Task : {this.state.itemSelectModal[this.state.itemSelectValueModal].id_task}<p/>
-                  ID Job : {this.state.itemSelectModal[this.state.itemSelectValueModal].id_job}<p/>
-                  Operation : {this.state.itemSelectModal[this.state.itemSelectValueModal].operation}<p/>
-                  Product Line : {this.state.itemSelectModal[this.state.itemSelectValueModal].prod_line}<p/>
-                  Operation Color/Des./Side : {this.state.itemSelectModal[this.state.itemSelectValueModal].op_color+" / "
-                  +this.state.itemSelectModal[this.state.itemSelectValueModal].op_des+" / "
-                  +this.state.itemSelectModal[this.state.itemSelectValueModal].op_side}<p/>
-                  Quantity Comp/Open/Order : {this.state.itemSelectModal[this.state.itemSelectValueModal].qty_comp+" / "
-                  +this.state.itemSelectModal[this.state.itemSelectValueModal].qty_open+" / "
-                  +this.state.itemSelectModal[this.state.itemSelectValueModal].qty_order}<p/>
-                  Type : {this.state.itemSelectModal[this.state.itemSelectValueModal].type}<p/>
-                  Work Center : {this.state.itemSelectModal[this.state.itemSelectValueModal].work_center}<p/>
-                  Work Order : {this.state.itemSelectModal[this.state.itemSelectValueModal].work_order}<p/>
-                  Sales Job : {this.state.itemSelectModal[this.state.itemSelectValueModal].sales_job}<p/>
-                  Site : {this.state.itemSelectModal[this.state.itemSelectValueModal].site}<p/>
-                  Date Due : {this.state.itemSelectModal[this.state.itemSelectValueModal].date_due}<p/>
-                  Datetime Update : {this.state.itemSelectModal[this.state.itemSelectValueModal].datetime_update}<p/>
+                    <Container>
+                      <Row>
+                        <Col>
+                          <b>ID Task : </b>{this.state.itemSelectModal[this.state.itemSelectValueModal].id_task}<p/>
+                          <b>ID Job : </b>{this.state.itemSelectModal[this.state.itemSelectValueModal].id_job}<p/>
+                          <b>Operation : </b>{this.state.itemSelectModal[this.state.itemSelectValueModal].operation}<p/>
+                          <b>Type : </b>{this.state.itemSelectModal[this.state.itemSelectValueModal].type}<p/>
+                          <b>Product Line : </b>{this.state.itemSelectModal[this.state.itemSelectValueModal].prod_line}<p/>
+                        </Col>
+                        <Col>
+                        <b>Work Center : </b>{this.state.itemSelectModal[this.state.itemSelectValueModal].work_center}<p/>
+                        <b>Work Order : </b>{this.state.itemSelectModal[this.state.itemSelectValueModal].work_order}<p/>
+                        <b>Sales Job : </b>{this.state.itemSelectModal[this.state.itemSelectValueModal].sales_job}<p/>
+                        <b>Site : </b>{this.state.itemSelectModal[this.state.itemSelectValueModal].site}<p/>
+                        <b>Date Due : </b>{this.state.itemSelectModal[this.state.itemSelectValueModal].date_due}<p/>
+                        </Col>
+                      </Row>
+                      <Row>
+                        <Col>
+                        <b>Datetime Update : </b>{this.state.itemSelectModal[this.state.itemSelectValueModal].datetime_update}<p/>
+                        <b>Operation Color/Des./Side : </b>{this.state.itemSelectModal[this.state.itemSelectValueModal].op_color+" / "
+                        +this.state.itemSelectModal[this.state.itemSelectValueModal].op_des+" / "
+                        +this.state.itemSelectModal[this.state.itemSelectValueModal].op_side}<p/>
+                        <b>Quantity Comp/Open/Order : </b>{this.state.itemSelectModal[this.state.itemSelectValueModal].qty_comp+" / "
+                        +this.state.itemSelectModal[this.state.itemSelectValueModal].qty_open+" / "
+                        +this.state.itemSelectModal[this.state.itemSelectValueModal].qty_order}<p/>
+                        </Col>
+                      </Row>
+                  </Container>
                   </div>
                   :"-"}
               </div>
@@ -212,6 +370,8 @@ render() {
                 <button type="button" className="btn btn-primary" onClick={this.itemEdit}>Edit</button>
                 <button type="button" className="btn btn-secondary" onClick={this.closeModal}>Close</button>
               </div>
+                <ReactApexChart options={this.state.options} series={this.state.series} type="rangeBar" height={250}  />                
+                {window.dispatchEvent(new Event('resize'))}
             </div>
           </div>
         </div>
@@ -232,6 +392,7 @@ render() {
                 <button type="button" className="btn btn-primary" onClick={this.closeModal}>Save</button>
                 <button type="button" className="btn btn-secondary" onClick={this.closeModal}>Close</button>
               </div>
+
             </div>
           </div>
         </div>

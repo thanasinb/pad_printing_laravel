@@ -562,7 +562,7 @@ class TimelineMain extends Component {
             <div className='row'>
               <form onSubmit={this.submitTimeline}>
                     <label>
-                      Shif : 
+                    <b>Shif : </b>
                       <select id="lang" onChange={this.onChangeShif} value={this.state.selectShif}>
                         <option value="Select">---Select---</option>
                         <option value="07:00:00">Day</option>
@@ -571,7 +571,7 @@ class TimelineMain extends Component {
                     </label>
               
               <div>
-                Date:
+              <b>Date : </b>
                 <DatePicker name='Date' onChange={this.onChangeDate} value={this.state.nowDate} clearIcon={null} />
               </div>
               <input type="submit" value="Submit" />

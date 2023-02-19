@@ -64,10 +64,13 @@ Route::post('/update/timelineEmployees/',
 Route::get('/update/planningAll',
     [productsController::class, 'getPlanningAll']
 );
-
 Route::post('/update/planningSelect',
     [productsController::class, 'getPlanningSelect']
 );
+Route::post('/update/getDetailTask',
+    [productsController::class, 'getDetailTask']
+);
+
 
 Route::get('/update/create/comment/',
     [timelineController::class, 'addComment']

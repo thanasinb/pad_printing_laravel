@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class activityIdle extends Model
+class ActivityIdle extends Model
 {
     use HasFactory;
     protected $table = 'activity_idle';

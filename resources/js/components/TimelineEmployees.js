@@ -589,7 +589,7 @@ render() {
         ))}
 
         <div className="modal" tabIndex="-1" role="dialog" style={{ display: this.state.showEmployeeModal ? 'block' : 'none'}}>
-          <div className="modal-dialog" role="document">
+          <div className="modal-dialog-med" role="document">
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">Information</h5>
@@ -600,12 +600,12 @@ render() {
               <div className="modal-body">
                 <Row>
                 <Col>
-                  ID Staff : {this.state.dataOnModal.id_staff}<p/>
-                  ID RFID : {this.state.dataOnModal.id_rfid}<p/>
-                  Name : {this.state.dataOnModal.prefix+this.state.dataOnModal.name_first+" "+this.state.dataOnModal.name_last}<p/>
-                  Site : {this.state.dataOnModal.site}<p/>
-                  Shif : {this.state.dataOnModal.id_shif}<p/>
-                  Role : {this.state.dataOnModal.role}<p/>
+                  <b>ID Staff : </b>{this.state.dataOnModal.id_staff}<p/>
+                  <b>ID RFID : </b>{this.state.dataOnModal.id_rfid}<p/>
+                  <b>Name : </b>{this.state.dataOnModal.prefix+this.state.dataOnModal.name_first+" "+this.state.dataOnModal.name_last}<p/>
+                  <b>Site : </b>{this.state.dataOnModal.site}<p/>
+                  <b>Shif : </b>{this.state.dataOnModal.id_shif}<p/>
+                  <b>Role : </b>{this.state.dataOnModal.role}<p/>
                 </Col>
                 <Col>
                   <HiOutlineUser size={220}/>
@@ -618,10 +618,10 @@ render() {
                 <button type="button" className="btn btn-secondary" onClick={this.closeModal}>Close</button>
               </div>
               <div className='container' id={"chart_timeline_employees"} >
-              Timeline : {this.state.dataOnModal.prefix+this.state.dataOnModal.name_first+" "+this.state.dataOnModal.name_last}
+              <b>Timeline : </b>{this.state.dataOnModal.prefix+this.state.dataOnModal.name_first+" "+this.state.dataOnModal.name_last}
               <Form>
                 <Form.Group className="mb-3" controlId="type">
-                <Form.Label className='text-black'>Item Description</Form.Label>
+                <Form.Label className='text-black' style={{ fontWeight: 'bold' }}>Select Item</Form.Label>
                 <Form.Select aria-label="Default select example" onChange={this.handleChangeItemNo}>
                 {this.state.itemNo ? 
                   this.state.itemNo.map((data, index)=>(
@@ -629,7 +629,7 @@ render() {
                   )) : <option>No data found</option>
                 }
                 </Form.Select>
-                <Form.Label className='text-black'>{"Date Start : "+this.state.startAt}</Form.Label>
+                <Form.Label className='text-black' style={{ fontWeight: 'bold' }}>{"Date Start : "+this.state.startAt}</Form.Label>
                 </Form.Group>
             </Form>
                     <ReactApexChart options={this.state.options} series={this.state.series} type="rangeBar" height={250}  />                

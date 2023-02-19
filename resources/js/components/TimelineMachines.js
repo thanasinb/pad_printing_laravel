@@ -311,7 +311,7 @@ render() {
         
         ))}
         <div className="modal" tabIndex="-1" role="dialog" style={{ display: this.state.showMachineModal ? 'block' : 'none'}}>
-          <div className="modal-dialog" role="document">
+          <div className="modal-dialog-med" role="document">
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">Information</h5>
@@ -322,12 +322,12 @@ render() {
               <div className="modal-body">
               <Row>
                 <Col>
-                  ID Machine : {this.state.dataOnModal.id_mc}<p/>
-                  Macnine Type : {this.state.dataOnModal.mc_type}<p/>
-                  ID Machine Type : {this.state.dataOnModal.id_mc_type}<p/>
-                  Machine Description : {this.state.dataOnModal.mc_des}<p/>
-                  Workmode : {this.state.dataOnModal.id_workmode}<p/>
-                  Time Contact : {this.state.dataOnModal.time_contact}<p/>
+                  <b>ID Machine : </b>{this.state.dataOnModal.id_mc}<p/>
+                  <b>Macnine Type : </b>{this.state.dataOnModal.mc_type}<p/>
+                  <b>ID Machine Type : </b>{this.state.dataOnModal.id_mc_type}<p/>
+                  <b>Machine Description : </b>{this.state.dataOnModal.mc_des}<p/>
+                  <b>Workmode : </b>{this.state.dataOnModal.id_workmode}<p/>
+                  <b>Time Contact : </b>{this.state.dataOnModal.time_contact}<p/>
                 </Col>
                 <Col>
                   <GiSewingMachine size={200}/>
