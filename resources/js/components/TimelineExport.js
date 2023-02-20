@@ -23,7 +23,7 @@ export class TimelineExport extends Component {
             value: '',
             date:new Date(),
             dateRange:new Date(),
-            shif:'1',
+            shif:['07:00:00', '07:00:00'],
             selectRange: true,
             fileName:'export',
         }
@@ -44,10 +44,12 @@ export class TimelineExport extends Component {
     }
 
     handleRadioShif = (event) => {
-        // console.log(event.target.value);
+        var temp = event.target.value;
+        var shif_1 = temp.split("-");
         this.setState({
-            shif:event.target.value
-        });
+            shif:shif_1
+        })
+        // console.log(this.state.shif);
     }
 
     setStartDate = (date) => {
@@ -64,12 +66,12 @@ render() {
         <div>
             <form onSubmit={this.handleSubmit}>
             <div> <input type="checkbox" id="topping" name="topping" value={this.state.selectRange} onChange={this.handleSelectRange} /> Select Range </div>
-                Start : 
-                <DatePicker selected={new Date()} onChange={(date) => this.setStartDate(date)} />
-                To :
-                <DatePicker selected={new Date()} onChange={(date) => this.setRangeDate(date)} disabled={this.state.selectRange}/><p/>
+                <b>Start : </b>
+                <DatePicker selected={new Date()} dateFormat="dd/MM/yyyy" onChange={(date) => this.setStartDate(date)} />
+                <b>To : </b>
+                <DatePicker selected={new Date()} dateFormat="dd/MM/yyyy" onChange={(date) => this.setRangeDate(date)} disabled={this.state.selectRange}/><p/>
 
-            <lable>File Name : <input type="text" value={this.state.fileName} onChange={this.handleFileName} /></lable>
+            <lable><b>File Name : </b><input type="text" value={this.state.fileName} onChange={this.handleFileName} /></lable>
             <div>
             <FormControl>
                 <RadioGroup
@@ -78,9 +80,9 @@ render() {
                     onChange={this.handleRadioShif}
                     name="radio-buttons-group"
                 >
-                    <FormControlLabel value="1" control={<Radio />} label="All day (2 Shif)" />
-                    <FormControlLabel value="2" control={<Radio />} label="07:00-19:00 (Day)" />
-                    <FormControlLabel value="3" control={<Radio />} label="19:00-07:00 (Night)" />
+                    <FormControlLabel value="07:00:00-07:00:00" control={<Radio />} label="All day (2 Shif)" />
+                    <FormControlLabel value="07:00:00-19:00:00" control={<Radio />} label="07:00-19:00 (Day)" />
+                    <FormControlLabel value="19:00:00-07:00:00" control={<Radio />} label="19:00-07:00 (Night)" />
                 </RadioGroup>
             </FormControl>
             </div>

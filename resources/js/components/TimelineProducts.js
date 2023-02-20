@@ -276,7 +276,7 @@ render() {
                     
                     <Form.Control type="text" placeholder="Search..." onChange={this.filterSearch}/>
                     <Form.Text className="text-muted">
-                    ค้นหาเครื่องจักรที่ต้องการโดยเลือกหมวดหมู่ของการค้นหา จากนั้นเติมคำที่ต้องลงในช่องว่าง กรณีไม่เลือกหมวดหมู่จะค้นหาจากทุกหมวด
+                    ค้นหางานที่ต้องการโดยเลือกหมวดหมู่ของการค้นหา จากนั้นเติมคำที่ต้องลงในช่องว่าง กรณีไม่เลือกหมวดหมู่จะค้นหาจากทุกหมวด
                     </Form.Text>
                 </Form.Group>
                 {/* <Button  variant="primary" type="submit">
