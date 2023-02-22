@@ -21,14 +21,19 @@ export class TimelineExport extends Component {
         super(props);
         this.state = {
             value: '',
-            date:new Date(),
-            dateRange:new Date(),
+            dateStart:new Date(),
+            dateEnded:new Date(),
             shif:['07:00:00', '07:00:00'],
             selectRange: true,
             fileName:'export',
         }
     }
     componentDidMount() {
+        var toDay = new Date();
+        this.setState({
+            dateStart:(toDay.getDate()<10?("0"+toDay.getDate()):(toDay.getDate()))+"-"+(toDay.getMonth()<10?("0"+toDay.getMonth()):(toDay.getMonth()))+"-"+toDay.getFullYear(),
+            dateEnded:(toDay.getDate()<10?("0"+toDay.getDate()):(toDay.getDate()))+"-"+(toDay.getMonth()<10?("0"+toDay.getMonth()):(toDay.getMonth()))+"-"+toDay.getFullYear(),
+        })
     }
 
     handleSelectRange = () =>{
@@ -53,18 +58,29 @@ export class TimelineExport extends Component {
     }
 
     setStartDate = (date) => {
-        console.log(date);
+        this.setState({
+            dateStart:(date.getDate()<10?("0"+date.getDate()):(date.getDate()))+"-"+(date.getMonth()<10?("0"+date.getMonth()):(date.getMonth()))+"-"+date.getFullYear(),
+        })
+        // console.log((date.getDate()<10?("0"+date.getDate()):(date.getDate()))+"-"+(date.getMonth()<10?("0"+date.getMonth()):(date.getMonth()))+"-"+date.getFullYear());
+        
     }
 
-    setRangeDate = (dateRange) => {
-        console.log(dateRange);
+    setRangeDate = (date) => {
+        this.setState({
+            dateEnded:(date.getDate()<10?("0"+date.getDate()):(date.getDate()))+"-"+(date.getMonth()<10?("0"+date.getMonth()):(date.getMonth()))+"-"+date.getFullYear(),
+        })
+        // console.log(date);
+    }
+
+    handleExport = () =>{
+
     }
 
 
 render() {
     return (
         <div>
-            <form onSubmit={this.handleSubmit}>
+            <form onSubmit={this.handleExport}>
             <div> <input type="checkbox" id="topping" name="topping" value={this.state.selectRange} onChange={this.handleSelectRange} /> Select Range </div>
                 <b>Start : </b>
                 <DatePicker selected={new Date()} dateFormat="dd/MM/yyyy" onChange={(date) => this.setStartDate(date)} />

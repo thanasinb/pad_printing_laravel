@@ -5,6 +5,7 @@ use App\Http\Controllers\timelineController;
 use App\Http\Controllers\machinesController;
 use App\Http\Controllers\employeesController;
 use App\Http\Controllers\productsController;
+use App\Http\Controllers\exportController;
 use Illuminate\Support\Facades\Redirect;
 
 //Part  Route Page >>>>>>>>>>>>>>>>>>>>>>>
@@ -34,6 +35,23 @@ Route::get('/humanTimeline', function () {
 Route::get('/machineTimeline', function () {
     return view('majorette.machineTimeline');
 });
+
+// Route::get('/update/exportFile', function () {
+//     return view('export.update.');
+// });
+
+// Route::get("/update/exportFile", function() {
+//     ob_start();
+//     require(path("public/update")."pp-export-action-2-new");
+//     return ob_get_clean();
+// });
+
+// Route::get("/update/exportFile", function() { return Redirect::to("update/pp-export-action-2-new.php"); });
+
+Route::get('/update/exportFile',
+    [exportController::class, 'exportFile']
+);
+
 
 Route::get('/update/machinesAll',
     [machinesController::class, 'getMachinesAll']
