@@ -48,7 +48,7 @@ Route::get('/machineTimeline', function () {
 
 // Route::get("/update/exportFile", function() { return Redirect::to("update/pp-export-action-2-new.php"); });
 
-Route::get('/update/exportFile',
+Route::post('/update/exportFile',
     [exportController::class, 'exportFile']
 );
 
