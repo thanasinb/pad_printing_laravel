@@ -3,15 +3,15 @@ import Button from 'react-bootstrap/Button';
 import { Container, Row, Col } from 'react-bootstrap';
 import axios from 'axios';
 import ReactApexChart from 'react-apexcharts';
-import DatePicker from 'react-date-picker';
+// import DatePicker from 'react-date-picker';
 import moment from 'moment';
 import 'react-datepicker/dist/react-datepicker.css';
 import { AiFillCar } from "react-icons/ai"; 
 import { HiX } from "react-icons/hi";
 import "./Modal/modalTimelineMain.css";
 import Form from 'react-bootstrap/Form';
-import { assign } from 'lodash';
-import { width } from '@mui/system';
+// import { assign } from 'lodash';
+// import { width } from '@mui/system';
 
   var dataSeriesTemp = [
     {
@@ -130,8 +130,8 @@ export class TimelineProducts extends Component {
                           showItemEdit:false,
                           itemSelectValueModal : 0, });
           // console.log(response.data);
-          var id_task = response.data[this.state.itemSelectValueModal].id_task;
-          this.makeTimelineTask(id_task);
+          // var id_task = response.data[this.state.itemSelectValueModal].id_task;
+          this.makeTimelineTask();
         });
         // console.log("EM SELECTION");
         // console.log(row);
@@ -192,17 +192,17 @@ export class TimelineProducts extends Component {
 
     handleChangeTask  = (event) =>{
       var valueSelect = parseInt(event.target.value);
-      console.log(valueSelect);
+      // console.log(valueSelect);
       this.setState({
         itemSelectValueModal : valueSelect,
       })
-      var id_task = this.state.itemSelectModal[valueSelect].id_task;
-      this.makeTimelineTask(id_task);
+      // var id_task = this.state.itemSelectModal[valueSelect].id_task;
+      // this.makeTimelineTask(id_task);
 
     }
 
-    makeTimelineTask = (id_task) => {
-      var temp = {id:id_task}
+    makeTimelineTask = () => {
+      // var temp = {id:id_task}
       // var tempSeries = dataSeries;
       var dataSeries = [
         {
@@ -214,39 +214,44 @@ export class TimelineProducts extends Component {
           data: []
         },
         ];
-      axios.post('/update/getDetailTask',temp).then((response)=>{
-        console.log(temp);
+      axios.post('/update/getDetailTask',this.state.itemSelectModal).then((response)=>{
+        // console.log(temp);
         console.log(response.data);
-        if(response.data[0].length>0){
-          response.data[0].map((data)=>{
-            dataSeries[0].data.push({
-              x: 'ID Task : '+data.id_task,
-              y: [
-                new Date(data.time_start).getTime(),
-                new Date(data.time_close).getTime()
-              ],
-              staff : data.id_staff,
-              machine : data.id_machine,
-              value : data.no_pulse1,
-
-            });
-        })}
-        if(response.data[1].length>0){
-          response.data[1].map((data)=>{
-            dataSeries[1].data.push({
-              x: 'ID Task : '+data.id_task,
-              y: [
-                new Date(data.time_start).getTime(),
-                new Date(data.time_close).getTime()
-              ],
-              staff : data.id_staff,
-              machine : data.id_machine,
-              value : data.no_pulse1,
-              
-            });
-        })}
-        if(response.data[0].length==0 && response.data[1].length==0 ){
-          dataSeries = [];
+        response.data.map((data) => {
+          dataSeries[0].data.push({
+            x: 'ID Task : '+data[0],
+          });
+          if(data[1].length>0){
+            data[1].map((data)=>{
+              dataSeries[0].data.push({
+                x: 'ID Task : '+data.id_task,
+                y: [
+                  new Date(data.time_start).getTime(),
+                  new Date(data.time_close).getTime()
+                ],
+                staff : data.id_staff,
+                machine : data.id_machine,
+                value : data.no_pulse1,
+  
+              });
+          })}
+          if(data[2].length>0){
+            data[2].map((data)=>{
+              dataSeries[1].data.push({
+                x: 'ID Task : '+data.id_task,
+                y: [
+                  new Date(data.time_start).getTime(),
+                  new Date(data.time_close).getTime()
+                ],
+                staff : data.id_staff,
+                machine : data.id_machine,
+                value : data.no_pulse1,
+                
+              });
+          })}
+        })
+        
+        if(response.data.length==0 && data[1].length==0 ){
           console.log("Empty Data");
         }
         this.setState({
@@ -367,16 +372,16 @@ render() {
                   :"-"}
               </div>
               <div className="modal-footer">
-                <button type="button" className="btn btn-primary" onClick={this.itemEdit}>Edit</button>
+                {/* <button type="button" className="btn btn-primary" onClick={this.itemEdit}>Edit</button> */}
                 <button type="button" className="btn btn-secondary" onClick={this.closeModal}>Close</button>
               </div>
-                <ReactApexChart options={this.state.options} series={this.state.series} type="rangeBar" height={250}  />                
+                <ReactApexChart options={this.state.options} series={this.state.series} type="rangeBar" height={this.state.itemSelectModal.length>4?62*this.state.itemSelectModal.length:250}  />                
                 {window.dispatchEvent(new Event('resize'))}
             </div>
           </div>
         </div>
 
-        <div className="modal" tabIndex="-1" role="dialog" style={{ display: this.state.showItemEdit ? 'block' : 'none'}}>
+        {/* <div className="modal" tabIndex="-1" role="dialog" style={{ display: this.state.showItemEdit ? 'block' : 'none'}}>
           <div className="modal-dialog" role="document">
             <div className="modal-content">
               <div className="modal-header">
@@ -395,7 +400,7 @@ render() {
 
             </div>
           </div>
-        </div>
+        </div> */}
     </div>
     );
 }

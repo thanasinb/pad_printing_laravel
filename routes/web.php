@@ -67,9 +67,9 @@ Route::post('/update/editMachine',
     [machinesController::class, 'editMachine']
 );
 
-Route::get('/update/manualCreateActivityIdle',
-    [manualController::class, 'manualAddIdle']
-);
+// Route::get('/update/manualCreateActivityIdle',
+//     [manualController::class, 'manualAddIdle']
+// );
 
 Route::get('/update/employeesAll',
     [employeesController::class, 'getEmployeesAll']
@@ -89,7 +89,7 @@ Route::post('/update/planningSelect',
     [productsController::class, 'getPlanningSelect']
 );
 Route::post('/update/getDetailTask',
-    [productsController::class, 'getDetailTask']
+    [productsController::class, 'getDetailTask2']
 );
 
 

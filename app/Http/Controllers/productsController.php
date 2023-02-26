@@ -54,4 +54,26 @@ class productsController extends Controller
             Log::error($error);
         }
     }
+
+    public function getDetailTask2(Request $request){
+        try{
+            $data = $request->all();
+            $return_data = array();
+            foreach($data as $id_task){
+            // $result = Planning::where('item_no',$data['id'])->orderBy('id_task','desc')->get();
+            $result_ac_backflush = Activity::where('id_task',$id_task['id_task'])->orderBy('time_start')->get();
+            $result_ac_rework = ActivityRework::where('id_task',$id_task['id_task'])->orderBy('time_start')->get();
+            $result =(object)array_merge(
+                array($id_task['id_task']),
+                array($result_ac_backflush),
+                array($result_ac_rework),
+            );
+            array_push($return_data, $result);
+        }
+            return response() -> json($return_data);
+        }
+        catch(Exception $error){
+            Log::error($error);
+        }
+    }
 }
