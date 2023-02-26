@@ -7,6 +7,7 @@ use App\Http\Controllers\employeesController;
 use App\Http\Controllers\productsController;
 use App\Http\Controllers\exportController;
 use Illuminate\Support\Facades\Redirect;
+use App\Http\Controllers\manualController;
 
 //Part  Route Page >>>>>>>>>>>>>>>>>>>>>>>
 
@@ -66,7 +67,9 @@ Route::post('/update/editMachine',
     [machinesController::class, 'editMachine']
 );
 
-
+Route::get('/update/manualCreateActivityIdle',
+    [manualController::class, 'manualAddIdle']
+);
 
 Route::get('/update/employeesAll',
     [employeesController::class, 'getEmployeesAll']

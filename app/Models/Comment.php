@@ -10,11 +10,9 @@ class Comment extends Model
     use HasFactory;
     protected $table = 'comment';
     protected $fillable = [
-        'comment_id',
-        'unix_time_start',
-        'unix_time_stop',
-        'comment_data',
-        'datetime'
+        'id_comment',
+        'comment_des',
+        'comment_datetime'
 
     ];
     public $timestamps = false;
