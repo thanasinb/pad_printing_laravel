@@ -549,7 +549,9 @@ class TimelineMain extends Component {
         
     });
     }
-
+    addManualIdle = () =>{
+      
+    }
 
     handleComment = (event) =>{
       this.setState({commentValue: event.target.value});
