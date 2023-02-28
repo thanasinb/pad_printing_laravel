@@ -14,6 +14,7 @@ class ActivityDowntime extends Model
         'id_task',
         'id_machine',
         'id_staff',
+        'id_comment',
         'shif',
         'id_code_downtime',
         'status_downtime',

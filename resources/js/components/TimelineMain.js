@@ -545,12 +545,10 @@ class TimelineMain extends Component {
         this.getComment().then(()=>{this.submitTimeline()});
         console.log(response.data);
         this.setState({ showModal: false, commentValue:'' });
+        alert('Add comment success.');
         
         
     });
-    }
-    addManualIdle = () =>{
-      
     }
 
     handleComment = (event) =>{
@@ -563,6 +561,7 @@ class TimelineMain extends Component {
             <div className='ui container stackable two column grid'>
             <div className='row'>
               <form onSubmit={this.submitTimeline}>
+                {/* <label>test</label> */}
                     <label>
                     <b>Shif : </b>
                       <select id="lang" onChange={this.onChangeShif} value={this.state.selectShif}>

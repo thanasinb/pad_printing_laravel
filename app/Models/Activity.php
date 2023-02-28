@@ -16,6 +16,7 @@ class Activity extends Model
         'operation',
         'id_machine',
         'id_staff',
+        'id_comment',
         'shif',
         'status_work',
         'id_break',

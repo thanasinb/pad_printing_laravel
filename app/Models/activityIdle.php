@@ -12,6 +12,7 @@ class ActivityIdle extends Model
     protected $fillable = [
         'id_activity',
         'id_machine',
+        'id_comment',
         'status_work',
         'time_start',
         'time_end',

@@ -10,21 +10,36 @@ import { AiFillCar } from "react-icons/ai";
 import { HiX } from "react-icons/hi";
 import "./Modal/modalTimelineMain.css";
 import { ConstructionOutlined } from '@mui/icons-material';
+import { end } from '@popperjs/core';
 
 export class TimelineImport extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            value: '',
+            fileData: null,
         }
     }
     componentDidMount() {
     }
-    handleChange = (event) => {
-        console.log(event);
-        this.setState({value: event.target.value});
-      }
 
+    handleChange = (event) => {
+      
+      console.log(event);
+      this.setState({fileData: event.target.files[0]});
+    }
+
+    handleSubmit = (event) => {
+      event.preventDefault();
+      if(this.state.fileData == null){
+        return alert("file not found");
+      }
+      // console.log(this.state.fileData);
+      var dataImport = new FormData();
+      dataImport.append('file',this.state.fileData);
+      axios.post('/update/uploadImport',dataImport,{headers:{'Content-Type': 'multipart/form-data'}}).then(response =>{
+        console.log(response.data);
+      })
+    }
 
 
 render() {
@@ -33,10 +48,9 @@ render() {
         <form onSubmit={this.handleSubmit}>
         <label>
           Select Import File 
-          <input type="text" value={this.state.value} onChange={this.handleChange} />
+          <input type="file"  onChange={this.handleChange} />
         </label>
-        <input type="submit" value="Browse" />
-        <button onSubmit={this.handleSubmit}>Import</button>
+        <input type="submit" value="Import" />
       </form>
     </div>
     );

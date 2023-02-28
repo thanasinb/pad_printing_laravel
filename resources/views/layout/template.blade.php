@@ -52,9 +52,9 @@
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
             <a class="nav-link" aria-current="page" href="/">Main</a>
+            <a class="nav-link" href="{{url('/productTimeline')}}">Product</a>
             <a class="nav-link" href="{{url('/humanTimeline')}}">Employee</a>
             <a class="nav-link" href="{{url('/machineTimeline')}}">Machine</a>
-            <a class="nav-link" href="{{url('/productTimeline')}}">Product</a>
             <a class="nav-link" href="{{url('/import')}}">Import</a>
             <a class="nav-link" href="{{url('/export')}}">Export</a>
             </div>

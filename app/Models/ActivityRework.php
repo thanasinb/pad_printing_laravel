@@ -14,6 +14,7 @@ class ActivityRework extends Model
         'id_task',
         'id_machine',
         'id_staff',
+        'id_comment',
         'shif',
         'status_work',
         'id_break',

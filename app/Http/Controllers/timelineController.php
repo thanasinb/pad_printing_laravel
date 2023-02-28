@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Exception;
 use App\Models\Activity;
+use App\Models\ActivityIdle;
 use App\Models\ActivityDowntime;
 use App\Models\ActivityRework;
 use App\Models\BreakRework;
@@ -21,7 +22,7 @@ class timelineController extends Controller
     public function getInfoAllActivityAndAllBreak(){
         try
         {
-            $queryActivity1 = DB::select('SELECT * FROM activity as a ,break as b ,divider as d ,planning as p  
+            $queryActivity1 = DB::select('SELECT * FROM activity as a ,break as b ,divider as d ,planning as p 
             WHERE a.id_break = b.id_break and a.id_task = p.id_task 
             and p.op_color = d.op_color and p.op_side =  d.op_side');
             
@@ -42,13 +43,16 @@ class timelineController extends Controller
             // $num_r_nobreak = count($queryActivity2_noBreak);
 
             $queryActivity3 = ActivityDowntime::all();
+            $queryActivity4 = ActivityIdle::all();
 
             $result =(object)array_merge(  
             array($queryActivity1),
             array($queryActivity1_noBreak),
             array($queryActivity2),
             array($queryActivity2_noBreak),
-            array($queryActivity3));
+            array($queryActivity3),
+            array($queryActivity4),
+        );
 
             return response() -> json($result);
         }
@@ -60,7 +64,7 @@ class timelineController extends Controller
     public function getQueueMachineInfo(){
         try
         {
-            $queryActivity = MachineQueue::where('queue_number','1')->get();
+            $queryActivity = MachineQueue::where('queue_number','1')->orderBy('id_machine')->get();
             $IdMachine = array();
             for($i=0;$i<$queryActivity->count();$i++){
                 array_push($IdMachine,$queryActivity[$i]->id_machine);

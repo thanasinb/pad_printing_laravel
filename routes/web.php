@@ -6,6 +6,7 @@ use App\Http\Controllers\machinesController;
 use App\Http\Controllers\employeesController;
 use App\Http\Controllers\productsController;
 use App\Http\Controllers\exportController;
+use App\Http\Controllers\importController;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Controllers\manualController;
 
@@ -51,6 +52,10 @@ Route::get('/machineTimeline', function () {
 
 Route::post('/update/exportFile',
     [exportController::class, 'exportFile']
+);
+
+Route::post('/update/uploadImport',
+    [importController::class, 'importFile']
 );
 
 
