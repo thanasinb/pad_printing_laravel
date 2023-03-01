@@ -421,6 +421,9 @@ class TimelineMainV2 extends Component {
                       var idle_close = new Date(x.time_close).getTime();
                       if(x.time_close == '0000-00-00 00:00:00' && selectDate == InitialTimeDate){
                         idle_close = new Date().getTime();
+                        if(new Date().getTime() > unixDate + (12*60*60*1000)){
+                          idle_close = unixDate + (12*60*60*1000);
+                        }
                         // console.log('i am check zero and initial time');
                       }
                       else if(x.time_close == '0000-00-00 00:00:00'){
@@ -463,31 +466,62 @@ class TimelineMainV2 extends Component {
                           id_task: x.id_task,
                           total_work: x.total_work
                         });
-                        var y_breakStop = new Date(x.break_stop).getTime();
-                        if(x.break_stop == '0000-00-00 00:00:00' && selectDate == InitialTimeDate){
-                          y_breakStop = new Date().getTime();
+
+                        var bk_start = new Date(x.break_start).getTime();
+                        var bk_close = new Date(x.break_stop).getTime();
+                        if(x.time_close == '0000-00-00 00:00:00' && selectDate == InitialTimeDate){
+                          bk_close = new Date().getTime();
+                          if(new Date().getTime() > unixDate + (12*60*60*1000)){
+                            bk_close = unixDate + (12*60*60*1000);
+                          }
+                          // console.log('i am check zero and initial time');
+                        }
+                        else if(x.break_stop == '0000-00-00 00:00:00'){
+                          bk_close = unixDate + (12*60*60*1000);
+                          // console.log('i am check zero');
+                        }
+                        if(new Date(x.break_start).getTime() < unixDate){
+                          bk_start = unixDate;
+                        }
+                        if(new Date(x.break_stop).getTime() > unixDate + (12*60*60*1000)){
+                          bk_close = unixDate + (12*60*60*1000);
                         }
                         // console.log(Object.keys(x).length+"-break");
                         dataSeries[2].data.push({
                           x: 'ID : '+x.id_machine,
                           y: [
-                            new Date(x.break_start).getTime(),
-                            y_breakStop
+                            bk_start,
+                            bk_close
                           ],
                           staff : x.id_staff,
                           count : calculateCount,
                           break_code : x.break_code,
                           break_duration : x.break_duration,
                         });
-                        var y_AfterBreak = new Date(x.time_close).getTime()
-                        if(x.break_stop == '0000-00-00 00:00:00' && selectDate == InitialTimeDate){
-                          y_AfterBreak = new Date().getTime();
+                        var ac_bk_start = new Date(x.time_start).getTime();
+                        var ac_bk_close = new Date(x.time_close).getTime();
+                        if(x.time_close == '0000-00-00 00:00:00' && selectDate == InitialTimeDate){
+                          ac_bk_close = new Date().getTime();
+                          if(new Date().getTime() > unixDate + (12*60*60*1000)){
+                            ac_bk_close = unixDate + (12*60*60*1000);
+                          }
+                          // console.log('i am check zero and initial time');
+                        }
+                        else if(x.time_close == '0000-00-00 00:00:00'){
+                          ac_bk_close = unixDate + (12*60*60*1000);
+                          // console.log('i am check zero');
+                        }
+                        if(new Date(x.time_start).getTime() < unixDate){
+                          ac_bk_start = unixDate;
+                        }
+                        if(new Date(x.time_close).getTime() > unixDate + (12*60*60*1000)){
+                          ac_bk_close = unixDate + (12*60*60*1000);
                         }
                         dataSeries[1].data.push({
                           x: 'ID : '+x.id_machine,
                           y: [
-                            new Date(x.break_stop).getTime(),
-                            y_AfterBreak
+                            bk_close,
+                            ac_bk_close
                           ],
                           staff : x.id_staff,
                           count : calculateCount,
@@ -500,15 +534,31 @@ class TimelineMainV2 extends Component {
                     
                     else{
                       // console.log(Object.keys(x).length+"-used");
-                      var y_timeClose = new Date(x.time_close).getTime();
-                      if(x.time_close == '0000-00-00 00:00:00' && selectDate == InitialTimeDate){ 
-                        y_timeClose = new Date().getTime();
-                      }
+                      var ac_start = new Date(x.time_start).getTime();
+                      var ac_close = new Date(x.time_close).getTime();
+                        if(x.time_close == '0000-00-00 00:00:00' && selectDate == InitialTimeDate){
+                          ac_close = new Date().getTime();
+                          if(new Date().getTime() > unixDate + (12*60*60*1000)){
+                            ac_close = unixDate + (12*60*60*1000);
+                          }
+                          // console.log('i am check zero and initial time');
+                        }
+                        else if(x.time_close == '0000-00-00 00:00:00'){
+                          ac_close = unixDate + (12*60*60*1000);
+                          // console.log('i am check zero');
+                        }
+                        if(new Date(x.time_start).getTime() < unixDate){
+                          ac_start = unixDate;
+                        }
+                        if(new Date(x.time_close).getTime() > unixDate + (12*60*60*1000)){
+                          ac_close = unixDate + (12*60*60*1000);
+                        }
+                      
                       dataSeries[1].data.push({
                         x: 'ID : '+x.id_machine,
                         y: [
-                          new Date(x.time_start).getTime(),
-                          y_timeClose
+                          ac_start,
+                          ac_close
                         ],
                         // duration:x.duration,
                         staff : x.id_staff,
@@ -523,15 +573,31 @@ class TimelineMainV2 extends Component {
         
                   else{
                     // console.log(Object.keys(x).length+"-downtime");
-                    var y_timeCloseDt = new Date(x.time_close).getTime();
-                      if(x.time_close == '0000-00-00 00:00:00' && selectDate == InitialTimeDate){
-                        y_timeCloseDt = new Date().getTime();
-                      }
+                    var dt_start = new Date(x.time_start).getTime();
+                    var dt_close = new Date(x.time_close).getTime();
+                        if(x.time_close == '0000-00-00 00:00:00' && selectDate == InitialTimeDate){
+                          dt_close = new Date().getTime();
+                          if(new Date().getTime() > unixDate + (12*60*60*1000)){
+                            dt_close = unixDate + (12*60*60*1000);
+                          }
+                          // console.log('i am check zero and initial time');
+                        }
+                        else if(x.time_close == '0000-00-00 00:00:00'){
+                          dt_close = unixDate + (12*60*60*1000);
+                          // console.log('i am check zero');
+                        }
+                        if(new Date(x.time_start).getTime() < unixDate){
+                          dt_start = unixDate;
+                        }
+                        if(new Date(x.time_close).getTime() > unixDate + (12*60*60*1000)){
+                          dt_close = unixDate + (12*60*60*1000);
+                        }
+                    
                     dataSeries[3].data.push({
                       x: 'ID : '+x.id_machine,
                       y: [
-                        new Date(x.time_start).getTime(),
-                        y_timeCloseDt
+                        dt_start,
+                        dt_close
                       ],
                       staff : x.id_staff,
                       code_dt : x.id_code_downtime
