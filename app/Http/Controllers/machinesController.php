@@ -26,33 +26,43 @@ class machinesController extends Controller
     public function addMachine(Request $request){
         try{
             $data = $request->all();
-            $result = Machine::create([
-                'id_mc' => $data['id_mc'],
-                'id_mc_type' => (int)$data['id_mc_type'],
-                'mc_des' => $data['mc_des'],
-                'mc_img' => "",
-                'id_wip' => 0,
-                'id_workmode' => 0,
-                'id_wip_next' => 0,
-                'id_box' => 0,
-                'time_contact' => date("Y-m-d H:i:s"),
-                'contact_count' => 0,
-            ]);
-
-            return response() -> json([
-                'id_mc' => $data['id_mc'],
-                'id_mc_type' => (int)$data['id_mc_type'],
-                'mc_des' => $data['mc_des'],
-                'mc_img' => "",
-                'id_wip' => 0,
-                'id_workmode' => 0,
-                'id_wip_next' => 0,
-                'id_box' => 0,
-                'time_contact' => gmdate("Y-m-d H:i:s", strtotime("+7 hours")),
-                'contact_count' => 0,
-                'event' => 'Add',
-                'status' => 'OK',
-            ]);
+            $checkExistRecord = Machine::where("id_mc",$data['id_mc'])->first();
+            if($checkExistRecord){
+                return response() -> json([
+                    'id_mc' => $data['id_mc'],
+                    'event' => 'Add',
+                    'status' => 'Exist',
+                ]);
+            }
+            else{
+                $result = Machine::create([
+                    'id_mc' => $data['id_mc'],
+                    'id_mc_type' => (int)$data['id_mc_type'],
+                    'mc_des' => $data['mc_des'],
+                    'mc_img' => "",
+                    'id_wip' => 0,
+                    'id_workmode' => 0,
+                    'id_wip_next' => 0,
+                    'id_box' => 0,
+                    'time_contact' => date("Y-m-d H:i:s"),
+                    'contact_count' => 0,
+                ]);
+                return response() -> json([
+                    'id_mc' => $data['id_mc'],
+                    'id_mc_type' => (int)$data['id_mc_type'],
+                    'mc_des' => $data['mc_des'],
+                    'mc_img' => "",
+                    'id_wip' => 0,
+                    'id_workmode' => 0,
+                    'id_wip_next' => 0,
+                    'id_box' => 0,
+                    'time_contact' => gmdate("Y-m-d H:i:s", strtotime("+7 hours")),
+                    'contact_count' => 0,
+                    'event' => 'Add',
+                    'status' => 'OK',
+                ]);
+            }
+            
         }
         catch(Exception $error){
             Log::error($error);
@@ -97,7 +107,7 @@ class machinesController extends Controller
                     return response() -> json([
                         'event' => 'Update',
                         'id_mc' => $data['id_mc'],
-                        'status' => 'Duplicate',
+                        'status' => 'Exist',
                     ]);
                 }
                 else{

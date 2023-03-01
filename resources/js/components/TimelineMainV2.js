@@ -7,6 +7,7 @@ import moment from 'moment';
 import 'react-datepicker/dist/react-datepicker.css';
 import { forEach, isEmpty } from 'lodash';
 import "./Modal/modalTimelineMain.css";
+import { start } from "@popperjs/core";
 // import 'bootstrap/dist/css/bootstrap.min.css';
 
 var allDataSort =[];
@@ -177,6 +178,7 @@ class TimelineMainV2 extends Component {
                                                 '<div>Item No.   : '+data.item_no+' '+'</div>'+
                                                 '<div>Total Work : '+data.total_work+' '+'</div>'+
                                                 '<div>Comment    : '+(data.comment?data.comment:'-')+' '+'</div>' ;
+
                             }
                             else if(opts.seriesIndex == 2){
                               returnValues = '<div>Time Start : '+timeStart+' '+'</div>'+
@@ -210,8 +212,11 @@ class TimelineMainV2 extends Component {
     
 
     componentDidMount = () => {
+      // console.log(shif+" "+InitialTimeDate);
+      var dataCheckInterval = new Date(shif+" "+InitialTimeDate).getTime()
+      // console.log(dataCheckInterval);
         try {
-          if(InitialTimeDate == this.state.selectDate){
+          if(InitialTimeDate == this.state.selectDate && ((new Date().getTime()) > dataCheckInterval) && ((new Date().getTime()) < dataCheckInterval + (12*60*60*1000))){
             this.startInterval(initialStart);
           }
           this.getComment();
@@ -228,8 +233,19 @@ class TimelineMainV2 extends Component {
     
     startInterval = (intervalTime) => {
       clearInterval(this.interval);
+      var div = this.state.selectDate.split('/'); // Set date Interval time mask;
+      var dataCheckInterval = new Date(div[1]+"/"+div[0]+"/"+div[2]+" "+this.state.selectShif).getTime();
+      console.log(new Date(this.state.selectDate).getTime());
+      console.log(this.state.selectDate+" "+this.state.selectShif);
+      console.log(dataCheckInterval);
+      // console.log(new Date("1-3-2023"+" "+this.state.selectShif).getHours());
+      // console.log(new Date("1-3-2023"+" "+this.state.selectShif).getMinutes());
+      // console.log(new Date("1-3-2023"+" "+this.state.selectShif).getDate());
+      // console.log(new Date("3-1-2023"+" "+this.state.selectShif).getMonth()+1);
+      // console.log(new Date("1-3-2023"+" "+this.state.selectShif).getFullYear());
+
       this.interval = setInterval(() => {
-        if(InitialTimeDate != this.state.selectDate){
+        if(InitialTimeDate != this.state.selectDate || ((new Date().getTime()) < dataCheckInterval) || ((new Date().getTime()) > dataCheckInterval + (12*60*60*1000))){
           clearInterval(this.interval);
         }
         else{
@@ -372,8 +388,8 @@ class TimelineMainV2 extends Component {
         alert('Select Shif !!');
         return;
       }
-      console.log(shifDateUnix);
-      console.log(unixDate);
+      // console.log(shifDateUnix);
+      // console.log(unixDate);
       // console.log(InitialTimeDate);
       // console.log(this.state.selectDate);
       this.getQueueMachineInfo();
@@ -679,7 +695,7 @@ class TimelineMainV2 extends Component {
               
               <div>
               <b>Date : </b>
-                <DatePicker name='Date' onChange={this.onChangeDate} value={this.state.nowDate} clearIcon={null} />
+                <DatePicker name='Date' onChange={this.onChangeDate} value={this.state.nowDate} format={'dd/MM/yyyy'} clearIcon={null} />
               </div>
               <input type="submit" value="Submit" />
             </form>

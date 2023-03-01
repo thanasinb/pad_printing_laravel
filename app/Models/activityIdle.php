@@ -15,7 +15,7 @@ class ActivityIdle extends Model
         'id_comment',
         'status_work',
         'time_start',
-        'time_end',
+        'time_close',
         'duration'
     ];
     public $timestamps = false;

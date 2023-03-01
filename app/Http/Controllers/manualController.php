@@ -32,7 +32,7 @@ class manualController extends Controller
                 'id_machine' => $data[$i]->id_machine,
                 'status_work' => $data[$i]->status_work,
                 'time_start' => $data[$i]->time_close,
-                'time_end' => $data[$j]->time_start,
+                'time_close' => $data[$j]->time_start,
                 'duration' => $time_duration,
             ]);
             $j++;

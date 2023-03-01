@@ -11,7 +11,7 @@ import { HiX } from "react-icons/hi";
 import { CgAddR } from "react-icons/Cg";
 import "./Modal/modalTimelineMain.css";
 import Form from 'react-bootstrap/Form';
-import { ThirtyFpsSelect } from '@mui/icons-material';
+import { BorderClearOutlined, ThirtyFpsSelect } from '@mui/icons-material';
 import SideTimelineMachine from './Side_Timeline/timeline_machineV1';
 
 export class TimelineMachines extends Component {
@@ -77,10 +77,11 @@ export class TimelineMachines extends Component {
             showMachineModal:false
           });
           this.getMachines();
+          alert("Editing machine"+response.data.id_mc+" success.");
           console.log(response.data);
         }
         else{
-          alert("Duplicate id_mc !!");
+          alert("Machine "+response.data.id_mc+" already exist.");
         }
         
     });
@@ -178,6 +179,7 @@ export class TimelineMachines extends Component {
             showMachineAdd:false,
           });
           this.getMachines();
+          alert("Delete machine "+response.data.id_mc+" success.");
         });
       } else {
         // Do nothing!
@@ -196,10 +198,17 @@ export class TimelineMachines extends Component {
       console.log(tempAddData);
       axios.post('/update/addMachine',tempAddData).then(response => {
         console.log(response.data);
-        this.setState({
-          showMachineAdd:false,
-        });
-        this.getMachines();
+        if(response.data.status == "OK"){
+          this.setState({
+            showMachineAdd:false,
+          });
+          this.getMachines();
+          alert("Add machine "+response.data.id_mc+" success.");
+        }
+        else{
+          alert("Machine "+response.data.id_mc+" already exist.");
+        }
+        
       });
     }
 
@@ -280,11 +289,11 @@ render() {
             </Container>
             </div>
             <div>
-            <Button variant="warning" className="container rounded p-3 m-1 mx-auto" onClick={event => this.addMachine()}>
+            <Button variant="warning" className="container rounded p-3 m-1 mx-auto" style={{border:'3px solid gray'}} onClick={event => this.addMachine()}>
                 <CgAddR size={30}/> ADD MACHINE
           </Button>
             </div>
-        {this.state.dataMachines.map((row, index) => (
+        {this.state.dataMachines.length>0?this.state.dataMachines.map((row, index) => (
         <Button
         variant="secondary"
         className="container rounded p-3 m-1 mx-auto"
@@ -309,7 +318,18 @@ render() {
         
         </Button>
         
-        ))}
+        ))
+        :<div>
+        <Button
+        variant="warning"
+        className="container rounded p-3 m-1 mx-auto">
+        <Container>
+                <Row>
+                    <Col>Data Not Found</Col>
+                </Row>
+            </Container>
+            </Button>
+      </div>}
         <div className="modal" tabIndex="-1" role="dialog" style={{ display: this.state.showMachineModal ? 'block' : 'none'}}>
           <div className="modal-dialog-med" role="document">
             <div className="modal-content">

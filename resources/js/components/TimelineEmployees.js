@@ -387,6 +387,7 @@ class TimelineEmployees extends Component {
       typeSearchBox : tempFilter
     })
     tempResult = [];
+    // console.log(this.state.dataEmployees)
     
   }
   employeesSelect = (event,row) =>{
@@ -565,7 +566,7 @@ render() {
             </Container>
         </div>
 
-        {this.state.dataEmployees.map((row, index) => (
+        {this.state.dataEmployees.length>0?this.state.dataEmployees.map((row, index) => (
         <div key={index + '-' + row.id_staff}>
         <Button
             variant="secondary"
@@ -586,7 +587,19 @@ render() {
             </Container>
         </Button>
         </div>
-        ))}
+        ))
+      :<div>
+        <Button
+        variant="warning"
+        className="container rounded p-3 m-1 mx-auto">
+        <Container>
+                <Row>
+                    <Col>Data Not Found</Col>
+                </Row>
+            </Container>
+            </Button>
+      </div>
+      }
 
         <div className="modal" tabIndex="-1" role="dialog" style={{ display: this.state.showEmployeeModal ? 'block' : 'none'}}>
           <div className="modal-dialog-med" role="document">
