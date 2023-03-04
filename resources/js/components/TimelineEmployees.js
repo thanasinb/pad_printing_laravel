@@ -548,7 +548,7 @@ render() {
                     <option value="4">By Last Name</option>
                     <option value="5">By Role</option>
                     <option value="6">By Site</option>
-                    <option value="7">By Shif</option>
+                    <option value="7">By Team</option>
                     <option value="8">By Prefix</option>
                 </Form.Select>
                 </Form.Group>
@@ -582,7 +582,7 @@ render() {
                                         Name : {row.prefix+row.name_first+"  "+row.name_last}</Col>
                     <Col xs={3} md={2} style={{textAlign:'canter'}}>Site: {row.site?row.site:"-"} <p/>
                                         Role : {row.role}<p/>
-                                        Shif : {row.id_shif?row.id_shif:"-"}</Col>
+                                        Team : {row.id_shif?row.id_shif:"-"}</Col>
                 </Row>
             </Container>
         </Button>
@@ -617,7 +617,7 @@ render() {
                   <b>ID RFID : </b>{this.state.dataOnModal.id_rfid}<p/>
                   <b>Name : </b>{this.state.dataOnModal.prefix+this.state.dataOnModal.name_first+" "+this.state.dataOnModal.name_last}<p/>
                   <b>Site : </b>{this.state.dataOnModal.site}<p/>
-                  <b>Shif : </b>{this.state.dataOnModal.id_shif}<p/>
+                  <b>Team : </b>{this.state.dataOnModal.id_shif}<p/>
                   <b>Role : </b>{this.state.dataOnModal.role}<p/>
                 </Col>
                 <Col>
@@ -693,7 +693,7 @@ render() {
                 <Form.Control placeholder="Search..." value={this.state.dataOnModal.site?this.state.dataOnModal.site:"-"} onChange={(event) => this.handleSite(event)}/>
                 </Form.Group>
                   <Form.Group className="mb-3" controlId="shif">
-                  <Form.Label className='text-black'>Shif</Form.Label>
+                  <Form.Label className='text-black'>Team</Form.Label>
                   <Form.Select aria-label="Default select example" value={this.state.dataOnModal.id_shif} onChange={(event) => this.handleShif(event)}>
                       {/* <option value={this.state.dataOnModal.id_shif}>{this.state.dataOnModal.id_shif+' (ค่าเริ่มต้น)'}</option> */}
                       <option value="A">A</option>

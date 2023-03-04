@@ -13,6 +13,7 @@ class BreakRework extends Model
         'id_break',
         'id_activity',
         'id_staff',
+        'id_comment',
         'break_code',
         'break_start',
         'break_stop',

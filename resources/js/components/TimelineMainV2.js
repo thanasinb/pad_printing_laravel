@@ -98,8 +98,13 @@ class TimelineMainV2 extends Component {
                 id_machine :[],
                 showModal:false,
                 commentValue:'',
-                commentTime_start:null,
-                commentTime_close:null,
+                commentTempAc:null,
+                commentTempAcType:null,
+                tempSeriesIndex:null,
+                tempDataPointIndex:null,
+                // commentTime_start:null,
+                // commentTime_close:null,
+
                 series: dataSeries,
                 options: {
                         chart: {
@@ -107,13 +112,18 @@ class TimelineMainV2 extends Component {
                           type: 'rangeBar',
                           events: {
                             dataPointSelection: (event, chartContext, config) => {
-                              console.log(event);
-                              this.setState({ showModal: true });
-                              this.setState({commentTime_start:event.target.dataset.rangeY1,
-                                              commentTime_close:event.target.dataset.rangeY2})
-                                              if(this.state.showModal == true){
-                                                console.log(this.state.commentTime_start+'-'+this.state.commentTime_close);
-                                              }
+                              // console.log(event);
+                              console.log(config);
+                              // console.log(chartContext);
+                              console.log(config.w.globals.initialSeries[config.seriesIndex].data[config.dataPointIndex].id_activity);
+                              console.log(config.w.globals.initialSeries[config.seriesIndex].data[config.dataPointIndex].activity_type);
+                              this.setState({
+                                              showModal: true,
+                                              tempSeriesIndex:config.seriesIndex,
+                                              tempDataPointIndex:config.dataPointIndex,
+                                              commentTempAc:config.w.globals.initialSeries[config.seriesIndex].data[config.dataPointIndex].id_activity,
+                                              commentTempAcType:config.w.globals.initialSeries[config.seriesIndex].data[config.dataPointIndex].activity_type,
+                                            })
                             }
                           }
                         },
@@ -213,13 +223,14 @@ class TimelineMainV2 extends Component {
 
     componentDidMount = () => {
       // console.log(shif+" "+InitialTimeDate);
-      var dataCheckInterval = new Date(shif+" "+InitialTimeDate).getTime()
+      var div = this.state.selectDate.split('/'); // Set date Interval time mask;
+      var dataCheckInterval = new Date(div[1]+"/"+div[0]+"/"+div[2]+" "+this.state.selectShif).getTime();
       // console.log(dataCheckInterval);
         try {
           if(InitialTimeDate == this.state.selectDate && ((new Date().getTime()) > dataCheckInterval) && ((new Date().getTime()) < dataCheckInterval + (12*60*60*1000))){
             this.startInterval(initialStart);
           }
-          this.getComment();
+          // this.getComment();
           this.getTimeline().then(() => {
             this.getQueueMachineInfo().then(() =>{
               this.submitTimeline();
@@ -235,9 +246,9 @@ class TimelineMainV2 extends Component {
       clearInterval(this.interval);
       var div = this.state.selectDate.split('/'); // Set date Interval time mask;
       var dataCheckInterval = new Date(div[1]+"/"+div[0]+"/"+div[2]+" "+this.state.selectShif).getTime();
-      console.log(new Date(this.state.selectDate).getTime());
-      console.log(this.state.selectDate+" "+this.state.selectShif);
-      console.log(dataCheckInterval);
+      // console.log(new Date(this.state.selectDate).getTime());
+      // console.log(this.state.selectDate+" "+this.state.selectShif);
+      // console.log(dataCheckInterval);
       // console.log(new Date("1-3-2023"+" "+this.state.selectShif).getHours());
       // console.log(new Date("1-3-2023"+" "+this.state.selectShif).getMinutes());
       // console.log(new Date("1-3-2023"+" "+this.state.selectShif).getDate());
@@ -249,7 +260,7 @@ class TimelineMainV2 extends Component {
           clearInterval(this.interval);
         }
         else{
-          this.getComment();
+          // this.getComment();
           this.getTimeline().then(() => {
             this.getQueueMachineInfo().then(() =>{
               this.submitTimeline();
@@ -293,16 +304,18 @@ class TimelineMainV2 extends Component {
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    getComment = () =>{
+    getComment = () =>{ // NOT USE EVER.
       return axios.get('/update/comment/').then(function (response) {
         listComment = [];
         console.log(response.data);
         response.data.map(function (data, index){
           listComment.push({
-            comment_id : data.comment_id,
-            unix_start : data.unix_time_start,
-            unix_stop : data.unix_time_stop,
-            comment_data : data.comment_data,
+            id_comment : data.id_comment,
+            id_activity : data.id_activity,
+            activity_type : data.activity_type,
+            comment_des : data.comment_des,
+            comment_datetime: data.comment_datetime
+
           })
         });
     });
@@ -311,7 +324,7 @@ class TimelineMainV2 extends Component {
 
     getQueueMachineInfo = () =>{
       return axios.get('/update/getQueueMachineInfo/').then( response => {
-        console.log(response.data);
+        // console.log(response.data);
         listIdMachine = [];
         response.data.map((id,index)=>{
           listIdMachine.push({
@@ -326,7 +339,7 @@ class TimelineMainV2 extends Component {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     onChangeDate = (e) => {
-      console.log(e);
+      // console.log(e);
       const temp = String(e);
       const toUnix = (new Date(temp).getTime());
       const toStringDate = new Date(toUnix)
@@ -346,12 +359,12 @@ class TimelineMainV2 extends Component {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     
     submitTimeline = (e) => {
-      console.log(this.state.selectDate);
-      console.log(InitialTimeDate);
+      // console.log(this.state.selectDate);
+      // console.log(InitialTimeDate);
       if(InitialTimeDate == this.state.selectDate){
         this.startInterval(initialStart);
       }
-      console.log(this.state.timeline);
+      // console.log(this.state.timeline);
       if(e != null){
         e.preventDefault();
       }
@@ -393,7 +406,7 @@ class TimelineMainV2 extends Component {
       // console.log(InitialTimeDate);
       // console.log(this.state.selectDate);
       this.getQueueMachineInfo();
-      var dateDaySelect = this.state.selectDate.split('/');
+      // var dateDaySelect = this.state.selectDate.split('/');
       // console.log(dateDaySelect);
       // console.log(this.state.timeline);
       let count_test = 0;
@@ -432,7 +445,7 @@ class TimelineMainV2 extends Component {
               if( x.id_activity!=null){
                 count_test++;
                     if('duration' in x){
-                      console.log("Im in Idle");
+                      // console.log("Im in Idle");
                       var idle_start = new Date(x.time_start).getTime();
                       var idle_close = new Date(x.time_close).getTime();
                       if(x.time_close == '0000-00-00 00:00:00' && selectDate == InitialTimeDate){
@@ -462,13 +475,16 @@ class TimelineMainV2 extends Component {
                         id : x.id_activity,
                         duration : x.duration,
                         status_work : x.status_work,
-                        comment : x.comment,
+                        comment : x.comment_des,
                         start : x.time_start,
                         close : x.time_close,
+                        id_activity : x.id_activity,
+                        activity_type: x.activity_type,
                       });
                     }
                 
                     else if(x.id_break != 0){
+                      
                         dataSeries[1].data.push({
                           x: 'ID : '+x.id_machine,
                           y: [
@@ -480,7 +496,10 @@ class TimelineMainV2 extends Component {
                           item_no: x.item_no,
                           id_job: x.id_job,
                           id_task: x.id_task,
-                          total_work: x.total_work
+                          total_work: x.total_work,
+                          id_activity : x.id_activity,
+                          activity_type: x.activity_type,
+                          comment : x.comment_des,
                         });
 
                         var bk_start = new Date(x.break_start).getTime();
@@ -503,17 +522,40 @@ class TimelineMainV2 extends Component {
                           bk_close = unixDate + (12*60*60*1000);
                         }
                         // console.log(Object.keys(x).length+"-break");
-                        dataSeries[2].data.push({
-                          x: 'ID : '+x.id_machine,
-                          y: [
-                            bk_start,
-                            bk_close
-                          ],
-                          staff : x.id_staff,
-                          count : calculateCount,
-                          break_code : x.break_code,
-                          break_duration : x.break_duration,
-                        });
+                        // console.log(x);
+                        if(x.activity_type == 1){
+                          dataSeries[2].data.push({
+                            x: 'ID : '+x.id_machine,
+                            y: [
+                              bk_start,
+                              bk_close
+                            ],
+                            staff : x.id_staff,
+                            count : calculateCount,
+                            break_code : x.break_code,
+                            break_duration : x.break_duration,
+                            comment : x.comment_break?x.comment_break:"-",
+                            id_activity : x.id_break,
+                            activity_type: 2, //Break Normal Type Code
+                          });
+                        }
+                        else{
+                          dataSeries[2].data.push({
+                            x: 'ID : '+x.id_machine,
+                            y: [
+                              bk_start,
+                              bk_close
+                            ],
+                            staff : x.id_staff,
+                            count : calculateCount,
+                            break_code : x.break_code,
+                            break_duration : x.break_duration,
+                            comment : x.comment_break?x.comment_break:"-",
+                            id_activity : x.id_break,
+                            activity_type: 5, //Break Rework Type Code
+                          });
+                        }
+                        
                         var ac_bk_start = new Date(x.time_start).getTime();
                         var ac_bk_close = new Date(x.time_close).getTime();
                         if(x.time_close == '0000-00-00 00:00:00' && selectDate == InitialTimeDate){
@@ -537,14 +579,17 @@ class TimelineMainV2 extends Component {
                           x: 'ID : '+x.id_machine,
                           y: [
                             bk_close,
-                            ac_bk_close
+                            ac_bk_close 
                           ],
                           staff : x.id_staff,
                           count : calculateCount,
                           item_no: x.item_no,
                           id_job: x.id_job,
                           id_task: x.id_task,
-                          total_work: x.total_work
+                          comment : x.comment_des,
+                          total_work: x.total_work,
+                          id_activity : x.id_activity,
+                          activity_type: x.activity_type,
                         });
                     }
                     
@@ -582,7 +627,10 @@ class TimelineMainV2 extends Component {
                         item_no: x.item_no,
                         id_job: x.id_job,
                         id_task: x.id_task,
-                        total_work: x.total_work
+                        comment : x.comment_des,
+                        total_work: x.total_work,
+                        id_activity : x.id_activity,
+                        activity_type: x.activity_type,
                       });
                     }
                   }
@@ -616,7 +664,10 @@ class TimelineMainV2 extends Component {
                         dt_close
                       ],
                       staff : x.id_staff,
-                      code_dt : x.id_code_downtime
+                      code_dt : x.id_code_downtime,
+                      comment : x.comment_des,
+                      id_activity : x.id_activity_downtime,
+                      activity_type: x.activity_type,
                     });
                   }
 
@@ -627,26 +678,26 @@ class TimelineMainV2 extends Component {
       }
     })
     });
-      for(let x=0 ;x<4;x++){
+      // for(let x=0 ;x<4;x++){
         
-        listComment.map((comment)=>{
-          // console.log(777);
-          var checkComment = 0;
-          dataSeries[x].data.map(function (value){
-            if(value.y[0] == comment.unix_start && value.y[1] == comment.unix_stop){
-              dataSeries[x].data[checkComment] = {...dataSeries[x].data[checkComment], comment: comment.comment_data};
-          }
-          // console.log(checkComment);
-          checkComment++;
-        }
-        )}
-      )};
+      //   listComment.map((comment)=>{
+      //     // console.log(777);
+      //     var checkComment = 0;
+      //     dataSeries[x].data.map(function (value){
+      //       if(value.y[0] == comment.unix_start && value.y[1] == comment.unix_stop){
+      //         dataSeries[x].data[checkComment] = {...dataSeries[x].data[checkComment], comment: comment.comment_data};
+      //     }
+      //     // console.log(checkComment);
+      //     checkComment++;
+      //   }
+      //   )}
+      // )};
       this.setState({ series: dataSeries }, () => {
         console.log(this.state.series);
       });
       
       
-    console.log('number repeat : '+count_test);
+    // console.log('number repeat : '+count_test);
     console.log('OK');
     window.dispatchEvent(new Event('resize'))
 
@@ -659,14 +710,19 @@ class TimelineMainV2 extends Component {
     saveComment = () =>{
       axios.get('/update/create/comment/',{
         params:{
-          unix_start:this.state.commentTime_start,
-          unix_stop:this.state.commentTime_close,
+          id_activity:this.state.commentTempAc,
+          activity_type:this.state.commentTempAcType,
           comment_data:this.state.commentValue
         }
       }).then((response) => {
-        this.getComment().then(()=>{this.submitTimeline()});
+        this.getTimeline().then(() => {
+          this.getQueueMachineInfo().then(() =>{
+            this.submitTimeline();
+          })})
         console.log(response.data);
-        this.setState({ showModal: false, commentValue:'' });
+        this.setState({ 
+          showModal: false, commentValue:'',
+        });
         alert('Add comment success.');
         
         

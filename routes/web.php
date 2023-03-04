@@ -71,6 +71,9 @@ Route::post('/update/deleteMachine',
 Route::post('/update/editMachine',
     [machinesController::class, 'editMachine']
 );
+Route::post('/update/uploadFileImage',
+    [machinesController::class, 'uploadFileImage']
+);
 
 // Route::get('/update/manualCreateActivityIdle',
 //     [manualController::class, 'manualAddIdle']

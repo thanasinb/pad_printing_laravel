@@ -109,13 +109,13 @@ class SideTimelineMachine extends Component {
                             type: 'rangeBar',
                             events: {
                             dataPointSelection: (event, chartContext, config) => {
-                                console.log(event);
-                                this.setState({ showModal: true });
-                                this.setState({commentTime_start:event.target.dataset.rangeY1,
-                                                commentTime_close:event.target.dataset.rangeY2})
-                                                if(this.state.showModal == true){
-                                                console.log(this.state.commentTime_start+'-'+this.state.commentTime_close);
-                                                }
+                                // console.log(event);
+                                // this.setState({ showModal: true });
+                                // this.setState({commentTime_start:event.target.dataset.rangeY1,
+                                //                 commentTime_close:event.target.dataset.rangeY2})
+                                //                 if(this.state.showModal == true){
+                                //                 console.log(this.state.commentTime_start+'-'+this.state.commentTime_close);
+                                //                 }
                             }
                             }
                         },
@@ -197,10 +197,11 @@ class SideTimelineMachine extends Component {
                                                     '<div>Comment    : '+(data.comment?data.comment:'-')+' '+'</div>' ;
                             }
                             else if(opts.seriesIndex == 0){
-                                returnValues = '<div>Time Start : '+timeStart+' '+'</div>'+
-                                                    '<div>Time Close :'+timeEnd+' '+'</div>'+
-                                                    '<div>ID Staff   : '+data.staff+' '+'</div>'+
-                                                    '<div>Comment    : '+(data.comment?data.comment:'-')+' '+'</div>' ;
+                              returnValues = '<div>Time Start : '+timeStart+' '+'</div>'+
+                                                  '<div>Time Close :'+timeEnd+' '+'</div>'+
+                                                  '<div>Duration   : '+data.duration+' '+'</div>'+
+                                                  '<div>Status Work: '+data.status_work+' '+'</div>'+
+                                                  '<div>Comment    : '+(data.comment?data.comment:'-')+' '+'</div>' ;
                             }
                             // console.log(data.staff)
                             return returnValues
@@ -212,10 +213,10 @@ class SideTimelineMachine extends Component {
     
 
     componentDidMount = () => {
-        
+      var div = this.state.selectDate.split('/'); // Set date Interval time mask;
+      var dataCheckInterval = new Date(div[1]+"/"+div[0]+"/"+div[2]+" "+this.state.selectShif).getTime();
         try {
-
-          if(InitialTimeDate == this.state.selectDate){
+          if(InitialTimeDate == this.state.selectDate && ((new Date().getTime()) > dataCheckInterval) && ((new Date().getTime()) < dataCheckInterval + (12*60*60*1000)) && this.props.show == true){
             this.startInterval(initialStart);
           }
         //   this.getComment();
@@ -230,8 +231,10 @@ class SideTimelineMachine extends Component {
     
     startInterval = (intervalTime) => {
       clearInterval(this.interval);
+      var div = this.state.selectDate.split('/'); // Set date Interval time mask;
+      var dataCheckInterval = new Date(div[1]+"/"+div[0]+"/"+div[2]+" "+this.state.selectShif).getTime();
       this.interval = setInterval(() => {
-        if(InitialTimeDate != this.state.selectDate){
+        if(InitialTimeDate != this.state.selectDate || ((new Date().getTime()) < dataCheckInterval) || ((new Date().getTime()) > dataCheckInterval + (12*60*60*1000))){
           clearInterval(this.interval);
         }
         else{
@@ -377,38 +380,75 @@ class SideTimelineMachine extends Component {
       this.state.timeline.map( (x, i) => {
         listIdMachine.map((id_mc) => {
           // console.log(i);
-          if(((new Date(x.time_start).getTime()) > unixDate) && ((new Date(x.time_start).getTime()) < unixDate + (12*60*60*1000))){
+          if(x.time_close=='0000-00-00 00:00:00'&&this.state.selectDate==InitialTimeDate?((new Date(x.time_start).getTime()) > unixDate):((new Date(x.time_close).getTime()) > unixDate) && ((new Date(x.time_start).getTime()) < unixDate + (12*60*60*1000))){
             var calculateCount = Math.round(parseInt(x.no_pulse1) / parseFloat(x.divider));
             
             if(x.id_machine == id_mc.id_mc){
-              if(id_mc.timeLast == '0000-00-00 00:00:00'){
-                id_mc.timeLast = x.time_start;
-              }
-              if((id_mc.count>0) && (id_mc.timeLast != '-')){
-                // console.log(id_mc.timeLast);
-                dataSeries[0].data.push({
-                x: 'ID : '+id_mc.id_mc,
-                y: [
-                  new Date(id_mc.timeLast).getTime(),
-                  new Date(x.time_start).getTime()
-                ],
-                staff : id_mc.staffLast+'(Latest)',
-              });
-              }
-              else{
-                dataSeries[0].data.push({
-                  x: 'ID : '+id_mc.id_mc,
-                  y: [
-                    new Date(dateDaySelect[2]+'-'+dateDaySelect[1]+'-'+dateDaySelect[0]+' '+shifDateUnix).getTime(),
-                    new Date(x.time_start).getTime()
-                  ],
-                  staff : id_mc.staffLast,
-                });
-              }
-              
+              // if(id_mc.timeLast == '0000-00-00 00:00:00'){
+              //   id_mc.timeLast = x.time_start;
+              // }
+              // console.log(Object.keys(x).length);
+              // if((id_mc.count>0) && (id_mc.timeLast != '-')){
+              //   // console.log(id_mc.timeLast);
+              //   dataSeries[0].data.push({
+              //   x: 'ID : '+id_mc.id_mc,
+              //   y: [
+              //     new Date(id_mc.timeLast).getTime(),
+              //     new Date(x.time_start).getTime()
+              //   ],
+              //   staff : id_mc.staffLast+'(Latest)',
+              // });
+              // }
+              // else{
+              //   dataSeries[0].data.push({
+              //     x: 'ID : '+id_mc.id_mc,
+              //     y: [
+              //       new Date(dateDaySelect[2]+'-'+dateDaySelect[1]+'-'+dateDaySelect[0]+' '+shifDateUnix).getTime(),
+              //       new Date(x.time_start).getTime()
+              //     ],
+              //     staff : id_mc.staffLast,
+              //   });
+              // }
               if( x.id_activity!=null){
                 count_test++;
-                    if(x.id_break != 0){
+                    if('duration' in x){
+                      // console.log("Im in Idle");
+                      var idle_start = new Date(x.time_start).getTime();
+                      var idle_close = new Date(x.time_close).getTime();
+                      if(x.time_close == '0000-00-00 00:00:00' && selectDate == InitialTimeDate){
+                        idle_close = new Date().getTime();
+                        if(new Date().getTime() > unixDate + (12*60*60*1000)){
+                          idle_close = unixDate + (12*60*60*1000);
+                        }
+                        // console.log('i am check zero and initial time');
+                      }
+                      else if(x.time_close == '0000-00-00 00:00:00'){
+                        idle_close = unixDate + (12*60*60*1000);
+                        // console.log('i am check zero');
+                      }
+                      if(new Date(x.time_start).getTime() < unixDate){
+                        idle_start = unixDate;
+                      }
+                      if(new Date(x.time_close).getTime() > unixDate + (12*60*60*1000)){
+                        idle_close = unixDate + (12*60*60*1000);
+                      }
+                      
+                      dataSeries[0].data.push({
+                        x: 'ID : '+id_mc.id_mc,
+                        y: [
+                          idle_start,
+                          idle_close
+                        ],
+                        id : x.id_activity,
+                        duration : x.duration,
+                        status_work : x.status_work,
+                        comment : x.comment,
+                        start : x.time_start,
+                        close : x.time_close,
+                      });
+                    }
+                
+                    else if(x.id_break != 0){
                         dataSeries[1].data.push({
                           x: 'ID : '+x.id_machine,
                           y: [
@@ -422,30 +462,62 @@ class SideTimelineMachine extends Component {
                           id_task: x.id_task,
                           total_work: x.total_work
                         });
-                        var y_breakStop = new Date(x.break_stop).getTime();
-                        if(x.break_stop == '0000-00-00 00:00:00' && selectDate == InitialTimeDate){
-                          y_breakStop = new Date().getTime();
+
+                        var bk_start = new Date(x.break_start).getTime();
+                        var bk_close = new Date(x.break_stop).getTime();
+                        if(x.time_close == '0000-00-00 00:00:00' && selectDate == InitialTimeDate){
+                          bk_close = new Date().getTime();
+                          if(new Date().getTime() > unixDate + (12*60*60*1000)){
+                            bk_close = unixDate + (12*60*60*1000);
+                          }
+                          // console.log('i am check zero and initial time');
                         }
+                        else if(x.break_stop == '0000-00-00 00:00:00'){
+                          bk_close = unixDate + (12*60*60*1000);
+                          // console.log('i am check zero');
+                        }
+                        if(new Date(x.break_start).getTime() < unixDate){
+                          bk_start = unixDate;
+                        }
+                        if(new Date(x.break_stop).getTime() > unixDate + (12*60*60*1000)){
+                          bk_close = unixDate + (12*60*60*1000);
+                        }
+                        // console.log(Object.keys(x).length+"-break");
                         dataSeries[2].data.push({
                           x: 'ID : '+x.id_machine,
                           y: [
-                            new Date(x.break_start).getTime(),
-                            y_breakStop
+                            bk_start,
+                            bk_close
                           ],
                           staff : x.id_staff,
                           count : calculateCount,
                           break_code : x.break_code,
                           break_duration : x.break_duration,
                         });
-                        var y_AfterBreak = new Date(x.time_close).getTime()
-                        if(x.break_stop == '0000-00-00 00:00:00' && selectDate == InitialTimeDate){
-                          y_AfterBreak = new Date().getTime();
+                        var ac_bk_start = new Date(x.time_start).getTime();
+                        var ac_bk_close = new Date(x.time_close).getTime();
+                        if(x.time_close == '0000-00-00 00:00:00' && selectDate == InitialTimeDate){
+                          ac_bk_close = new Date().getTime();
+                          if(new Date().getTime() > unixDate + (12*60*60*1000)){
+                            ac_bk_close = unixDate + (12*60*60*1000);
+                          }
+                          // console.log('i am check zero and initial time');
+                        }
+                        else if(x.time_close == '0000-00-00 00:00:00'){
+                          ac_bk_close = unixDate + (12*60*60*1000);
+                          // console.log('i am check zero');
+                        }
+                        if(new Date(x.time_start).getTime() < unixDate){
+                          ac_bk_start = unixDate;
+                        }
+                        if(new Date(x.time_close).getTime() > unixDate + (12*60*60*1000)){
+                          ac_bk_close = unixDate + (12*60*60*1000);
                         }
                         dataSeries[1].data.push({
                           x: 'ID : '+x.id_machine,
                           y: [
-                            new Date(x.break_stop).getTime(),
-                            y_AfterBreak
+                            bk_close,
+                            ac_bk_close
                           ],
                           staff : x.id_staff,
                           count : calculateCount,
@@ -455,17 +527,36 @@ class SideTimelineMachine extends Component {
                           total_work: x.total_work
                         });
                     }
+                    
                     else{
-                      var y_timeClose = new Date(x.time_close).getTime();
-                      if(x.time_close == '0000-00-00 00:00:00' && selectDate == InitialTimeDate){ 
-                        y_timeClose = new Date().getTime();
-                      }
+                      // console.log(Object.keys(x).length+"-used");
+                      var ac_start = new Date(x.time_start).getTime();
+                      var ac_close = new Date(x.time_close).getTime();
+                        if(x.time_close == '0000-00-00 00:00:00' && selectDate == InitialTimeDate){
+                          ac_close = new Date().getTime();
+                          if(new Date().getTime() > unixDate + (12*60*60*1000)){
+                            ac_close = unixDate + (12*60*60*1000);
+                          }
+                          // console.log('i am check zero and initial time');
+                        }
+                        else if(x.time_close == '0000-00-00 00:00:00'){
+                          ac_close = unixDate + (12*60*60*1000);
+                          // console.log('i am check zero');
+                        }
+                        if(new Date(x.time_start).getTime() < unixDate){
+                          ac_start = unixDate;
+                        }
+                        if(new Date(x.time_close).getTime() > unixDate + (12*60*60*1000)){
+                          ac_close = unixDate + (12*60*60*1000);
+                        }
+                      
                       dataSeries[1].data.push({
                         x: 'ID : '+x.id_machine,
                         y: [
-                          new Date(x.time_start).getTime(),
-                          y_timeClose
+                          ac_start,
+                          ac_close
                         ],
+                        // duration:x.duration,
                         staff : x.id_staff,
                         count : calculateCount,
                         item_no: x.item_no,
@@ -477,15 +568,32 @@ class SideTimelineMachine extends Component {
                   }
         
                   else{
-                    var y_timeCloseDt = new Date(x.time_close).getTime();
-                      if(x.time_close == '0000-00-00 00:00:00' && selectDate == InitialTimeDate){
-                        y_timeCloseDt = new Date().getTime();
-                      }
+                    // console.log(Object.keys(x).length+"-downtime");
+                    var dt_start = new Date(x.time_start).getTime();
+                    var dt_close = new Date(x.time_close).getTime();
+                        if(x.time_close == '0000-00-00 00:00:00' && selectDate == InitialTimeDate){
+                          dt_close = new Date().getTime();
+                          if(new Date().getTime() > unixDate + (12*60*60*1000)){
+                            dt_close = unixDate + (12*60*60*1000);
+                          }
+                          // console.log('i am check zero and initial time');
+                        }
+                        else if(x.time_close == '0000-00-00 00:00:00'){
+                          dt_close = unixDate + (12*60*60*1000);
+                          // console.log('i am check zero');
+                        }
+                        if(new Date(x.time_start).getTime() < unixDate){
+                          dt_start = unixDate;
+                        }
+                        if(new Date(x.time_close).getTime() > unixDate + (12*60*60*1000)){
+                          dt_close = unixDate + (12*60*60*1000);
+                        }
+                    
                     dataSeries[3].data.push({
                       x: 'ID : '+x.id_machine,
                       y: [
-                        new Date(x.time_start).getTime(),
-                        y_timeCloseDt
+                        dt_start,
+                        dt_close
                       ],
                       staff : x.id_staff,
                       code_dt : x.id_code_downtime
@@ -556,10 +664,11 @@ class SideTimelineMachine extends Component {
             <Container>
                 
             <form onSubmit={this.submitTimeline}>
+              <br/>
             <Row>
                     <Col xs={4}>
                     <label>
-                        Shif : 
+                        <b>Shif : </b>
                         <select id="lang" onChange={this.onChangeShif} value={this.state.selectShif} >
                         <option value="Select">---Select---</option>
                         <option value="07:00:00">Day</option>
@@ -571,11 +680,11 @@ class SideTimelineMachine extends Component {
 
                     {/* <Col  style={{textAlign:'canter'}}>Date : </Col> */}
 
-                    <Col xs ={5}> Date :
-                        <DatePicker name='Date' onChange={this.onChangeDate} value={this.state.nowDate} clearIcon={null} />
+                    <Col xs ={5}><b>Date : </b> 
+                        <DatePicker name='Date' onChange={this.onChangeDate} value={this.state.nowDate} format={'dd/MM/yyyy'} clearIcon={null} />
                     </Col>
 
-                    <Col  style={{textAlign:'canter'}}><input type="submit" value="Submit" /></Col>
+                    <Col  style={{textAlign:'canter'}}><input className="btn btn-success" type="submit" value="Submit" /></Col>
                     
                     </Row>
             </form>
