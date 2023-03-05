@@ -75,6 +75,7 @@ Route::post('/update/uploadFileImage',
     [machinesController::class, 'uploadFileImage']
 );
 
+
 // Route::get('/update/manualCreateActivityIdle',
 //     [manualController::class, 'manualAddIdle']
 // );
@@ -87,6 +88,12 @@ Route::post('/update/editEmployee',
 );
 Route::post('/update/timelineEmployees/',
     [employeesController::class, 'getActivityEmployees']
+);
+Route::post('/update/uploadFileImage/employee',
+    [employeesController::class, 'uploadFileImage']
+);
+Route::post('/update/deleteImage',
+    [employeesController::class, 'deleteImage']
 );
 
 

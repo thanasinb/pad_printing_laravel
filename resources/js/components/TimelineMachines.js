@@ -73,7 +73,7 @@ export class TimelineMachines extends Component {
       var tempAddData = {
         id_mc:this.state.addIdMc,
         id_mc_type:this.state.addIdMcType,
-        mc_des:this.state.addMcDes,
+        mc_des:this.state.addMcDes?this.state.addMcDes:"-",
         mc_img:this.state.tempUploadImage!=null?this.state.tempUploadImage.name:"-",
       };
       if(this.state.tempUploadImage!=null){
@@ -108,7 +108,7 @@ export class TimelineMachines extends Component {
         id_mc_old:this.state.tempIdMc,
         id_mc:this.state.dataOnModal.id_mc,
         id_mc_type:this.state.dataOnModal.id_mc_type,
-        mc_des:this.state.dataOnModal.mc_des,
+        mc_des:this.state.dataOnModal.mc_des?this.state.dataOnModal.mc_des:"-",
         mc_img:this.state.tempUploadImage!=null?this.state.tempUploadImage.name:"-",
       };
       if(this.state.tempUploadImage!=null){
@@ -240,10 +240,18 @@ export class TimelineMachines extends Component {
       var tempDeleteData = {
         id_mc:this.state.dataOnModal.id_mc,
       }
-
+      var data = {
+        id_mc:this.state.dataOnModal.id_mc,
+        image:this.state.dataOnModal.mc_img,
+        type:'machine',
+      }
       if (confirm('Are you sure, you want to Delete Machine ID:'+this.state.dataOnModal.id_mc)) {
         // Delete it!
         // console.log(tempDeleteData);
+        axios.post('/update/deleteImage',data).then(response =>{
+          console.log(response.data);
+          });
+
         axios.post('/update/deleteMachine',tempDeleteData).then(response => {
           console.log(response.data);
           this.setState({
@@ -252,8 +260,8 @@ export class TimelineMachines extends Component {
             showMachineAdd:false,
             tempUploadImage:null,
           });
-          this.getMachines();
           alert("Delete machine "+response.data.id_mc+" success.");
+          this.getMachines();
         });
       } else {
         // Do nothing!
@@ -284,7 +292,17 @@ export class TimelineMachines extends Component {
     handleMachineUploadImage = (event) =>{
       var selectedFile = event.target.files[0];
       var allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
-      if (selectedFile && allowedTypes.includes(selectedFile.type)) {
+      if(selectedFile.size > 1048576){
+        alert("Maximum image file size is 1 MB");
+        document.getElementById("imageEdit").value = "";
+        document.getElementById("imageAdd").value = "";
+      }
+      else if(selectedFile.name.length > 20){
+        alert("Filename is too longer");
+        document.getElementById("imageEdit").value = "";
+        document.getElementById("imageAdd").value = "";
+      }
+      else if (selectedFile && allowedTypes.includes(selectedFile.type)) {
         this.setState({
           tempUploadImage:selectedFile,
           // imageValue:event.target.files[0].name,
@@ -297,10 +315,20 @@ export class TimelineMachines extends Component {
     }
 
     handleMachineUploadImageOnModal = (event) =>{
-      // console.log(event.target.files[0]);
+      console.log(event.target.files[0]);
       var selectedFile = event.target.files[0];
       var allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
-      if (selectedFile && allowedTypes.includes(selectedFile.type)) {
+      if(selectedFile.size > 1048576){
+        alert("Maximum image file size is 1 MB");
+        document.getElementById("imageEdit").value = "";
+        document.getElementById("imageAdd").value = "";
+      }
+      else if(selectedFile.name.length > 20){
+        alert("Filename is too longer");
+        document.getElementById("imageEdit").value = "";
+        document.getElementById("imageAdd").value = "";
+      }
+      else if (selectedFile && allowedTypes.includes(selectedFile.type)) {
         this.setState({
           tempUploadImage:selectedFile,
           // imageValue:event.target.files[0].name,
@@ -337,6 +365,31 @@ export class TimelineMachines extends Component {
           mc_des: event.target.value
         }
       })
+    }
+
+    deleteImage = () =>{
+      if (confirm('Are you sure, you want to delete image Machine ID : '+this.state.dataOnModal.id_mc)) {
+        // Delete it!
+        var data = {
+          id_mc:this.state.dataOnModal.id_mc,
+          image:this.state.dataOnModal.mc_img,
+          type:'machine',
+        }
+        axios.post('/update/deleteImage',data).then(response =>{
+          console.log(response.data);
+          this.setState({
+            dataOnModal: {
+              ...this.state.dataOnModal,
+              mc_img: '',
+            }
+          })
+          this.getMachines();
+        })
+      } 
+      else {
+        // Do nothing!
+        console.log('Cancel image deleting.');
+      }
     }
 
     
@@ -386,7 +439,7 @@ render() {
         >
             <Container>
                 <Row>
-                    <Col xs={6} md={4} >{row.mc_img.length<2?<GiSewingMachine size={70}/>:<img src={"images/"+encodeURI(row.mc_img)} width="70" height="70" alt={"Image ID : "+row.id_mc} />}<p/>
+                    <Col xs={6} md={4} >{row.mc_img.length<2?<GiSewingMachine size={70}/>:<img src={"images/machines/"+encodeURI(row.mc_img)} width="70" height="70" alt={"Image ID : "+row.id_mc} />}<p/>
                                         <a style={{ color: '#CBCBCB', opacity:0.5}}>Click to see more information</a></Col>
                     <Col xs={6} md={4}> ID Machine : {row.id_mc}<p/>
                                         MC-DES : {row.mc_des?row.mc_des:"-"}
@@ -433,13 +486,14 @@ render() {
                 </Col>
                 <Col>
                   {this.state.dataOnModal.mc_img<1?<GiSewingMachine size={200}/>
-                  :<img src={"images/"+encodeURI(this.state.dataOnModal.mc_img)} width="200" height="200" alt={"Image ID :"+this.state.dataOnModal.id_mc}/>}
+                  :<img src={"images/machines/"+encodeURI(this.state.dataOnModal.mc_img)} width="200" height="200" alt={"Image ID :"+this.state.dataOnModal.id_mc}/>}
                 </Col>
                 </Row>
               </div>
               <div className="modal-footer">
                 <button type="button" className="btn btn-primary" onClick={this.machineEdit}>Edit</button>
                 <button type="button" className="btn btn-danger" onClick={this.machineDelete}>Delete</button>
+                {this.state.dataOnModal.mc_img?<button type="button" className="btn btn-danger" onClick={this.deleteImage}>Delete image</button>:true}
                 <button type="button" className="btn btn-secondary" onClick={this.closeModal}>Close</button>
               </div>
               <div className='container' id={"chart_timeline_machine"} >
@@ -474,7 +528,7 @@ render() {
                 </Form.Group>
                 <Form.Group className="mb-3">
                   <Form.Label className='text-black'>Machine Image</Form.Label>
-                <Form.Control id='imageAdd' type='file' accept="image/png, image/jpeg, image/jpg" onChange={this.handleMachineUploadImage}/>
+                <Form.Control id='imageAdd' type='file' accept="image/png, image/jpeg, image/jpg" maxlength="1048576" onChange={this.handleMachineUploadImage}/>
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="mc_des">
                   <Form.Label className='text-black'>Machine Description</Form.Label>

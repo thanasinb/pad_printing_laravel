@@ -22,6 +22,10 @@
                 text-shadow: 0 0 1px black, 0 0 3px black, 0 0 5px black;
                 text-align: center;
             }
+            .text-border-right {
+                text-shadow: 0 0 1px black, 0 0 3px black, 0 0 5px black;
+                text-align: right;
+            }
             .nav-link {
                 font-size:18px;
                 margin-right: 10px;
@@ -32,7 +36,7 @@
         setInterval(function() {
             const clock = document.getElementById('clock');
             const now = new Date();
-            clock.innerHTML =now.toLocaleDateString()+' เวลา : '+now.toLocaleTimeString();
+            clock.innerHTML =now.toLocaleDateString()+' '+now.toLocaleTimeString();
             }, 1000);
         </script>
 
@@ -51,12 +55,12 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
-            <a class="nav-link" aria-current="page" href="/">Main</a>
-            <a class="nav-link" href="{{url('/productTimeline')}}">Product</a>
-            <a class="nav-link" href="{{url('/humanTimeline')}}">Employee</a>
-            <a class="nav-link" href="{{url('/machineTimeline')}}">Machine</a>
-            <a class="nav-link" href="{{url('/import')}}">Import</a>
-            <a class="nav-link" href="{{url('/export')}}">Export</a>
+            <a class="nav-link" style="font-size: 20px" aria-current="page" href="/">Main</a>
+            <a class="nav-link" style="font-size: 20px" href="{{url('/productTimeline')}}">Product</a>
+            <a class="nav-link" style="font-size: 20px" href="{{url('/humanTimeline')}}">Employee</a>
+            <a class="nav-link" style="font-size: 20px" href="{{url('/machineTimeline')}}">Machine</a>
+            <a class="nav-link" style="font-size: 20px" href="{{url('/import')}}">Import</a>
+            <a class="nav-link" style="font-size: 20px" href="{{url('/export')}}">Export</a>
             </div>
         </div>
         </div>
@@ -64,27 +68,23 @@
         <!-- End Part Navbar  -->
         
 
-        <div class="container rounded  mx-auto"
+        <div id='red_header' class="container rounded  mx-auto"
             style="background-color: #a81f1f;
                     border: 5px solid rgb(233, 187, 59);
                     margin-top:20px;
                     padding-top:15px;">
                     <div class="row">
-                        <div class="col-9"><p style="color: rgb(255, 255, 255); font-size: 36px;"><span class="text-border">@yield('topic')</span></p></div>
-                        <div class="col-3"><p style="color: rgb(255, 255, 255); font-size: 24px;"><span id="clock" class="text-border-center"></span></p></div>
+                        <div class="col" style="margin-left: 20px; margin-right: 20px">
+                            <p style="color: rgb(255, 255, 255); font-size: 36px; display: flex; justify-content: space-between;">
+                                <span class="text-border">@yield('topic')</span>
+                                <span id="clock" class="text-border-right" style="font-size: 28px;"></span>
+                            </p>
+                        </div>
                     </div>
         </div>
         
-        <div class="container rounded p-5 mx-auto" 
-            style="background-color: #bbbbbb;
-                    margin-top:10px;
-                    height:100%;
-                    width:100%;
-                    ">
-
             @yield('contents') <!-- Part Contents -->
             
-        </div>
         
 
 

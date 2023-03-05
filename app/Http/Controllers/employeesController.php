@@ -9,15 +9,17 @@ use App\Models\Activity;
 use App\Models\ActivityDowntime;
 use App\Models\ActivityRework;
 use App\Models\Staff;
+use App\Models\Machine;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 
 class employeesController extends Controller
 {
     //
     public function getEmployeesAll(){
         try{
-            $result = DB::select('SELECT id_staff, id_rfid, name_first, name_last, s.site, id_shif, r.role, r.id_role, p.prefix, p.id_prefix from staff as s , role as r, prefix as p 
+            $result = DB::select('SELECT id_staff, id_rfid, name_first, name_last, s.site, id_shif, r.role, r.id_role, p.prefix, p.id_prefix, s.staff_img from staff as s , role as r, prefix as p 
             where 
             s.prefix = p.id_prefix AND
             s.id_role = r.id_role');
@@ -40,8 +42,140 @@ class employeesController extends Controller
                 'site'=> $data['site'],
                 'id_role'=> (int)$data['id_role'],
                 'id_shif'=> $data['id_shif'],
+                'staff_img' => $data['staff_img'],
             ]);
-            return response() -> json($result);
+
+            if($data['id_staff'] == $data['id_staff_old']){
+
+                if($data['staff_img']=="-"){
+                    $result = Staff::where('id_staff','=',$data['id_staff_old'])->update([
+                        'id_staff'=> $data['id_staff'],
+                        'id_rfid'=> $data['id_rfid'],
+                        'prefix'=> (int)$data['prefix'],
+                        'name_first'=> $data['name_first'],
+                        'name_last'=> $data['name_last'],
+                        'site'=> $data['site'],
+                        'id_role'=> (int)$data['id_role'],
+                        'id_shif'=> $data['id_shif'],
+                    ]);
+                }
+                else{
+                    $result = Staff::where('id_staff','=',$data['id_staff_old'])->update([
+                        'id_staff'=> $data['id_staff'],
+                        'id_rfid'=> $data['id_rfid'],
+                        'prefix'=> (int)$data['prefix'],
+                        'name_first'=> $data['name_first'],
+                        'name_last'=> $data['name_last'],
+                        'site'=> $data['site'],
+                        'id_role'=> (int)$data['id_role'],
+                        'id_shif'=> $data['id_shif'],
+                        'staff_img' => $data['staff_img'],
+                    ]);
+                }
+                
+                // print_r($result."123");
+                return response() -> json([
+                    'event' => 'Update',
+                    'id_staff' => $data['id_staff_old'],
+                    'status' => 'OK',
+                ]);
+            }
+            else{
+                $check_duplicate = Staff::where('id_staff',$data['id_staff'])->get();
+                if(!empty($check_duplicate)){
+                    return response() -> json([
+                        'event' => 'Update',
+                        'id_staff' => $data['id_staff'],
+                        'status' => 'Exist',
+                    ]);
+                }
+                else{
+                    if($data['staff_img']=="-"){
+                        $result = Staff::where('id_staff','=',$data['id_staff_old'])->update([
+                            'id_staff'=> $data['id_staff'],
+                            'id_rfid'=> $data['id_rfid'],
+                            'prefix'=> (int)$data['prefix'],
+                            'name_first'=> $data['name_first'],
+                            'name_last'=> $data['name_last'],
+                            'site'=> $data['site'],
+                            'id_role'=> (int)$data['id_role'],
+                            'id_shif'=> $data['id_shif'],
+                        ]);
+                    }
+                    else{
+                        $result = Staff::where('id_staff','=',$data['id_staff_old'])->update([
+                            'id_staff'=> $data['id_staff'],
+                            'id_rfid'=> $data['id_rfid'],
+                            'prefix'=> (int)$data['prefix'],
+                            'name_first'=> $data['name_first'],
+                            'name_last'=> $data['name_last'],
+                            'site'=> $data['site'],
+                            'id_role'=> (int)$data['id_role'],
+                            'id_shif'=> $data['id_shif'],
+                            'staff_img' => $data['staff_img'],
+                        ]);
+                    }
+
+                    return response() -> json([
+                        'event' => 'Update',
+                        'id_staff' => $data['id_staff_old'],
+                        'status' => 'OK',
+                    ]);
+                }
+        }
+    }
+        catch(Exception $error){
+            Log::error($error);
+        }
+    }
+
+    public function deleteImage(Request $request){
+        try{
+            $data = $request->all();
+            $filename = $data['image'];
+            if($data['type'] == 'employee'){
+                Staff::where('id_staff',$data['id_staff'])->update([
+                    'staff_img' => "",
+                ]);
+                $path = public_path('images/employees/' . $filename);
+                    if (File::exists($path)) {
+                        File::delete($path);
+                    }
+            }
+            else{
+                Machine::where('id_mc',$data['id_mc'])->update([
+                    'mc_img' => "",
+                ]);
+                $path = public_path('images/machines/' . $filename);
+                    if (File::exists($path)) {
+                        File::delete($path);
+                    }
+            }
+            return response() -> json(['status'=>'Delete Success']);
+        }
+        catch(Exception $error){
+            Log::erorr($error);
+        }
+    }
+
+    public function uploadFileImage(Request $request){
+        try{
+            $request->validate([
+                'file' => 'required|file|max:1024', // max file size is 1MB
+            ]);
+            $file = $request->file('file');
+            $fileName = $file->getClientOriginalName();
+            // return response() -> json($fileName);
+            // Store the file in the public/images/employees directory
+            $filePath = $file->move(public_path('images/employees'), $fileName);
+            // Save the file information to the database
+            $fileData = new File();
+            $fileData->name = $fileName;
+            $fileData->path = '/images/employees/'.$filePath;
+            $fileData->save();
+
+            return redirect()->back()->with('success', 'File uploaded successfully.');
+            // return response() -> json(['event'=>'upload_image','status' => 'OK']);
         }
         catch(Exception $error){
             Log::error($error);

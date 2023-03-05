@@ -66,6 +66,7 @@ var tempEditData = {
   site:'',
   id_shif:'',
   role:'',
+  staff_img:'',
 };
 
 class TimelineEmployees extends Component {
@@ -86,6 +87,7 @@ class TimelineEmployees extends Component {
             showEmployeeModal : false,
             showEmployeeEdit : false,
             series: dataSeries,
+            tempUploadImage: null,
                 options: {
                         chart: {
                             height: 350,
@@ -198,6 +200,7 @@ class TimelineEmployees extends Component {
 
     
     employeesEdit = (event) =>{
+      document.getElementById("imageEdit").value = "";
         this.setState({
             showEmployeeModal:false,
             showEmployeeEdit:true
@@ -208,14 +211,16 @@ class TimelineEmployees extends Component {
         this.setState({
             showEmployeeModal:false,
             showEmployeeEdit:false,
-            series:dataSeriesTemp
+            series:dataSeriesTemp,
+            tempUploadImage: null,
         })
     }
 
     backModal = () =>{
       this.setState({
         showEmployeeModal:true,
-        showEmployeeEdit:false
+        showEmployeeEdit:false,
+        tempUploadImage: null,
     })
   }
 
@@ -294,6 +299,7 @@ class TimelineEmployees extends Component {
 
   handleSubmitEditModal = (event) =>{
     event.preventDefault();
+    document.getElementById("imageEdit").value = "";
     tempEditData['id_staff_old'] = this.state.tempIdStaff;
     tempEditData['id_staff'] = event.target.idStaff.value;
     tempEditData['id_rfid'] = event.target.idRfid.value;
@@ -303,14 +309,22 @@ class TimelineEmployees extends Component {
     tempEditData['site'] = event.target.site.value;
     tempEditData['id_shif'] = event.target.shif.value;
     tempEditData['id_role'] = event.target.role.value;
+    tempEditData['staff_img'] = this.state.tempUploadImage!=null?this.state.tempUploadImage.name:"-";
+    this.uploadImage();
     // console.log(event.target.idStaff.value);
     axios.post('/update/editEmployee',tempEditData).then(response => {
-      this.setState({
-        showEmployeeModal:false,
-        showEmployeeEdit:false
-      });
-      this.getEmployees();
-      // console.log(response.data);
+      if(response.data.status == "OK"){
+        this.setState({
+          showEmployeeModal:false,
+          showEmployeeEdit:false
+        });
+        this.getEmployees();
+        alert("Editing employee "+response.data.id_staff+" success.");
+        // console.log(response.data);
+      }
+      else{
+        alert("Employee ID Staff: "+response.data.id_staff+" already exist.");
+      }
   });
   }
 
@@ -528,6 +542,69 @@ class TimelineEmployees extends Component {
 
   }
 
+  handleEmployeeUploadImageOnModal = (event) =>{
+    var selectedFile = event.target.files[0];
+    var allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
+    if(selectedFile.size > 1048576){
+      alert("Maximum image file size is 1 MB");
+      document.getElementById("imageEdit").value = "";
+    }
+    else if(selectedFile.name.length > 20){
+      alert("Filename is too longer");
+      document.getElementById("imageEdit").value = "";
+    }
+    else if (selectedFile && allowedTypes.includes(selectedFile.type)) {
+      this.setState({
+        tempUploadImage:selectedFile,
+        // imageValue:event.target.files[0].name,
+      })
+      console.log("Add file.");
+    } else {
+      console.log("Not found or match type file.");
+    }
+    
+  }
+
+  uploadImage = () =>{
+    var formData = new FormData();
+    formData.append('file', this.state.tempUploadImage);
+    axios.post('/update/uploadFileImage/employee',formData,{
+      headers: {
+        'Content-Type': 'multipart/form-data'
+    }
+    }).then(response =>{
+      console.log(response.data);
+      this.setState({
+        tempUploadImage:null,
+      })
+    })
+  }
+
+  deleteImage = () =>{
+    if (confirm('Are you sure, you want to delete image Staff ID : '+this.state.dataOnModal.id_staff)) {
+      // Delete it!
+      var data = {
+        id_staff:this.state.dataOnModal.id_staff,
+        image:this.state.dataOnModal.staff_img,
+        type:'employee',
+      }
+      axios.post('/update/deleteImage',data).then(response =>{
+        console.log(response.data);
+        this.setState({
+          dataOnModal: {
+            ...this.state.dataOnModal,
+            staff_img: '',
+          }
+        })
+        this.getEmployees();
+      })
+    } 
+    else {
+      // Do nothing!
+      console.log('Cancel image deleting.');
+    }
+  }
+
 
 render() {
     return (
@@ -575,7 +652,7 @@ render() {
             >
             <Container>
                 <Row>
-                    <Col xs={6} md={4} ><HiOutlineUser size={70}/><p/>
+                    <Col xs={6} md={4} >{row.staff_img.length<2?<HiOutlineUser size={70}/>:<img src={"images/employees/"+encodeURI(row.staff_img)} width="70" height="70" alt={"Image ID : "+row.staff_img} />}<p/>
                                         <a style={{ color: '#CBCBCB', opacity:0.5}}>Click to see more information</a></Col>
                     <Col xs={6} md={4}> ID Staff : {row.id_staff}<p/>
                                         ID-RFID : {row.id_rfid}<p/>
@@ -621,13 +698,14 @@ render() {
                   <b>Role : </b>{this.state.dataOnModal.role}<p/>
                 </Col>
                 <Col>
-                  <HiOutlineUser size={220}/>
+                {this.state.dataOnModal.staff_img<2?<HiOutlineUser size={220}/>:<img src={"images/employees/"+encodeURI(this.state.dataOnModal.staff_img)} width="220" height="220" alt={"Image ID : "+this.state.dataOnModal.staff_img} />}
                 </Col>
                 </Row>
                 
               </div>
               <div className="modal-footer">
                 <button type="button" className="btn btn-primary" onClick={this.employeesEdit}>Edit</button>
+                {this.state.dataOnModal.staff_img?<button type="button" className="btn btn-danger" onClick={this.deleteImage}>Delete image</button>:true}
                 <button type="button" className="btn btn-secondary" onClick={this.closeModal}>Close</button>
               </div>
               <div className='container' id={"chart_timeline_employees"} >
@@ -687,6 +765,10 @@ render() {
                   <Form.Group className="mb-3" controlId="lastName">
                   <Form.Label className='text-black'>Last Name</Form.Label>
                 <Form.Control placeholder="Search..." value={this.state.dataOnModal.name_last} onChange={(event) => this.handleNameLast(event)}/>
+                </Form.Group>
+                <Form.Group className="mb-3">
+                  <Form.Label className='text-black'>Employees Image</Form.Label>
+                <Form.Control id='imageEdit' type='file' accept="image/png, image/jpeg, image/jpg" onChange={this.handleEmployeeUploadImageOnModal}/>
                 </Form.Group>
                   <Form.Group className="mb-3" controlId="site">
                   <Form.Label className='text-black'>Site</Form.Label>

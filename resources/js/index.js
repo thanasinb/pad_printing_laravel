@@ -13,6 +13,10 @@ import TimelineImport from './components/TimelineImport';
 //     ReactDOM.render(<Home />, document.getElementById('homepage'));
 // }
 if(document.getElementById('timeline')){
+    var div_red_header = document.getElementById('red_header');
+    console.log(div_red_header);
+    div_red_header.classList.remove('container');
+    div_red_header.style = "background-color: #a81f1f; border: 5px solid rgb(233, 187, 59); margin-top:20px; padding-top:15px; width:95%";
     ReactDOM.render(<TimelineMainV2 />, document.getElementById('timeline'));
 }
 else if(document.getElementById('import')){

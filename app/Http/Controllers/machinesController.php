@@ -94,12 +94,12 @@ class machinesController extends Controller
             $file = $request->file('file');
             $fileName = $file->getClientOriginalName();
             // return response() -> json($fileName);
-            // Store the file in the storage/app/uploads directory
-            $filePath = $file->move(public_path('images'), $fileName);
+            // Store the file in the public/images/machines directory
+            $filePath = $file->move(public_path('images/machines'), $fileName);
             // Save the file information to the database
             $fileData = new File();
             $fileData->name = $fileName;
-            $fileData->path = '/images/'.$filePath;
+            $fileData->path = '/images/machines/'.$filePath;
             $fileData->save();
 
             return redirect()->back()->with('success', 'File uploaded successfully.');

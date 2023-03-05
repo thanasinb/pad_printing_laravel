@@ -110,6 +110,7 @@ class TimelineMainV2 extends Component {
                         chart: {
                           height: 350,
                           type: 'rangeBar',
+
                           events: {
                             dataPointSelection: (event, chartContext, config) => {
                               // console.log(event);
@@ -140,6 +141,13 @@ class TimelineMainV2 extends Component {
                         fill: {
                           type: 'solid'
                         },
+                        yaxis: {
+                          labels: {
+                            style: {
+                              fontSize: '14px' // set the font size here
+                            }
+                          }
+                        },
                         xaxis: {
                           type: 'datetime',
                           labels: {
@@ -149,7 +157,8 @@ class TimelineMainV2 extends Component {
                           }
                         },
                         legend: {
-                          position: 'right'
+                          position: 'right',
+                          horizontalAlign: 'left'
                         },
                         tooltip: {
                           enabled:true,
@@ -739,7 +748,6 @@ class TimelineMainV2 extends Component {
             <div className='ui container stackable two column grid'>
             <div className='row'>
               <form onSubmit={this.submitTimeline}>
-                <p>TEST V2</p>
                     <label>
                     <b>Shif : </b>
                       <select id="lang" onChange={this.onChangeShif} value={this.state.selectShif}>
@@ -747,13 +755,11 @@ class TimelineMainV2 extends Component {
                         <option value="07:00:00">Day</option>
                         <option value="19:00:00">Night</option>
                     </select>
-                    </label>
+                    </label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               
-              <div>
-              <b>Date : </b>
-                <DatePicker name='Date' onChange={this.onChangeDate} value={this.state.nowDate} format={'dd/MM/yyyy'} clearIcon={null} />
-              </div>
-              <input type="submit" value="Submit" />
+              <b> Date : </b>
+                <DatePicker name='Date' onChange={this.onChangeDate} value={this.state.nowDate} format={'dd/MM/yyyy'} clearIcon={null} /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <input className="btn btn-primary" type="submit" value="Submit" style={{height: '32px', alignItems: 'center' }}/>
             </form>
             </div>
             <div className='row'>
