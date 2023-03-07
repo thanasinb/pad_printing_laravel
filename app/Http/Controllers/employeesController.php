@@ -33,17 +33,17 @@ class employeesController extends Controller
     public function editEmployee(Request $request){
         try{
             $data = $request->all();
-            $result = Staff::where('id_staff','=',$data['id_staff_old'])->update([
-                'id_staff'=> $data['id_staff'],
-                'id_rfid'=> $data['id_rfid'],
-                'prefix'=> (int)$data['prefix'],
-                'name_first'=> $data['name_first'],
-                'name_last'=> $data['name_last'],
-                'site'=> $data['site'],
-                'id_role'=> (int)$data['id_role'],
-                'id_shif'=> $data['id_shif'],
-                'staff_img' => $data['staff_img'],
-            ]);
+            // $result = Staff::where('id_staff','=',$data['id_staff_old'])->update([
+            //     'id_staff'=> $data['id_staff'],
+            //     'id_rfid'=> $data['id_rfid'],
+            //     'prefix'=> (int)$data['prefix'],
+            //     'name_first'=> $data['name_first'],
+            //     'name_last'=> $data['name_last'],
+            //     'site'=> $data['site'],
+            //     'id_role'=> (int)$data['id_role'],
+            //     'id_shif'=> $data['id_shif'],
+            //     'staff_img' => $data['staff_img'],
+            // ]);
 
             if($data['id_staff'] == $data['id_staff_old']){
 
@@ -161,7 +161,7 @@ class employeesController extends Controller
     public function uploadFileImage(Request $request){
         try{
             $request->validate([
-                'file' => 'required|file|max:1024', // max file size is 1MB
+                'file' => 'required|file|max:4096', // max file size is 1MB
             ]);
             $file = $request->file('file');
             $fileName = $file->getClientOriginalName();
@@ -169,13 +169,12 @@ class employeesController extends Controller
             // Store the file in the public/images/employees directory
             $filePath = $file->move(public_path('images/employees'), $fileName);
             // Save the file information to the database
-            $fileData = new File();
-            $fileData->name = $fileName;
-            $fileData->path = '/images/employees/'.$filePath;
-            $fileData->save();
+            // $fileData = new File();
+            // $fileData->name = $fileName;
+            // $fileData->path = '/images/employees/'.$filePath;
+            // $fileData->save();
 
-            return redirect()->back()->with('success', 'File uploaded successfully.');
-            // return response() -> json(['event'=>'upload_image','status' => 'OK']);
+            return response() -> json(['event'=>'upload_image','status' => 'OK']);
         }
         catch(Exception $error){
             Log::error($error);

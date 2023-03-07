@@ -102,6 +102,7 @@ class TimelineMainV2 extends Component {
                 commentTempAcType:null,
                 tempSeriesIndex:null,
                 tempDataPointIndex:null,
+                isManager:false,
                 // commentTime_start:null,
                 // commentTime_close:null,
 
@@ -113,18 +114,21 @@ class TimelineMainV2 extends Component {
 
                           events: {
                             dataPointSelection: (event, chartContext, config) => {
-                              // console.log(event);
-                              console.log(config);
-                              // console.log(chartContext);
-                              console.log(config.w.globals.initialSeries[config.seriesIndex].data[config.dataPointIndex].id_activity);
-                              console.log(config.w.globals.initialSeries[config.seriesIndex].data[config.dataPointIndex].activity_type);
-                              this.setState({
-                                              showModal: true,
-                                              tempSeriesIndex:config.seriesIndex,
-                                              tempDataPointIndex:config.dataPointIndex,
-                                              commentTempAc:config.w.globals.initialSeries[config.seriesIndex].data[config.dataPointIndex].id_activity,
-                                              commentTempAcType:config.w.globals.initialSeries[config.seriesIndex].data[config.dataPointIndex].activity_type,
-                                            })
+                              // console.log(this.state.isManager);
+                              if(this.state.isManager == true){
+                                // console.log(config);
+                                // console.log(chartContext);
+                                // console.log(config.w.globals.initialSeries[config.seriesIndex].data[config.dataPointIndex].id_activity);
+                                // console.log(config.w.globals.initialSeries[config.seriesIndex].data[config.dataPointIndex].activity_type);
+                                this.setState({
+                                                showModal: true,
+                                                tempSeriesIndex:config.seriesIndex,
+                                                tempDataPointIndex:config.dataPointIndex,
+                                                commentTempAc:config.w.globals.initialSeries[config.seriesIndex].data[config.dataPointIndex].id_activity,
+                                                commentTempAcType:config.w.globals.initialSeries[config.seriesIndex].data[config.dataPointIndex].activity_type,
+                                              })
+                              }
+                              
                             }
                           }
                         },
@@ -158,7 +162,6 @@ class TimelineMainV2 extends Component {
                         },
                         legend: {
                           position: 'right',
-                          horizontalAlign: 'left'
                         },
                         tooltip: {
                           enabled:true,
@@ -188,13 +191,21 @@ class TimelineMainV2 extends Component {
                             var returnValues;
                             if(opts.seriesIndex == 1){
                               
-                              returnValues = '<div>Time Start : '+timeStart+' '+'</div>'+
+                              returnValues =    '<div>Time Start : '+timeStart+' '+'</div>'+
                                                 '<div>Time Close :'+timeEnd+' '+'</div>'+
                                                 '<div>ID Staff   : '+data.staff+' '+'</div>'+
                                                 '<div>ID Job     : '+data.id_job+' '+'</div>'+
                                                 '<div>ID Task    : '+data.id_task+' '+'</div>'+
                                                 '<div>Item Count : '+Math.round(data.count)+' '+'</div>'+
                                                 '<div>Item No.   : '+data.item_no+' '+'</div>'+
+                                                '<div>OP Color   : '+data.op_color+' '+'</div>'+
+                                                '<div>OP Side    : '+data.op_side+' '+'</div>'+
+                                                '<div>Date Due   : '+data.date_due+' '+'</div>'+
+                                                '<div>Quantity Complete: '+data.qty_comp+' '+'</div>'+
+                                                '<div>Quantity Order: '+data.qty_order+' '+'</div>'+
+                                                '<div>Run Time Actual: '+data.run_time_actual+' '+'</div>'+
+                                                '<div>Run Time Std: '+data.run_time_std+' '+'</div>'+
+                                                '<div>Run Open Total: '+data.run_open_total+' '+'</div>'+
                                                 '<div>Total Work : '+data.total_work+' '+'</div>'+
                                                 '<div>Comment    : '+(data.comment?data.comment:'-')+' '+'</div>' ;
 
@@ -204,14 +215,28 @@ class TimelineMainV2 extends Component {
                                                   '<div>Time Close :'+timeEnd+' '+'</div>'+
                                                   '<div>ID Staff   : '+data.staff+' '+'</div>'+
                                                   '<div>Break Code : '+data.break_code+' '+'</div>'+
+                                                  '<div>OP Color   : '+data.op_color+' '+'</div>'+
+                                                  '<div>OP Side    : '+data.op_side+' '+'</div>'+
+                                                  '<div>Date Due   : '+data.date_due+' '+'</div>'+
+                                                  '<div>Quantity Complete: '+data.qty_comp+' '+'</div>'+
+                                                  '<div>Quantity Order: '+data.qty_order+' '+'</div>'+
+                                                  '<div>Run Time Actual: '+data.run_time_actual+' '+'</div>'+
+                                                  '<div>Run Time Std: '+data.run_time_std+' '+'</div>'+
+                                                  '<div>Run Open Total: '+data.run_open_total+' '+'</div>'+
                                                   '<div>Total Break  : '+data.break_duration+' '+'</div>'+
                                                   '<div>Comment    : '+(data.comment?data.comment:'-')+' '+'</div>' ;
                             }
                             else if(opts.seriesIndex == 3){
                               returnValues = '<div>Time Start : '+timeStart+' '+'</div>'+
                                                   '<div>Time Close :'+timeEnd+' '+'</div>'+
-                                                  '<div>ID Staff   : '+data.staff+' '+'</div>'+
+                                                  '<div>ID Staff(Technician): '+data.staff+' '+'</div>'+
+                                                  '<div>Item No.   : '+data.item_no+' '+'</div>'+
                                                   '<div>Code DT    : '+data.code_dt+' '+'</div>'+
+                                                  '<div>ID Task    : '+data.id_task+' '+'</div>'+
+                                                  '<div>ID Job     : '+data.id_job+' '+'</div>'+
+                                                  '<div>OP Color   : '+data.op_color+' '+'</div>'+
+                                                  '<div>OP Side    : '+data.op_side+' '+'</div>'+
+                                                  '<div>Date Due   : '+data.date_due+' '+'</div>'+
                                                   '<div>Comment    : '+(data.comment?data.comment:'-')+' '+'</div>' ;
                             }
                             else if(opts.seriesIndex == 0){
@@ -231,6 +256,15 @@ class TimelineMainV2 extends Component {
     
 
     componentDidMount = () => {
+      var userLevel = localStorage.getItem('token');
+      var userType = userLevel.substring(0,3);
+      console.log(userType);
+      if(userType=='mgr'){
+          this.setState({
+            isManager:true,
+          })
+      }
+      console.log(localStorage.getItem('token'));
       // console.log(shif+" "+InitialTimeDate);
       var div = this.state.selectDate.split('/'); // Set date Interval time mask;
       var dataCheckInterval = new Date(div[1]+"/"+div[0]+"/"+div[2]+" "+this.state.selectShif).getTime();
@@ -493,7 +527,6 @@ class TimelineMainV2 extends Component {
                     }
                 
                     else if(x.id_break != 0){
-                      
                         dataSeries[1].data.push({
                           x: 'ID : '+x.id_machine,
                           y: [
@@ -508,9 +541,16 @@ class TimelineMainV2 extends Component {
                           total_work: x.total_work,
                           id_activity : x.id_activity,
                           activity_type: x.activity_type,
+                          op_color : x.op_color,
+                          op_side : x.op_side,
+                          date_due : x.date_due,
+                          qty_comp : x.qty_comp,
+                          qty_order : x.qty_order,
+                          run_time_actual : x.run_time_actual,
+                          run_time_std : x.run_time_std,
+                          run_open_total : x.run_open_total,
                           comment : x.comment_des,
                         });
-
                         var bk_start = new Date(x.break_start).getTime();
                         var bk_close = new Date(x.break_stop).getTime();
                         if(x.time_close == '0000-00-00 00:00:00' && selectDate == InitialTimeDate){
@@ -546,6 +586,14 @@ class TimelineMainV2 extends Component {
                             comment : x.comment_break?x.comment_break:"-",
                             id_activity : x.id_break,
                             activity_type: 2, //Break Normal Type Code
+                            op_color : x.op_color,
+                            op_side : x.op_side,
+                            date_due : x.date_due,
+                            qty_comp : x.qty_comp,
+                            qty_order : x.qty_order,
+                            run_time_actual : x.run_time_actual,
+                            run_time_std : x.run_time_std,
+                            run_open_total : x.run_open_total,
                           });
                         }
                         else{
@@ -562,6 +610,14 @@ class TimelineMainV2 extends Component {
                             comment : x.comment_break?x.comment_break:"-",
                             id_activity : x.id_break,
                             activity_type: 5, //Break Rework Type Code
+                            op_color : x.op_color,
+                            op_side : x.op_side,
+                            date_due : x.date_due,
+                            qty_comp : x.qty_comp,
+                            qty_order : x.qty_order,
+                            run_time_actual : x.run_time_actual,
+                            run_time_std : x.run_time_std,
+                            run_open_total : x.run_open_total,
                           });
                         }
                         
@@ -599,6 +655,14 @@ class TimelineMainV2 extends Component {
                           total_work: x.total_work,
                           id_activity : x.id_activity,
                           activity_type: x.activity_type,
+                          op_color : x.op_color,
+                          op_side : x.op_side,
+                          date_due : x.date_due,
+                          qty_comp : x.qty_comp,
+                          qty_order : x.qty_order,
+                          run_time_actual : x.run_time_actual,
+                          run_time_std : x.run_time_std,
+                          run_open_total : x.run_open_total,
                         });
                     }
                     
@@ -640,6 +704,14 @@ class TimelineMainV2 extends Component {
                         total_work: x.total_work,
                         id_activity : x.id_activity,
                         activity_type: x.activity_type,
+                        op_color : x.op_color,
+                        op_side : x.op_side,
+                        date_due : x.date_due,
+                        qty_comp : x.qty_comp,
+                        qty_order : x.qty_order,
+                        run_time_actual : x.run_time_actual,
+                        run_time_std : x.run_time_std,
+                        run_open_total : x.run_open_total,
                       });
                     }
                   }
@@ -676,12 +748,18 @@ class TimelineMainV2 extends Component {
                       code_dt : x.id_code_downtime,
                       comment : x.comment_des,
                       id_activity : x.id_activity_downtime,
+                      id_task: x.id_task,
+                      id_job: x.id_job,
+                      op_color: x.op_color,
+                      op_side: x.op_side,
+                      date_due: x.date_due,
                       activity_type: x.activity_type,
+                      item_no:x.item_no,
                     });
                   }
 
-                  id_mc.timeLast = x.time_close;
-                  id_mc.staffLast= x.id_staff;
+                  // id_mc.timeLast = x.time_close;
+                  // id_mc.staffLast= x.id_staff;
                   id_mc.count = id_mc.count + 1;
             }
       }
@@ -745,7 +823,7 @@ class TimelineMainV2 extends Component {
     render() {
         return (
             <>
-            <div className='ui container stackable two column grid'>
+            <div className='container' style={{textAlign:'center'}}>
             <div className='row'>
               <form onSubmit={this.submitTimeline}>
                     <label>
@@ -759,14 +837,15 @@ class TimelineMainV2 extends Component {
               
               <b> Date : </b>
                 <DatePicker name='Date' onChange={this.onChangeDate} value={this.state.nowDate} format={'dd/MM/yyyy'} clearIcon={null} /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              <input className="btn btn-primary" type="submit" value="Submit" style={{height: '32px', alignItems: 'center' }}/>
+              <input className="btn btn-primary" type="submit" value="Submit" style={{ alignItems: 'center',color: 'white', backgroundColor: '#a81f1f', borderColor: 'darkred' }}/>
             </form>
             </div>
             <div className='row'>
             </div>
             </div>
-                <div id="chart_timeline" >
-                    <ReactApexChart options={this.state.options} series={this.state.series} type="rangeBar" height={460}  />                
+            <hr/>
+                <div id="chart_timeline" className='p-3' style={{backgroundColor:'#EEEEEE',borderRadius: '10px', border:'5px solid #E9BB3B', textAlign:'left' }}>
+                    <ReactApexChart options={this.state.options} series={this.state.series} type="rangeBar" height={600} style={{ width: "100%" }} />                
                     {window.dispatchEvent(new Event('resize'))}
                 </div> 
             

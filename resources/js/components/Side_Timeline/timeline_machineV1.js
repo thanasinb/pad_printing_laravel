@@ -103,6 +103,7 @@ class SideTimelineMachine extends Component {
                 commentTime_start:null,
                 commentTime_close:null,
                 series: dataSeries,
+                isManager:false,
                 options: {
                         chart: {
                             height: 350,
@@ -213,6 +214,13 @@ class SideTimelineMachine extends Component {
     
 
     componentDidMount = () => {
+      var userLevel = localStorage.getItem('token');
+      var userType = userLevel.substring(0,3);
+      if(userType=='mgr'){
+          this.setState({
+            isManager:true,
+          })
+      }
       var div = this.state.selectDate.split('/'); // Set date Interval time mask;
       var dataCheckInterval = new Date(div[1]+"/"+div[0]+"/"+div[2]+" "+this.state.selectShif).getTime();
         try {

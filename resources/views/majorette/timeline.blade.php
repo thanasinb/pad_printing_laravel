@@ -10,10 +10,8 @@
                     margin-top:10px;
                     height:100%;
                     width:95%;
-                    text-align: center;
                     ">
-            <div class="full-width-div" id="timeline"></div>
+<div class="full-width-div" id="timeline"></div>
             
 </div>
-    
 @endsection

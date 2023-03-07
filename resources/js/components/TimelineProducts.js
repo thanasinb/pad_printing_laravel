@@ -36,6 +36,7 @@ export class TimelineProducts extends Component {
             itemSelectValueModal : 0,
             showItemModal : false,
             showItemEdit : false,
+            isManager:false,
             // datetimeStartAll : "",
             // datetimeCloseAll : "",
             series: dataSeriesTemp,
@@ -111,6 +112,13 @@ export class TimelineProducts extends Component {
         }
     }
     componentDidMount() {
+      var userLevel = localStorage.getItem('token');
+      var userType = userLevel.substring(0,3);
+      if(userType=='mgr'){
+          this.setState({
+            isManager:true,
+          })
+      }
         this.getItem();
     }
     

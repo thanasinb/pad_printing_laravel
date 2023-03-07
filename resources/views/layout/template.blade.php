@@ -11,10 +11,16 @@
         <script src="./js/app.js" defer></script>
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@300&family=Noto+Sans+Thai&family=Pridi&display=swap" rel="stylesheet">
         <!-- Bootstrap 5 -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
         <!-- Styles -->
         <style>
+            .body-all{
+                font-family: 'Noto Sans Thai', sans-serif;
+            }
             .text-border {
                 text-shadow: 0 0 1px black, 0 0 3px black, 0 0 5px black;
             }
@@ -39,10 +45,21 @@
             clock.innerHTML =now.toLocaleDateString()+' '+now.toLocaleTimeString();
             }, 1000);
         </script>
+        <script>
+            function logout() {
+                if(confirm('You need to logout')){
+                    localStorage.removeItem('token');
+                    window.location.href = '/login';
+                }
+                else{
+
+                }
+            }
+        </script>
 
     </head>
     
-    <body id='bd1' class="antialiased" style="background-color: rgb(230, 230, 230)">
+    <body id='bd1' class="body-all" style="background-color: rgb(230, 230, 230)">
 
         <!-- Part Navbar  -->
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -53,15 +70,38 @@
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup" style="display: flex; justify-content: space-between;">
+            <span>
             <div class="navbar-nav">
             <a class="nav-link" style="font-size: 20px" aria-current="page" href="/">Main</a>
             <a class="nav-link" style="font-size: 20px" href="{{url('/productTimeline')}}">Product</a>
             <a class="nav-link" style="font-size: 20px" href="{{url('/humanTimeline')}}">Employee</a>
             <a class="nav-link" style="font-size: 20px" href="{{url('/machineTimeline')}}">Machine</a>
-            <a class="nav-link" style="font-size: 20px" href="{{url('/import')}}">Import</a>
+            <a class="nav-link" style="font-size: 20px" href="{{url('/importfile')}}">Import</a>
             <a class="nav-link" style="font-size: 20px" href="{{url('/export')}}">Export</a>
             </div>
+        </span>
+        <span>
+                <div class="navbar-nav ml-auto">
+                    <div id=user_level></div>&nbsp;&nbsp;&nbsp;
+                    <script>
+                        function generateHTML() {
+                            var data = localStorage.getItem('token').split('_')
+                            if (data[0] == 'mgr') {
+                                var html = '<b>Hello, Manager</b>';
+                            } else {
+                                var html = '<b>Hello, Data Entry </b>';
+                            }
+                
+                            return html;
+                        }
+                
+                        var myDiv = document.getElementById('user_level');
+                        myDiv.innerHTML = generateHTML();
+                    </script>
+                    <button type="button" class="btn btn-danger" onclick="logout()">Logout</button>
+                </div>
+            </span>
         </div>
         </div>
         </nav>
@@ -89,7 +129,7 @@
 
 
         <!-- Part Footer  -->
-        <footer class="bg-light py-3 mt-5">
+        {{-- <footer class="bg-light py-3 mt-5">
             <div class="container">
                 <div class="row">
                 <div class="col-md-3">
@@ -126,6 +166,6 @@
                 </div>
             </div>
             </div>
-        </footer>
+        </footer> --}}
     </body>
 </html>

@@ -9,6 +9,7 @@ use App\Http\Controllers\exportController;
 use App\Http\Controllers\importController;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Controllers\manualController;
+use App\Http\Controllers\loginController;
 
 //Part  Route Page >>>>>>>>>>>>>>>>>>>>>>>
 
@@ -16,9 +17,12 @@ Route::get('/', function () {
     return view('majorette.timeline');
 });
 
+Route::get('/login', function () {
+    return view('majorette.login');
+});
 // Route::resource('majorette', timelineController::class);
 
-Route::get('/import', function () {
+Route::get('/importfile', function () {
     return view('majorette.import');
 });
 
@@ -54,9 +58,20 @@ Route::post('/update/exportFile',
     [exportController::class, 'exportFile']
 );
 
-Route::post('/update/uploadImport',
-    [importController::class, 'importFile']
+Route::post('/update/importData',
+    [importController::class, 'insertData']
 );
+
+Route::post('/update/uploadImport',
+    [importController::class, 'uploadFile']
+);
+
+Route::post('/update/userLogin',
+    [loginController::class, 'userLoginAuth']
+);
+// Route::post('/update/userRegister',
+//     [loginController::class, 'userRegister']
+// );
 
 
 Route::get('/update/machinesAll',

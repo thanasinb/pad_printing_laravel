@@ -81,7 +81,7 @@ class timelineController extends Controller
             // $num_r_break = count($queryActivity2);
             // $num_r_nobreak = count($queryActivity2_noBreak);
 
-            $queryActivity3 = DB::select('SELECT a.*, 3 as activity_type ,c.comment_des FROM activity_downtime as a ,comment as c where a.id_comment = c.id_comment');
+            $queryActivity3 = DB::select('SELECT a.*, p.*, 3 as activity_type ,c.comment_des FROM activity_downtime as a ,comment as c ,planning as p where a.id_comment = c.id_comment and a.id_task = p.id_task');
             $queryActivity4 = DB::select('SELECT a.*, 0 as activity_type ,c.comment_des FROM activity_idle as a ,comment as c where a.id_comment = c.id_comment');
 
             $result =(object)array_merge(  

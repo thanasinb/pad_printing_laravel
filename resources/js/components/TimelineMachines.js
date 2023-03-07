@@ -31,9 +31,17 @@ export class TimelineMachines extends Component {
             addMcDes : "",
             addMcImg :"",
             tempUploadImage: null,
+            isManager:false,
         }
     }
     componentDidMount() {
+      var userLevel = localStorage.getItem('token');
+      var userType = userLevel.substring(0,3);
+      if(userType=='mgr'){
+          this.setState({
+            isManager:true,
+          })
+      }
         this.getMachines();
     }
     
@@ -292,8 +300,8 @@ export class TimelineMachines extends Component {
     handleMachineUploadImage = (event) =>{
       var selectedFile = event.target.files[0];
       var allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
-      if(selectedFile.size > 1048576){
-        alert("Maximum image file size is 1 MB");
+      if(selectedFile.size > (1048576*4)){
+        alert("Maximum image file size is 4 MB");
         document.getElementById("imageEdit").value = "";
         document.getElementById("imageAdd").value = "";
       }
@@ -318,8 +326,8 @@ export class TimelineMachines extends Component {
       console.log(event.target.files[0]);
       var selectedFile = event.target.files[0];
       var allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
-      if(selectedFile.size > 1048576){
-        alert("Maximum image file size is 1 MB");
+      if(selectedFile.size > (1048576*4)){
+        alert("Maximum image file size is 4 MB");
         document.getElementById("imageEdit").value = "";
         document.getElementById("imageAdd").value = "";
       }

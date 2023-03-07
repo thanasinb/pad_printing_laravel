@@ -30,9 +30,17 @@ export class TimelineExport extends Component {
             shif:['07:00:00', '07:00:00'],
             selectRange: true,
             fileName:'export',
+            isManager:false,
         }
     }
     componentDidMount() {
+        var userLevel = localStorage.getItem('token');
+        var userType = userLevel.substring(0,3);
+        if(userType=='mgr'){
+            this.setState({
+                isManager:true,
+            })
+        }
         var toDay = new Date();
         this.setState({
             dateStart:toDay.getFullYear()+"-"+(toDay.getMonth()+1<10?("0"+(toDay.getMonth()+1)):(toDay.getMonth()+1))+"-"+(toDay.getDate()<10?("0"+toDay.getDate()):(toDay.getDate())),
@@ -155,9 +163,11 @@ export class TimelineExport extends Component {
 
 render() {
     return (
-        <div>
+        <div className='container p-3' style={{backgroundColor:'#EEEEEE',borderRadius: '10px', border:'5px solid #E9BB3B', width:'40%', textAlign:'left' }}>
             <form onSubmit={this.handleExport}>
-            <div> <input type="checkbox" id="topping" name="topping" value={this.state.selectRange} onChange={this.handleSelectRange} /> Select Range </div>
+            <div> 
+            <b>Select Range : </b><input type="checkbox" id="topping" name="topping" value={this.state.selectRange} onChange={this.handleSelectRange} /><hr/>
+                </div>
                 <b>Start : </b>
                 {/* <DatePicker selected={this.state.dateStartShow} dateFormat="dd/MM/yyyy" onChange={(date) => this.setStartDate(date)} /> */}
                 <DatePicker
@@ -178,8 +188,9 @@ render() {
                     minDate={this.state.dateStartShow}
                     disabled={this.state.selectRange}
                 />
-
+            <hr/>
             <lable><b>File Name : </b><input type="text" value={this.state.fileName} onChange={this.handleFileName} /></lable>
+            <hr/>
             <div>
             <FormControl>
                 <RadioGroup
@@ -194,7 +205,8 @@ render() {
                 </RadioGroup>
             </FormControl>
             </div>
-            <input type="submit" value="Export" />
+            <hr/>
+            <input className='btn btn-danger' style={{ color: 'white', backgroundColor: '#a81f1f', borderColor: 'darkred' }} type="submit" value="Export" />
       </form>
             
     </div>

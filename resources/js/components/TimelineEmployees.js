@@ -88,6 +88,7 @@ class TimelineEmployees extends Component {
             showEmployeeEdit : false,
             series: dataSeries,
             tempUploadImage: null,
+            isManager:false,
                 options: {
                         chart: {
                             height: 350,
@@ -165,6 +166,13 @@ class TimelineEmployees extends Component {
     }
 
     componentDidMount() {
+      var userLevel = localStorage.getItem('token');
+      var userType = userLevel.substring(0,3);
+      if(userType=='mgr'){
+          this.setState({
+            isManager:true,
+          })
+      }
         this.getEmployees();
         this.getTimeline();
     }
@@ -351,7 +359,9 @@ class TimelineEmployees extends Component {
               x.site.toLowerCase().includes(tempFilter.toLowerCase()) ||
               x.id_staff.toLowerCase().includes(tempFilter.toLowerCase()) ||
               x.id_shif.toLowerCase().includes(tempFilter.toLowerCase()) ||
-              x.name_last.toLowerCase().includes(tempFilter.toLowerCase())
+              x.prefix.toLowerCase().includes(tempFilter.toLowerCase()) ||
+              x.name_last.toLowerCase().includes(tempFilter.toLowerCase()) ||
+              (x.prefix+x.name_first+" "+x.name_last).toLowerCase().includes(tempFilter.toLowerCase())
           })
       }
       else if(this.state.searchType === "1"){
@@ -545,8 +555,8 @@ class TimelineEmployees extends Component {
   handleEmployeeUploadImageOnModal = (event) =>{
     var selectedFile = event.target.files[0];
     var allowedTypes = ["image/png", "image/jpeg", "image/jpg"];
-    if(selectedFile.size > 1048576){
-      alert("Maximum image file size is 1 MB");
+    if(selectedFile.size > (1048576*4)){
+      alert("Maximum image file size is 4 MB");
       document.getElementById("imageEdit").value = "";
     }
     else if(selectedFile.name.length > 20){
@@ -613,7 +623,7 @@ render() {
         <AddIcon />
         </Fab> */}
         <div>
-                <Container className="bg-dark rounded p-4 m-1 mx-auto">
+            <Container className="bg-dark rounded p-4 m-1 mx-auto">
             <Form>
                 <Form.Group className="mb-3" controlId="typeSearch">
                 <Form.Label className='text-white'>SEARCH</Form.Label>
@@ -704,8 +714,8 @@ render() {
                 
               </div>
               <div className="modal-footer">
-                <button type="button" className="btn btn-primary" onClick={this.employeesEdit}>Edit</button>
-                {this.state.dataOnModal.staff_img?<button type="button" className="btn btn-danger" onClick={this.deleteImage}>Delete image</button>:true}
+                {!this.state.isManager && <button type="button" className="btn btn-primary" onClick={this.employeesEdit}>Edit</button>}
+                {!this.state.isManager&&this.state.dataOnModal.staff_img?<button type="button" className="btn btn-danger" onClick={this.deleteImage}>Delete image</button>:true}
                 <button type="button" className="btn btn-secondary" onClick={this.closeModal}>Close</button>
               </div>
               <div className='container' id={"chart_timeline_employees"} >

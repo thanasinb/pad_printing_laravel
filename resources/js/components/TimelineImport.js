@@ -18,9 +18,17 @@ export class TimelineImport extends Component {
         super(props);
         this.state = {
             fileData: null,
+            isManager:false,
         }
     }
     componentDidMount() {
+      var userLevel = localStorage.getItem('token');
+      var userType = userLevel.substring(0,3);
+      if(userType=='mgr'){
+          this.setState({
+            isManager:true,
+          })
+      }
     }
 
     handleChange = (event) => {
@@ -37,22 +45,37 @@ export class TimelineImport extends Component {
       // console.log(this.state.fileData);
       var dataImport = new FormData();
       dataImport.append('file',this.state.fileData);
-      axios.post('/update/uploadImport',dataImport,{headers:{'Content-Type': 'multipart/form-data'}}).then(response =>{
+      axios.post('/update/uploadImport',dataImport,{
+        headers:{'Content-Type': 'multipart/form-data'},
+        onUploadProgress:progressEvent => {
+          console.log(`Upload progress: ${Math.round((progressEvent.loaded / progressEvent.total) * 100)}%`);
+        }}).then(response =>{
         console.log(response.data);
+        document.getElementById("import_upload").value = "";
+        
+          var name = {filename:this.state.fileData.name};
+          axios.post('/update/importData',name).then(response =>{
+            console.log(response.data);
+            this.setState({
+              fileData:null,
+            });
+            alert('Import success.');
+        })
       })
+      
+      
     }
 
 
 render() {
     return (
-        <div>
-        <Form onSubmit={this.handleSubmit}>
-                
-                <Form.Group className="mb-3" controlId="importfile">
-                  <Form.Label className='text-black'>Select import file : </Form.Label>
-                <Form.Control type='file' accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onChange={this.handleChange}/>
+      <div className='container p-3' style={{backgroundColor:'#EEEEEE',borderRadius: '10px', border:'5px solid #E9BB3B', textAlign:'left' }}>
+            <Form onSubmit={this.handleSubmit}>
+                <Form.Group className="mb-3">
+                  <Form.Label className='text-black'><b>Select import file : </b></Form.Label>
+                <Form.Control type='file' id="import_upload" accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onChange={this.handleChange}/>
                 </Form.Group>
-                <input className="btn btn-primary" type="submit" value="Import" />
+                <input className="btn btn-primary" style={{ color: 'white', backgroundColor: '#a81f1f', borderColor: 'darkred' }} type="submit" value="Import" />
             </Form>
     </div>
     );

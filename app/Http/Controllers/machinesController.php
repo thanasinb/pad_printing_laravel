@@ -89,7 +89,7 @@ class machinesController extends Controller
     public function uploadFileImage(Request $request){
         try{
             $request->validate([
-                'file' => 'required|file|max:1024', // max file size is 1MB
+                'file' => 'required|file|max:4096', // max file size is 4MB
             ]);
             $file = $request->file('file');
             $fileName = $file->getClientOriginalName();
@@ -97,10 +97,10 @@ class machinesController extends Controller
             // Store the file in the public/images/machines directory
             $filePath = $file->move(public_path('images/machines'), $fileName);
             // Save the file information to the database
-            $fileData = new File();
-            $fileData->name = $fileName;
-            $fileData->path = '/images/machines/'.$filePath;
-            $fileData->save();
+            // $fileData = new File();
+            // $fileData->name = $fileName;
+            // $fileData->path = '/images/machines/'.$filePath;
+            // $fileData->save();
 
             return redirect()->back()->with('success', 'File uploaded successfully.');
             // return response() -> json(['event'=>'upload_image','status' => 'OK']);
