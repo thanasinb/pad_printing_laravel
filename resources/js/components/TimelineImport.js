@@ -12,6 +12,7 @@ import "./Modal/modalTimelineMain.css";
 import { ConstructionOutlined } from '@mui/icons-material';
 import { end } from '@popperjs/core';
 import Form from 'react-bootstrap/Form';
+import { ColorRing } from 'react-loader-spinner';
 
 export class TimelineImport extends Component {
     constructor(props) {
@@ -19,6 +20,10 @@ export class TimelineImport extends Component {
         this.state = {
             fileData: null,
             isManager:false,
+            loading:false,
+            modalSuccess:false,
+            modalFailed:false,
+            dataImport:null,
         }
     }
     componentDidMount() {
@@ -38,6 +43,9 @@ export class TimelineImport extends Component {
     }
 
     handleSubmit = (event) => {
+      this.setState({
+        loading:true,
+      })
       event.preventDefault();
       if(this.state.fileData == null){
         return alert("file not found");
@@ -58,12 +66,28 @@ export class TimelineImport extends Component {
             console.log(response.data);
             this.setState({
               fileData:null,
+              loading:false,
             });
             alert('Import success.');
+        }).catch(err=>{
+          console.log(err);
+            this.setState({
+              fileData:null,
+              loading:false,
+            });
+            alert('Import fail.');
         })
       })
       
       
+    }
+
+    handleClose = () =>{
+      this.setState({
+        modalSuccess:false,
+        modalFailed:false,
+        loading:false,
+      })
     }
 
 
@@ -77,7 +101,16 @@ render() {
                 </Form.Group>
                 <input className="btn btn-primary" style={{ color: 'white', backgroundColor: '#a81f1f', borderColor: 'darkred' }} type="submit" value="Import" />
             </Form>
-    </div>
+            {this.state.loading && <ColorRing
+                visible={true}
+                height="80"
+                width="80"
+                ariaLabel="blocks-loading"
+                wrapperStyle={{}}
+                wrapperClass="blocks-wrapper"
+                colors={['#FFD7D7', '#FF9A59', '#f8b26a', '#E8C12C', '#B62D0E']}
+              />}
+            </div>
     );
 }
 }
