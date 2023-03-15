@@ -334,7 +334,7 @@ class TimelineMainV2 extends Component {
                 allDataSort.push(resultData[i][j]);
               }
             }
-            allDataSort.sort((a, b) => (a.time_start > b.time_start) ? 1 : -1)
+            // allDataSort.sort((a, b) => (a.time_start > b.time_start) ? 1 : -1)
             this.setState({ timeline: allDataSort}, ()=>{
               // console.log(this.state.timeline);
               // console.log('this set timeline');   

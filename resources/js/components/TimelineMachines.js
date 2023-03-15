@@ -253,7 +253,7 @@ export class TimelineMachines extends Component {
         image:this.state.dataOnModal.mc_img,
         type:'machine',
       }
-      if (confirm('Are you sure, you want to Delete Machine ID:'+this.state.dataOnModal.id_mc)) {
+      if (confirm('Are you sure, you want to Delete Machine ID: '+this.state.dataOnModal.id_mc)) {
         // Delete it!
         // console.log(tempDeleteData);
         axios.post('/update/deleteImage',data).then(response =>{

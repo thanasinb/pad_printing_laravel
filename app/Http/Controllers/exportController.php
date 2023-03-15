@@ -204,8 +204,53 @@ class exportController extends Controller
                 'confirm'=>'string',
                 '{f4}'=>'string'
             );
-            $writer->writeSheetHeader(SHEET_SCRAP, $header);
             $writer->writeSheetHeader(SHEET_SETUP, $header);
+
+            $header = array(
+                'Employee'=>'string',
+                'Document  (ID)'=>'string',
+                'Effective date'=>'string',
+                'Shift'=>'string',
+                'Site'=>'string',
+                'Item Number'=>'string',
+                'Operation'=>'string',
+                'Line'=>'string',
+                'routing code'=>'string',
+                'bomcode'=>'string',
+                'Work Center'=>'string',
+                'Machine'=>'string',
+                'Department'=>'string',
+                'actual runtime'=>'string',
+                'Qty Scrapped'=>'string',
+                '{f1} '=>'string',
+                'confirm'=>'string',
+                '{f4}'=>'string',
+                'Reason'=>'string',
+                'Description'=>'string',
+                
+            );
+            $writer->writeSheetHeader(SHEET_SCRAP, $header);
+
+            $header = array(
+                'Employee'=>'string',
+                'Document  (ID)'=>'string',
+                'Effective date'=>'string',
+                'Shift'=>'string',
+                'Site'=>'string',
+                'Item Number'=>'string',
+                'Operation'=>'string',
+                'Line'=>'string',
+                'routing code'=>'string',
+                'bomcode'=>'string',
+                'Work Center'=>'string',
+                'Machine'=>'string',
+                'Department'=>'string',
+                'actual runtime'=>'string',
+                'Qty Reworked'=>'string',
+                '{f1} '=>'string',
+                'confirm'=>'string',
+                '{f4}'=>'string',
+            );
             $writer->writeSheetHeader(SHEET_REWORK, $header);
             
             //if(strcmp($_GET['shif'], 'day_2')==0){
@@ -215,9 +260,17 @@ class exportController extends Controller
                 $sql_where_downtime = "status_downtime=3 AND (time_start BETWEEN '" .
                     $data_req['dateAt'] . ' ' . $data_req['shifTimeAt'] . "' AND '" .
                     $data_req['dateTo'] . ' ' . $data_req['shifTimeTo'] . "')";
+                $sql_where_rework = "(time_start BETWEEN '" .
+                    $data_req['dateAt'] . ' ' . $data_req['shifTimeAt'] . "' AND '" .
+                    $data_req['dateTo'] . ' ' . $data_req['shifTimeTo'] . "')";
+                $sql_where_scrap = "(time_start BETWEEN '" .
+                    $data_req['dateAt'] . ' ' . $data_req['shifTimeAt'] . "' AND '" .
+                    $data_req['dateTo'] . ' ' . $data_req['shifTimeTo'] . "')";
             //}
             $sql_order_by = " ORDER BY planning.id_job, planning.operation, activity.id_machine, activity.time_start";
             $sql_order_by_downtime = " ORDER BY planning.id_job, planning.operation, activity_downtime.id_machine, activity_downtime.time_start";
+            $sql_order_by_rework = " ORDER BY planning.id_job, planning.operation, activity_rework.id_machine, activity_rework.time_start";
+            $sql_order_by_scrap = " ORDER BY planning.id_job, planning.operation, activity_scrap.id_machine, activity_scrap.time_start";
 
             // SELECT TASKS WHICH OPERATE DURING THE SHIF
             $sql = "SELECT planning.id_task, planning.id_job, planning.operation FROM activity 
@@ -433,11 +486,11 @@ class exportController extends Controller
                 $writer->writeSheetRow(SHEET_SETUP, $data_activity_setup);
             }
 
-            $sql = "SELECT activity_downtime.id_staff, planning.id_job, date_eff AS time_start, shif, planning.site, item_no, planning.operation, prod_line, work_center, activity_downtime.id_machine,
-                    activity_downtime.total_work FROM activity_downtime
-                    INNER JOIN staff ON activity_downtime.id_staff=staff.id_staff
-                    INNER JOIN planning ON activity_downtime.id_task=planning.id_task
-                    WHERE activity_downtime.id_code_downtime = 'D07' AND " . $sql_where_downtime . $sql_order_by_downtime;
+            $sql = "SELECT activity_rework.id_staff, planning.id_job, date_eff AS time_start, shif, planning.site, item_no, planning.operation, prod_line, work_center, activity_rework.id_machine,
+                    activity_rework.total_work, no_pulse2, no_pulse3 FROM activity_rework
+                    INNER JOIN staff ON activity_rework.id_staff=staff.id_staff
+                    INNER JOIN planning ON activity_rework.id_task=planning.id_task
+                    WHERE " . $sql_where_rework . $sql_order_by_rework;
             $query_activity_rework = DB::select($sql);
             foreach ($query_activity_rework as $data_activity_rework) {
                 $data_activity_rework = get_object_vars($data_activity_rework);
@@ -446,15 +499,19 @@ class exportController extends Controller
                 $data_activity_rework = make_downtime_array($data_activity_rework);
                 $data_activity_rework['time_start'] = date( 'd/m/y', strtotime($data_activity_rework['time_start']));
                 $data_activity_rework['total_work'] = number_format(time2float($data_activity_rework['total_work']), 2);
+                $data_activity_rework['no_pulse2']= strval(intval($data_activity_rework['no_pulse2']) + intval($data_activity_rework['no_pulse3']));
+                unset($data_activity_rework['no_pulse3']);
                 $writer->writeSheetRow(SHEET_REWORK, $data_activity_rework);
             }
 
-            $sql = "SELECT activity_downtime.id_staff, planning.id_job, date_eff AS time_start, shif, planning.site, item_no, planning.operation, prod_line, work_center, activity_downtime.id_machine,
-                    activity_downtime.total_work FROM activity_downtime
-                    INNER JOIN staff ON activity_downtime.id_staff=staff.id_staff
-                    INNER JOIN planning ON activity_downtime.id_task=planning.id_task
-                    WHERE activity_downtime.id_code_downtime = 'D07' AND " . $sql_where_downtime . $sql_order_by_downtime;
+            $sql =  "SELECT activity_scrap.id_staff, planning.id_job, date_eff AS time_start, shif, planning.site, item_no, planning.operation, prod_line, work_center, activity_scrap.id_machine,
+                    activity_scrap.total_work, no_pulse2, code_scrap.id_code_scrap, code_scrap.scrap_des, no_pulse3 FROM activity_scrap
+                    INNER JOIN staff ON activity_scrap.id_staff=staff.id_staff
+                    INNER JOIN planning ON activity_scrap.id_task=planning.id_task
+                    INNER JOIN code_scrap ON activity_scrap.id_code_scrap=code_scrap.id_code_scrap 
+                    WHERE " . $sql_where_scrap . $sql_order_by_scrap;
             $query_activity_scrap = DB::select($sql);
+            // return response()->json($sql); 
             foreach ($query_activity_scrap as $data_activity_scrap) {
                 $data_activity_scrap = get_object_vars($data_activity_scrap);
                 $data_activity_scrap['id_machine'] = make_machine_name($data_activity_scrap['id_machine']);
@@ -462,6 +519,8 @@ class exportController extends Controller
                 $data_activity_scrap = make_downtime_array($data_activity_scrap);
                 $data_activity_scrap['time_start'] = date( 'd/m/y', strtotime($data_activity_scrap['time_start']));
                 $data_activity_scrap['total_work'] = number_format(time2float($data_activity_scrap['total_work']), 2);
+                $data_activity_scrap['no_pulse2']= strval(intval($data_activity_scrap['no_pulse2']) + intval($data_activity_scrap['no_pulse3']));
+                unset($data_activity_scrap['no_pulse3']);
                 $writer->writeSheetRow(SHEET_SCRAP, $data_activity_scrap);
             }
             // return response()->json($data_req['name']);
