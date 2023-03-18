@@ -99,8 +99,9 @@ render() {
                   <Form.Label className='text-black'><b>Select import file : </b></Form.Label>
                 <Form.Control type='file' id="import_upload" accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onChange={this.handleChange}/>
                 </Form.Group>
-                <input className="btn btn-primary" style={{ color: 'white', backgroundColor: '#a81f1f', borderColor: 'darkred' }} type="submit" value="Import" />
+                <input className="btn btn-primary" style={{ color: 'white', backgroundColor: '#a81f1f', borderColor: 'darkred' }} type="submit" value="Import" disabled={this.state.isManager}/>
             </Form>
+            {this.state.isManager && <p style={{color:'red'}}>* Not recommend for manager.</p>}
             {this.state.loading && <ColorRing
                 visible={true}
                 height="80"

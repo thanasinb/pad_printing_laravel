@@ -206,8 +206,9 @@ render() {
             </FormControl>
             </div>
             <hr/>
-            <input className='btn btn-danger' style={{ color: 'white', backgroundColor: '#a81f1f', borderColor: 'darkred' }} type="submit" value="Export" />
-      </form>
+            <input className='btn btn-danger' style={{ color: 'white', backgroundColor: '#a81f1f', borderColor: 'darkred' }} type="submit" value="Export" disabled={this.state.isManager}/>
+        </form>
+        {this.state.isManager && <p style={{color:'red'}}>* Not recommend for manager.</p>}
             
     </div>
     );

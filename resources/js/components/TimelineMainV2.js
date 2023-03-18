@@ -258,13 +258,13 @@ class TimelineMainV2 extends Component {
     componentDidMount = () => {
       var userLevel = localStorage.getItem('token');
       var userType = userLevel.substring(0,3);
-      console.log(userType);
+      // console.log(userType);
       if(userType=='mgr'){
           this.setState({
             isManager:true,
           })
       }
-      console.log(localStorage.getItem('token'));
+      // console.log(localStorage.getItem('token'));
       // console.log(shif+" "+InitialTimeDate);
       var div = this.state.selectDate.split('/'); // Set date Interval time mask;
       var dataCheckInterval = new Date(div[1]+"/"+div[0]+"/"+div[2]+" "+this.state.selectShif).getTime();
@@ -794,6 +794,12 @@ class TimelineMainV2 extends Component {
       this.setState({ showModal: false, commentValue:'' });
     };
 
+    handleModalCloseBackDrop = (event) =>{
+      if(event.target.className == 'modal'){
+        this.setState({ showModal: false, commentValue:'' });
+      }
+    }
+
     saveComment = () =>{
       axios.get('/update/create/comment/',{
         params:{
@@ -852,7 +858,7 @@ class TimelineMainV2 extends Component {
 
 
 
-        <div className="modal" tabIndex="-1" role="dialog" style={{ display: this.state.showModal ? 'block' : 'none' }}>
+        <div className="modal" tabIndex="-1" role="dialog" style={{ display: this.state.showModal ? 'block' : 'none' }} onClick={this.handleModalCloseBackDrop}>
           <div className="modal-dialog" role="document">
             <div className="modal-content">
               <div className="modal-header">

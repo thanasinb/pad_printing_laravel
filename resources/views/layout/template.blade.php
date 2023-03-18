@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
     <head>
-        
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-
         <title>@yield('title')</title>
-
+        {{-- Auth User Login --}}
+        <script src="./js/auth.js" async></script>
         <!-- Import app.js -->
         <script src="./js/app.js" defer></script>
         <!-- Fonts -->
@@ -83,7 +83,7 @@
         </span>
         <span>
                 <div class="navbar-nav ml-auto">
-                    <div id=user_level></div>&nbsp;&nbsp;&nbsp;
+                    <div id=user_level style="font-size:20px; display: flex; align-items: center;"></div>&nbsp;&nbsp;&nbsp;
                     <script>
                         function generateHTML() {
                             var data = localStorage.getItem('token').split('_')

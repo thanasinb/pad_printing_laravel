@@ -224,6 +224,17 @@ class TimelineEmployees extends Component {
         })
     }
 
+    closeModalonBackDrop = (event) =>{
+      if(event.target.className == 'modal'){
+        this.setState({
+          showEmployeeModal:false,
+          showEmployeeEdit:false,
+          series:dataSeriesTemp,
+          tempUploadImage: null,
+      })
+      }
+  }
+
     backModal = () =>{
       this.setState({
         showEmployeeModal:true,
@@ -331,6 +342,7 @@ class TimelineEmployees extends Component {
         // console.log(response.data);
       }
       else{
+        console.log(response.data);
         alert("Employee ID Staff: "+response.data.id_staff+" already exist.");
       }
   });
@@ -688,7 +700,7 @@ render() {
       </div>
       }
 
-        <div className="modal" tabIndex="-1" role="dialog" style={{ display: this.state.showEmployeeModal ? 'block' : 'none'}}>
+        <div className="modal" tabIndex="-1" role="dialog" style={{ display: this.state.showEmployeeModal ? 'block' : 'none'}} onClick={this.closeModalonBackDrop}>
           <div className="modal-dialog-med" role="document">
             <div className="modal-content">
               <div className="modal-header">
@@ -740,7 +752,7 @@ render() {
           </div>
         </div>
 
-        <div className="modal" tabIndex="-1" role="dialog" style={{ display: this.state.showEmployeeEdit ? 'block' : 'none'}}>
+        <div className="modal" tabIndex="-1" role="dialog" style={{ display: this.state.showEmployeeEdit ? 'block' : 'none'}} onClick={this.closeModalonBackDrop}>
           <div className="modal-dialog" role="document">
             <div className="modal-content">
               <div className="modal-header">

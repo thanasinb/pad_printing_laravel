@@ -9,6 +9,7 @@ use App\Models\MachineQueue;
 use App\Models\Machine;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 
 class machinesController extends Controller
 {
@@ -139,6 +140,11 @@ class machinesController extends Controller
                     ]);
                 }
                 else{
+                    $filename = Machine::select('mc_img')->where('id_mc','=',$data['id_mc_old'])->first();
+                    $path = public_path('images/machines/' . $filename['mc_img']);
+                        if (File::exists($path)) {
+                            File::delete($path);
+                        }
                     $result = Machine::where('id_mc','=',$data['id_mc_old'])->update([
                         'id_mc'=> $data['id_mc'],
                         'id_mc_type'=> (int)$data['id_mc_type'],
@@ -172,6 +178,11 @@ class machinesController extends Controller
                         ]);
                     }
                     else{
+                        $filename = Machine::select('mc_img')->where('id_mc','=',$data['id_mc_old'])->first();
+                        $path = public_path('images/machines/' . $filename['mc_img']);
+                            if (File::exists($path)) {
+                                File::delete($path);
+                            }
                         $result = Machine::where('id_mc','=',$data['id_mc_old'])->update([
                             'id_mc'=> $data['id_mc'],
                             'id_mc_type'=> (int)$data['id_mc_type'],

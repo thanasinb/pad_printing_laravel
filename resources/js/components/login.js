@@ -156,11 +156,11 @@ render() {
                 <Form onSubmit={this.handleSubmitRegister}>
                 <Form.Group className="mb-3" controlId="user_input">
                     <Form.Label className='text-black'>User</Form.Label>
-                    <Form.Control value={this.state.regUser} type='text' onChange={(event) => this.handleRegisUser(event)}/>
+                    <Form.Control value={this.state.regUser} type='text' onChange={(event) => this.handleRegisUser(event)} required/>
                 </Form.Group>
-                <Form.Group className="mb-3" controlId="user_input">
+                <Form.Group className="mb-3" controlId="pass_input">
                     <Form.Label className='text-black'>Password</Form.Label>
-                    <Form.Control value={this.state.regUser} type='password' onChange={(event) => this.handleRegisPassword(event)}/>
+                    <Form.Control value={this.state.regUser} type='password' onChange={(event) => this.handleRegisPassword(event)} required/>
                 </Form.Group>
                     {/* <input className="btn btn-primary" type="submit" value="Register" /> */}
                 </Form>
@@ -171,6 +171,7 @@ render() {
                 </div>
                 </div>
             </div>
+            <div className="modal-backdrop" onClick={this.closeModal}></div>
             </div>
     </>
     );

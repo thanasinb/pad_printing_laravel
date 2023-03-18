@@ -33,6 +33,7 @@ class employeesController extends Controller
     public function editEmployee(Request $request){
         try{
             $data = $request->all();
+            // return response()->json($data);
             // $result = Staff::where('id_staff','=',$data['id_staff_old'])->update([
             //     'id_staff'=> $data['id_staff'],
             //     'id_rfid'=> $data['id_rfid'],
@@ -60,6 +61,11 @@ class employeesController extends Controller
                     ]);
                 }
                 else{
+                    $filename = Staff::where('id_staff','=',$data['id_staff_old'])->first();
+                    $path = public_path('images/employees/' . $filename['staff_img']);
+                        if (File::exists($path)) {
+                            File::delete($path);
+                        }
                     $result = Staff::where('id_staff','=',$data['id_staff_old'])->update([
                         'id_staff'=> $data['id_staff'],
                         'id_rfid'=> $data['id_rfid'],
@@ -81,7 +87,7 @@ class employeesController extends Controller
                 ]);
             }
             else{
-                $check_duplicate = Staff::where('id_staff',$data['id_staff'])->get();
+                $check_duplicate = Staff::where('id_staff',$data['id_staff'])->first();
                 if(!empty($check_duplicate)){
                     return response() -> json([
                         'event' => 'Update',
@@ -103,6 +109,11 @@ class employeesController extends Controller
                         ]);
                     }
                     else{
+                        $filename = Staff::where('id_staff','=',$data['id_staff_old'])->get();
+                        $path = public_path('images/employees/' . $filename['staff_img']);
+                            if (File::exists($path)) {
+                                File::delete($path);
+                            }
                         $result = Staff::where('id_staff','=',$data['id_staff_old'])->update([
                             'id_staff'=> $data['id_staff'],
                             'id_rfid'=> $data['id_rfid'],

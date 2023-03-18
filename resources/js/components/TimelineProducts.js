@@ -159,6 +159,14 @@ export class TimelineProducts extends Component {
             showItemEdit:false
         })
     }
+    closeModalonBackDrop = (event) =>{
+      if(event.target.className == 'modal'){
+        this.setState({
+          showItemModal:false,
+          showItemEdit:false
+      })
+      }
+    }
 
     handleSearchType = (event) => {
       // this.filterSearch();
@@ -332,7 +340,7 @@ render() {
             </Container>
             </Button>
       </div>}
-        <div className="modal" tabIndex="-1" role="dialog" style={{ display: this.state.showItemModal ? 'block' : 'none'}}>
+        <div className="modal" tabIndex="-1" role="dialog" style={{ display: this.state.showItemModal ? 'block' : 'none'}} onClick={this.closeModalonBackDrop}>
           <div className="modal-dialog-xl"  role="document">
             <div className="modal-content">
               <div className="modal-header">

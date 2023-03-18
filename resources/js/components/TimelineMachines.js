@@ -183,6 +183,22 @@ export class TimelineMachines extends Component {
         })
     }
 
+    closeModalonBackDrop = (event) =>{
+      if(event.target.className == 'modal'){
+        document.getElementById("imageEdit").value = "";
+        document.getElementById("imageAdd").value = "";
+        this.setState({
+            showMachineModal:false,
+            showMachineEdit:false,
+            showMachineAdd:false,
+            tempUploadImage:null,
+            addIdMc:"",
+            addIdMcType:"1",
+            addMcDes:"",
+        })
+      }
+    }
+
     handleSearchType = (event) => {
       // this.filterSearch();
       this.setState({
@@ -434,9 +450,12 @@ render() {
             </Container>
             </div>
             <div>
-            <Button variant="warning" className="container rounded p-3 m-1 mx-auto" style={{border:'3px solid gray'}} onClick={event => this.addMachine()}>
+              { !this.state.isManager && 
+                <Button variant="warning" className="container rounded p-3 m-1 mx-auto" style={{border:'3px solid gray'}} onClick={event => this.addMachine()}>
                 <CgAddR size={30}/> ADD MACHINE
-          </Button>
+                </Button>
+              }
+            
             </div>
         {this.state.dataMachines.length>0?this.state.dataMachines.map((row, index) => (
         <Button
@@ -474,7 +493,7 @@ render() {
             </Container>
             </Button>
       </div>}
-        <div className="modal" tabIndex="-1" role="dialog" style={{ display: this.state.showMachineModal ? 'block' : 'none'}}>
+        <div className="modal" tabIndex="-1" role="dialog" style={{ display: this.state.showMachineModal ? 'block' : 'none'}} onClick={this.closeModalonBackDrop}>
           <div className="modal-dialog-med" role="document">
             <div className="modal-content">
               <div className="modal-header">
@@ -499,9 +518,9 @@ render() {
                 </Row>
               </div>
               <div className="modal-footer">
-                <button type="button" className="btn btn-primary" onClick={this.machineEdit}>Edit</button>
-                <button type="button" className="btn btn-danger" onClick={this.machineDelete}>Delete</button>
-                {this.state.dataOnModal.mc_img?<button type="button" className="btn btn-danger" onClick={this.deleteImage}>Delete image</button>:true}
+                {!this.state.isManager && <button type="button" className="btn btn-primary" onClick={this.machineEdit}>Edit</button>}
+                {!this.state.isManager && <button type="button" className="btn btn-danger" onClick={this.machineDelete}>Delete</button>}
+                {!this.state.isManager && this.state.dataOnModal.mc_img?<button type="button" className="btn btn-danger" onClick={this.deleteImage}>Delete image</button>:true}
                 <button type="button" className="btn btn-secondary" onClick={this.closeModal}>Close</button>
               </div>
               <div className='container' id={"chart_timeline_machine"} >
@@ -512,7 +531,7 @@ render() {
           </div>
         </div>
 
-        <div className="modal" tabIndex="-1" role="dialog" style={{ display: this.state.showMachineAdd ? 'block' : 'none'}}>
+        <div className="modal" tabIndex="-1" role="dialog" style={{ display: this.state.showMachineAdd ? 'block' : 'none'}} onClick={this.closeModalonBackDrop}>
           <div className="modal-dialog" role="document">
             <div className="modal-content">
               <div className="modal-header">
@@ -553,7 +572,7 @@ render() {
           </div>
         </div>
 
-        <div className="modal" tabIndex="-1" role="dialog" style={{ display: this.state.showMachineEdit ? 'block' : 'none'}}>
+        <div className="modal" tabIndex="-1" role="dialog" style={{ display: this.state.showMachineEdit ? 'block' : 'none'}} onClick={this.closeModalonBackDrop}>
           <div className="modal-dialog" role="document">
             <div className="modal-content">
               <div className="modal-header">
