@@ -103,6 +103,7 @@ class TimelineMainV2 extends Component {
                 tempSeriesIndex:null,
                 tempDataPointIndex:null,
                 isManager:false,
+                isSort:false,
                 // commentTime_start:null,
                 // commentTime_close:null,
 
@@ -789,6 +790,23 @@ class TimelineMainV2 extends Component {
     window.dispatchEvent(new Event('resize'))
 
     }
+
+    sortIdMachine = () =>{
+      let data = this.state.series;
+      if(this.state.isSort == false){
+        data[0].data.sort((a,b)=>(a.x>b.x)?1:-1);
+        // console.log(data[0].data);
+      }
+      else{
+        data[0].data.sort((a,b)=>(a.x<b.x)?1:-1);
+        // console.log(data[0].data);
+      }
+      
+      this.setState({
+        series:data,
+        isSort:!this.state.isSort,
+      });
+    }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     handleModalClose = () => {
       this.setState({ showModal: false, commentValue:'' });
@@ -843,7 +861,8 @@ class TimelineMainV2 extends Component {
               
               <b> Date : </b>
                 <DatePicker name='Date' onChange={this.onChangeDate} value={this.state.nowDate} format={'dd/MM/yyyy'} clearIcon={null} /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              <input className="btn btn-primary" type="submit" value="Submit" style={{ alignItems: 'center',color: 'white', backgroundColor: '#a81f1f', borderColor: 'darkred' }}/>
+              <input className="btn btn-primary" type="submit" value="Submit" style={{ alignItems: 'center',color: 'white', backgroundColor: '#a81f1f', borderColor: 'darkred' }}/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <input className="btn btn-primary" type="button" value="Sort ID Machine" style={{ alignItems: 'center',color: 'white', backgroundColor: '#a81f1f', borderColor: 'darkred' }} onClick={this.sortIdMachine}/>
             </form>
             </div>
             <div className='row'>
