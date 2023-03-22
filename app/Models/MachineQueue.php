@@ -16,9 +16,9 @@ class MachineQueue extends Model
         'id_task',
         'id_staff',
         'status_work',
-        'id_activity',
-        'id_activity_downtime',
-        'id_activity_rework'
+        // 'id_activity',
+        // 'id_activity_downtime',
+        // 'id_activity_rework'
     ];
     public $timestamps = false;
 }

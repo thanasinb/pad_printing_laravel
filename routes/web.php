@@ -56,7 +56,8 @@ Route::get('/test', function () {
 //     return ob_get_clean();
 // });
 
-// Route::get("/update/exportFile", function() { return Redirect::to("update/pp-export-action-2-new.php"); });
+// Route::get("/update/exportFile", function() { return Redirect::to("update/pp-export-action-2-new.php"); })
+
 
 Route::post('/update/exportFile',
     [exportController::class, 'exportFile']
@@ -162,3 +163,29 @@ Route::get('/update/timelineBreak/',
 Route::get('/update/timelineBreakRework/',
     [timelineController::class, 'getInfoBreakRework']
 );
+
+Route::post('/update/scrap',
+    [timelineController::class, 'addScrap']
+);
+
+// TEST TIMELINE --------------------
+Route::post('/test/AddActivity',
+    [timelineController::class, 'addTestActivity']
+);
+
+Route::post('/test/AddActivityDT',
+    [timelineController::class, 'addTestActivityDT']
+);
+
+Route::post('/test/AddBreakActivity',
+    [timelineController::class, 'addTestBreak']
+);
+
+Route::post('/test/ContinueActivity',
+    [timelineController::class, 'TestContinue']
+);
+
+Route::post('/test/ExitActivity',
+    [timelineController::class, 'testExit']
+);
+// -----------------------------------

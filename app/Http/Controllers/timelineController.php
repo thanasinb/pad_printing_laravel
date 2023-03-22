@@ -81,7 +81,7 @@ class timelineController extends Controller
             // $num_r_break = count($queryActivity2);
             // $num_r_nobreak = count($queryActivity2_noBreak);
 
-            $queryActivity3 = DB::select('SELECT a.*, p.*, 3 as activity_type ,c.comment_des FROM activity_downtime as a ,comment as c ,planning as p where a.id_comment = c.id_comment and a.id_task = p.id_task');
+            $queryActivity3 = DB::select('SELECT a.*, p.*, 3 as activity_type ,c.comment_des, cdt.des_downtime FROM code_downtime as cdt, activity_downtime as a ,comment as c ,planning as p where a.id_comment = c.id_comment and a.id_task = p.id_task and a.id_code_downtime = cdt.id_code_downtime');
             $queryActivity4 = DB::select('SELECT a.*, 0 as activity_type ,c.comment_des FROM activity_idle as a ,comment as c where a.id_comment = c.id_comment');
 
             $result =(object)array_merge(  
@@ -242,6 +242,203 @@ class timelineController extends Controller
         {
             $queryActivity = Comment::all();
             return response() -> json($queryActivity);
+        }
+        catch(Exception $error)
+        {
+            Log::error($error);
+        }
+    }
+
+    public function addScrap(Request $request){
+        try
+        {
+            $data = $request->all();
+            $dataActivity = Activity::where('id_activity',$data['id_activity'])->first();
+            // $sql = "INSERT INTO `activity_scrap`(`id_task`, `id_machine`, `id_staff`,
+            // `shif`, `id_code_scrap`, `status_scrap`, `date_eff`, 
+            // `time_start`, `time_close`, `total_work`, `no_send`, 
+            // `no_pulse1`, `no_pulse2`, `no_pulse3`) 
+            // VALUES ('".$dataActivity['id_task']."','".$dataActivity['id_machine']."',
+            // '".$dataActivity['id_staff']."','".$dataActivity['shif']."','".$data['code_scrap']."',
+            // '3','".date("Y-m-d")."','".date("Y-m-d H:i:s")."',
+            // '".date("Y-m-d H:i:s")."','"."00:00:00"."','1',
+            // '0','".$data['value']."','0')";
+            // return response() -> json($sql);
+
+            DB::insert("INSERT INTO `activity_scrap`(`id_task`, `id_machine`, `id_staff`,
+            `shif`, `id_code_scrap`, `status_scrap`, `date_eff`, 
+            `time_start`, `time_close`, `total_work`, `no_send`, 
+            `no_pulse1`, `no_pulse2`, `no_pulse3`) 
+            VALUES ('".$dataActivity['id_task']."','".$dataActivity['id_machine']."',
+            '".$dataActivity['id_staff']."','".$dataActivity['shif']."','".$data['code_scrap']."',
+            '3','".gmdate("Y-m-d", strtotime("+7 hours"))."','".gmdate("Y-m-d H:i:s", strtotime("+7 hours"))."',
+            '".gmdate("Y-m-d H:i:s", strtotime("+7 hours"))."','"."00:00:00"."','1',
+            '0','".$data['value']."','0')");
+            return response() -> json([
+                'status'=>'OK',
+            ]);
+        }
+        catch(Exception $error)
+        {
+            Log::error($error);
+        }
+    }
+
+    public function addTestActivity(Request $request){
+        try
+        {
+            $data = $request->all();
+            $idleData = ActivityIdle::where('id_machine',$data['id_mc'])->orderBy('time_start','desc')->first();
+            // return response() -> json($idleData);
+            if($idleData['time_close'] == "0000-00-00 00:00:00"){
+                ActivityIdle::where('id_activity',$idleData['id_activity'])->update([
+                    'time_close' => gmdate("Y-m-d H:i:s", strtotime("+7 hours")),
+                ]);
+            }
+            Activity::create([
+                'id_task' => '12699',
+                'id_machine' => $data['id_mc'],
+                'id_staff' => $data['id_staff'],
+                'id_comment' => '0',
+                'shif' => 'D5',
+                'status_work' => '3',
+                'id_break' => '0',
+                'date_eff' => gmdate("Y-m-d", strtotime("+7 hours")),
+                'time_start' => gmdate("Y-m-d H:i:s", strtotime("+7 hours")),
+                'time_close' => "0000-00-00 00:00:00",
+                'total_work' => "00:00:00",
+                'total_food' => "00:00:00",
+                'total_toilet' => "00:00:00",
+                'no_send' => '0',
+                'no_pulse1' => '0',
+                'no_pulse2' => '0',
+                'no_pulse3' => '0',
+                'multiplier' => '1',
+                'run_time_actual' => '0',
+            ]);
+
+            $dataReturn = Activity::orderBy('id_activity','desc')->first();
+            return response() -> json($dataReturn);
+        }
+        catch(Exception $error)
+        {
+            Log::error($error);
+        }
+    }
+
+    public function addTestActivityDT(Request $request){
+        try
+        {
+            $data = $request->all();
+            $idleData = ActivityIdle::where('id_machine',$data['id_mc'])->orderBy('time_start','desc')->first();
+            // return response() -> json($idleData);
+            if($idleData['time_close'] == "0000-00-00 00:00:00"){
+                ActivityIdle::where('id_activity',$idleData['id_activity'])->update([
+                    'time_close' => gmdate("Y-m-d H:i:s", strtotime("+7 hours")),
+                ]);
+            }
+            ActivityDowntime::create([
+                'id_task' => '12699',
+                'id_machine' => $data['id_mc'],
+                'id_staff' => $data['id_staff'],
+                'id_comment' => '0',
+                'shif' => 'D5',
+                'id_code_downtime' => 'D07',
+                'status_work' => '3',
+                'date_eff' => gmdate("Y-m-d", strtotime("+7 hours")),
+                'time_start' => gmdate("Y-m-d H:i:s", strtotime("+7 hours")),
+                'time_close' => "0000-00-00 00:00:00",
+                'total_work' => "00:00:00",
+                'total_food' => "00:00:00",
+                'total_toilet' => "00:00:00",
+                'no_send' => '0',
+                'no_pulse1' => '0',
+                'no_pulse2' => '0',
+                'no_pulse3' => '0',
+                'multiplier' => '1',
+                'run_time_actual' => '0',
+            ]);
+
+            $dataReturn = ActivityDowntime::orderBy('id_activity_downtime','desc')->first();
+            return response() -> json($dataReturn);
+        }
+        catch(Exception $error)
+        {
+            Log::error($error);
+        }
+    }
+
+    public function addTestBreak(Request $request){
+        try
+        {
+            $data = $request->all();
+            BreakTable::create([
+                'id_activity' => $data['id_activity'],
+                'id_staff' => $data['id_staff'],
+                'id_comment' => '0',
+                'break_code' => '1',
+                'break_start' => gmdate("Y-m-d H:i:s", strtotime("+7 hours")),
+                'break_stop' => "0000-00-00 00:00:00",
+                'break_duration' => "00:00:00",
+            ]);
+            $breakLested = BreakTable::orderBy('id_break','desc')->first();
+            Activity::where('id_activity',$data['id_activity'])->update([
+                'id_break' => $breakLested['id_break']
+            ]);
+            return response() -> json([
+                'status'=>'OK',
+            ]);
+        }
+        catch(Exception $error)
+        {
+            Log::error($error);
+        }
+    }
+
+    public function TestContinue(Request $request){
+        try
+        {
+            $data = $request->all();
+            $dataActivity = Activity::where('id_activity',$data['id_activity'])->first();
+            BreakTable::where('id_break',$dataActivity['id_break'])->update([
+                'break_stop' => gmdate("Y-m-d H:i:s", strtotime("+7 hours")),
+            ]);
+            return response() -> json([
+                'status'=>'OK',
+            ]);
+        }
+        catch(Exception $error)
+        {
+            Log::error($error);
+        }
+    }
+
+    public function testExit(Request $request){
+        try
+        {
+            $data = $request->all();
+            if(isset($data['id_activity'])){
+                Activity::where('id_activity',$data['id_activity'])->update([
+                    'time_close' => gmdate("Y-m-d H:i:s", strtotime("+7 hours")),
+                ]);
+            }
+            else{
+                ActivityDowntime::where('id_activity_downtime',$data['id_activity_downtime'])->update([
+                    'time_close' => gmdate("Y-m-d H:i:s", strtotime("+7 hours")),
+                ]);
+            }
+            ActivityIdle::create([
+                'id_machine' => $data['id_machine'],
+                'id_comment' => '0',
+                'status_work' => '3',
+                'time_start' => gmdate("Y-m-d H:i:s", strtotime("+7 hours")),
+                'time_close' => "0000-00-00 00:00:00",
+                'duration' => "00:00:00",
+            ]);
+            
+            return response() -> json([
+                'status'=>'OK',
+            ]);
         }
         catch(Exception $error)
         {

@@ -104,6 +104,9 @@ class TimelineMainV2 extends Component {
                 tempDataPointIndex:null,
                 isManager:false,
                 isSort:false,
+                showModalScrap:false,
+                scrapValue:0,
+                selectCodeScrap:'PAD01',
                 // commentTime_start:null,
                 // commentTime_close:null,
 
@@ -233,6 +236,7 @@ class TimelineMainV2 extends Component {
                                                   '<div>ID Staff(Technician): '+data.staff+' '+'</div>'+
                                                   '<div>Item No.   : '+data.item_no+' '+'</div>'+
                                                   '<div>Code DT    : '+data.code_dt+' '+'</div>'+
+                                                  '<div>DT Detail  : '+data.dt_des+' '+'</div>'+
                                                   '<div>ID Task    : '+data.id_task+' '+'</div>'+
                                                   '<div>ID Job     : '+data.id_job+' '+'</div>'+
                                                   '<div>OP Color   : '+data.op_color+' '+'</div>'+
@@ -408,7 +412,7 @@ class TimelineMainV2 extends Component {
       if(InitialTimeDate == this.state.selectDate){
         this.startInterval(initialStart);
       }
-      // console.log(this.state.timeline);
+      console.log(this.state.timeline);
       if(e != null){
         e.preventDefault();
       }
@@ -554,7 +558,7 @@ class TimelineMainV2 extends Component {
                         });
                         var bk_start = new Date(x.break_start).getTime();
                         var bk_close = new Date(x.break_stop).getTime();
-                        if(x.time_close == '0000-00-00 00:00:00' && selectDate == InitialTimeDate){
+                        if(x.break_stop == '0000-00-00 00:00:00' && selectDate == InitialTimeDate){
                           bk_close = new Date().getTime();
                           if(new Date().getTime() > unixDate + (12*60*60*1000)){
                             bk_close = unixDate + (12*60*60*1000);
@@ -582,7 +586,7 @@ class TimelineMainV2 extends Component {
                             ],
                             staff : x.id_staff,
                             count : calculateCount,
-                            break_code : x.break_code,
+                            break_code : x.break_code==1?'1 || พักเข้าห้องน้ำ':'2 || พักทานข้าว',
                             break_duration : x.break_duration,
                             comment : x.comment_break?x.comment_break:"-",
                             id_activity : x.id_break,
@@ -756,6 +760,7 @@ class TimelineMainV2 extends Component {
                       date_due: x.date_due,
                       activity_type: x.activity_type,
                       item_no:x.item_no,
+                      dt_des:x.des_downtime,
                     });
                   }
 
@@ -780,7 +785,7 @@ class TimelineMainV2 extends Component {
       //   }
       //   )}
       // )};
-      this.setState({ series: dataSeries }, () => {
+      this.setState({ series: dataSeries, isSort:false }, () => {
         console.log(this.state.series);
       });
       
@@ -809,12 +814,12 @@ class TimelineMainV2 extends Component {
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     handleModalClose = () => {
-      this.setState({ showModal: false, commentValue:'' });
+      this.setState({ showModal: false, showModalScrap:false, commentValue:'' });
     };
 
     handleModalCloseBackDrop = (event) =>{
       if(event.target.className == 'modal'){
-        this.setState({ showModal: false, commentValue:'' });
+        this.setState({ showModal: false, showModalScrap:false, commentValue:'' });
       }
     }
 
@@ -843,6 +848,39 @@ class TimelineMainV2 extends Component {
     handleComment = (event) =>{
       this.setState({commentValue: event.target.value});
     }
+
+    showModalScrap = () =>{
+      this.setState({
+        showModalScrap:true,
+        showModal:false,
+      })
+    }
+
+    onChangeScrap = (e) => {
+      this.setState({
+        selectCodeScrap : e.target.value
+    });
+  }
+
+    handleScrap = (event) =>{
+      this.setState({
+        scrapValue:event.target.value,
+      })
+  }
+
+    saveScrap = () =>{
+      let scrap = {
+        id_activity:this.state.commentTempAc,
+        code_scrap:this.state.selectCodeScrap,
+        value:this.state.scrapValue,
+      }
+      console.log(this.state.commentTempAc+'||'+this.state.selectCodeScrap+"||"+this.state.scrapValue);
+      axios.post('/update/scrap',scrap).then(response =>{
+        console.log(response.data);
+
+      })
+  }
+    
     
     render() {
         return (
@@ -892,6 +930,57 @@ class TimelineMainV2 extends Component {
               </div>
               <div className="modal-footer">
                 <button type="button" className="btn btn-primary" onClick={this.saveComment}>Save</button>
+                {this.state.commentTempAcType==1?<button type="button" className="btn btn-danger" onClick={this.showModalScrap}>Scrap</button>:''}
+                <button type="button" className="btn btn-secondary" onClick={this.handleModalClose}>Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="modal" tabIndex="-1" role="dialog" style={{ display: this.state.showModalScrap ? 'block' : 'none' }} onClick={this.handleModalCloseBackDrop}>
+          <div className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">SCRAP</h5>
+                <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={this.handleModalClose}>
+                  <span aria-hidden="true"><HiX/></span>
+                </button>
+              </div>
+              <div className="modal-body">
+                Value Scrap : &nbsp;
+                <input type="number" value={this.state.scrapValue} onChange={this.handleScrap} />
+                <label>
+                &nbsp;Code Scrap : &nbsp;
+                      <select id="lang" onChange={this.onChangeScrap} value={this.state.selectCodeScrap}>
+                        {/* <option value="Select">---Select---</option> */}
+                        <option value="PAD01">PAD01</option>
+                        <option value="PAD02">PAD02</option>
+                        <option value="PAD03">PAD03</option>
+                        <option value="PAD04">PAD04</option>
+                        <option value="PAD05">PAD05</option>
+                        <option value="PAD06">PAD06</option>
+                        <option value="PAD07">PAD07</option>
+                        <option value="PAD08">PAD08</option>
+                        <option value="PAD09">PAD09</option>
+                        <option value="PAD10">PAD10</option>
+                        <option value="PAD11">PAD11</option>
+                        <option value="PAD12">PAD12</option>
+                        <option value="PAD13">PAD13</option>
+                        <option value="PAD14">PAD14</option>
+                        <option value="PAD15">PAD15</option>
+                        <option value="PAD16">PAD16</option>
+                        <option value="PAD17">PAD17</option>
+                        <option value="PAD18">PAD18</option>
+                        <option value="PAD19">PAD19</option>
+                        <option value="PAD20">PAD20</option>
+                        <option value="PAD21">PAD21</option>
+                        <option value="PAD22">PAD22</option>
+                        <option value="PAD23">PAD23</option>
+                    </select>
+                    </label>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-primary" onClick={this.saveScrap}>Save</button>
                 <button type="button" className="btn btn-secondary" onClick={this.handleModalClose}>Close</button>
               </div>
             </div>
