@@ -8,6 +8,7 @@ import TimelineProducts from './components/TimelineProducts';
 import TimelineExport from './components/TimelineExport';
 import TimelineImport from './components/TimelineImport';
 import LoginPage from './components/login';
+import TimelineSimulate from './components/TimelineSimulate';
 
 
 // if (document.getElementById('homepage')) {
@@ -38,4 +39,7 @@ else if(document.getElementById('machines')){
 }
 else if(document.getElementById('employees')){
     ReactDOM.render(<TimelineEmployees />, document.getElementById('employees'));
+}
+else if(document.getElementById('simulate')){
+    ReactDOM.render(<TimelineSimulate />, document.getElementById('simulate'));
 }

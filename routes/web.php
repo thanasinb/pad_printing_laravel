@@ -42,6 +42,10 @@ Route::get('/machineTimeline', function () {
     return view('majorette.machineTimeline');
 });
 
+Route::get('/test', function () {
+    return view('majorette.simulator');
+});
+
 // Route::get('/update/exportFile', function () {
 //     return view('export.update.');
 // });
