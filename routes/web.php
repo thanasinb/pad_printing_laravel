@@ -74,9 +74,9 @@ Route::post('/update/uploadImport',
 Route::post('/update/userLogin',
     [loginController::class, 'userLoginAuth']
 );
-// Route::post('/update/userRegister',
-//     [loginController::class, 'userRegister']
-// );
+Route::post('/update/userRegister',
+    [loginController::class, 'userRegister']
+);
 
 
 Route::get('/update/machinesAll',

@@ -2,7 +2,7 @@
 
 @section('title','Simulation')
 
-@section('topic','SUMULATION')
+@section('topic','SIMULATION')
 
 @section('contents')
     <!-- {{-- <div class="full-width-div" id="simulate"></div> --}} -->

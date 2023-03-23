@@ -43,22 +43,22 @@ class loginController extends Controller
     }
 
     public function userRegister (Request $request){
-        // $data = $request->only('user','pass');
-        // return response() -> json(['Status'=>'Create user in database success.']);
+        $data = $request->all();
+        // return response() -> json($data);
         UserLogin::create([
-            'user'=> 'data_entry',
-            'password'=> Hash::make('1212312121'),
-            'role' => 'employee',
-            'datetime_create'=>date("Y-m-d H:i:s"),
+            'user'=> $data['id'],
+            'password'=> Hash::make($data['password']),
+            'role' => $data['role'],
+            'datetime_create'=>gmdate("Y-m-d H:i:s", strtotime("+7 hours")),
         ]);
 
-        UserLogin::create([
-            'user'=> 'manager',
-            'password'=> Hash::make('1234567890'),
-            'role' => 'manager',
-            'datetime_create'=>date("Y-m-d H:i:s"),
-        ]);
+        // UserLogin::create([
+        //     'user'=> 'manager',
+        //     'password'=> Hash::make('1234567890'),
+        //     'role' => 'manager',
+        //     'datetime_create'=>date("Y-m-d H:i:s"),
+        // ]);
 
-        return response() -> json(['Status'=>'Create user in database success.']);
+        return response() -> json(['status'=>'OK']);
     }
 }

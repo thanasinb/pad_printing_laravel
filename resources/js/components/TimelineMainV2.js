@@ -132,6 +132,15 @@ class TimelineMainV2 extends Component {
                                                 commentTempAcType:config.w.globals.initialSeries[config.seriesIndex].data[config.dataPointIndex].activity_type,
                                               })
                               }
+                              else if(config.w.globals.initialSeries[config.seriesIndex].data[config.dataPointIndex].activity_type == 1){
+                                this.setState({
+                                  showModalScrap: true,
+                                  tempSeriesIndex:config.seriesIndex,
+                                  tempDataPointIndex:config.dataPointIndex,
+                                  commentTempAc:config.w.globals.initialSeries[config.seriesIndex].data[config.dataPointIndex].id_activity,
+                                  commentTempAcType:config.w.globals.initialSeries[config.seriesIndex].data[config.dataPointIndex].activity_type,
+                                })
+                              }
                               
                             }
                           }
@@ -877,7 +886,13 @@ class TimelineMainV2 extends Component {
       console.log(this.state.commentTempAc+'||'+this.state.selectCodeScrap+"||"+this.state.scrapValue);
       axios.post('/update/scrap',scrap).then(response =>{
         console.log(response.data);
-
+        if(response.data.status == 'OK'){
+          alert('Scrap Added.');
+          this.setState({
+            showModalScrap:false,
+            showModal:false,
+          })
+        }
       })
   }
     
@@ -930,7 +945,7 @@ class TimelineMainV2 extends Component {
               </div>
               <div className="modal-footer">
                 <button type="button" className="btn btn-primary" onClick={this.saveComment}>Save</button>
-                {this.state.commentTempAcType==1?<button type="button" className="btn btn-danger" onClick={this.showModalScrap}>Scrap</button>:''}
+                {/* {this.state.commentTempAcType==1?<button type="button" className="btn btn-danger" onClick={this.showModalScrap}>Scrap</button>:''} */}
                 <button type="button" className="btn btn-secondary" onClick={this.handleModalClose}>Close</button>
               </div>
             </div>
@@ -949,6 +964,7 @@ class TimelineMainV2 extends Component {
               <div className="modal-body">
                 Value Scrap : &nbsp;
                 <input type="number" value={this.state.scrapValue} onChange={this.handleScrap} />
+                <hr/>
                 <label>
                 &nbsp;Code Scrap : &nbsp;
                       <select id="lang" onChange={this.onChangeScrap} value={this.state.selectCodeScrap}>

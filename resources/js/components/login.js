@@ -27,6 +27,7 @@ export class LoginPage extends Component {
             registerModal:false,
             regUser:'',
             regPass:'',
+            regRole:'employee',
             successLogin:false,
             failedLogin:false,
             returnLoginData:'',
@@ -75,9 +76,29 @@ export class LoginPage extends Component {
 
     handleSubmitRegister = (event) =>{
         event.preventDefault();
-        axios.post('/update/userRegister').then(response =>{
+        let info = {
+            id:this.state.regUser,
+            password:this.state.regPass,
+            role:this.state.regRole,
+        }
+        axios.post('/update/userRegister',info).then(response =>{
                 console.log(response.data);
+                if(response.data.status == 'OK'){
+                    this.setState({
+                        registerModal:false,
+                    })
+                    alert('Register success.');
+                }
+                else{
+                    alert('Register fail.');
+                }
             })
+    }
+
+    handleRegisRole = (event)=>{
+        this.setState({
+            regRole:event.target.value,
+        })
     }
 
     handleLogin = (event) =>{
@@ -94,7 +115,13 @@ export class LoginPage extends Component {
                         successLogin:true,
                         failedLogin:false,
                     })
-                    window.location.href = '/';
+                    if(response.data.token.substring(0,3)=='mgr'){
+                        window.location.href = '/';
+                    }
+                    else{
+                        window.location.href = '/export';
+                    }
+                    
                 }
                 else{
                     this.setState({
@@ -127,7 +154,7 @@ render() {
                 <hr/>
                 <div style={{textAlign: 'center' }}>
                 <input className="btn btn-primary" style={{ color: 'white', backgroundColor: '#a81f1f', borderColor: 'darkred'}} type="submit" value="Login" />&nbsp;&nbsp;
-                {/* <input className="btn btn-primary" style={{ color: 'white', backgroundColor: '#a81f1f', borderColor: 'darkred'}} type="button" onClick={this.handleSubmitRegister} value="Register" /> */}
+                <input className="btn btn-primary" style={{ color: 'white', backgroundColor: '#a81f1f', borderColor: 'darkred'}} type="button" onClick={this.showRegisModal} value="Register" />
                 </div>
             </Form>
             {/*start show notify access */}
@@ -160,7 +187,14 @@ render() {
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="pass_input">
                     <Form.Label className='text-black'>Password</Form.Label>
-                    <Form.Control value={this.state.regUser} type='password' onChange={(event) => this.handleRegisPassword(event)} required/>
+                    <Form.Control value={this.state.regPass} type='password' onChange={(event) => this.handleRegisPassword(event)} required/>
+                </Form.Group>
+                <Form.Group className="mb-3" controlId="id_mc_type">
+                    <Form.Label className='text-black'>ID Machine Type</Form.Label>
+                    <Form.Select value={this.state.addIdMcType} onChange={(event) => this.handleRegisRole(event)}>
+                        <option value="employee">Employee</option>
+                        <option value="manager">Manager</option>
+                    </Form.Select>
                 </Form.Group>
                     {/* <input className="btn btn-primary" type="submit" value="Register" /> */}
                 </Form>
@@ -171,7 +205,6 @@ render() {
                 </div>
                 </div>
             </div>
-            <div className="modal-backdrop" onClick={this.closeModal}></div>
             </div>
     </>
     );
