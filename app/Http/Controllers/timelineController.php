@@ -81,7 +81,7 @@ class timelineController extends Controller
             // $num_r_break = count($queryActivity2);
             // $num_r_nobreak = count($queryActivity2_noBreak);
 
-            $queryActivity3 = DB::select('SELECT a.*, p.*, 3 as activity_type ,c.comment_des, cdt.des_downtime FROM code_downtime as cdt, activity_downtime as a ,comment as c ,planning as p where a.id_comment = c.id_comment and a.id_task = p.id_task and a.id_code_downtime = cdt.id_code_downtime');
+            $queryActivity3 = DB::select('SELECT a.*, p.*, 3 as activity_type ,c.comment_des, cdt.des_downtime_thai as des_downtime FROM code_downtime as cdt, activity_downtime as a ,comment as c ,planning as p where a.id_comment = c.id_comment and a.id_task = p.id_task and a.id_code_downtime = cdt.id_code_downtime');
             $queryActivity4 = DB::select('SELECT a.*, 0 as activity_type ,c.comment_des FROM activity_idle as a ,comment as c where a.id_comment = c.id_comment');
 
             $result =(object)array_merge(  
@@ -264,16 +264,17 @@ class timelineController extends Controller
             // '".date("Y-m-d H:i:s")."','"."00:00:00"."','1',
             // '0','".$data['value']."','0')";
             // return response() -> json($sql);
-
             DB::insert("INSERT INTO `activity_scrap`(`id_task`, `id_machine`, `id_staff`,
-            `shif`, `id_code_scrap`, `status_scrap`, `date_eff`, 
-            `time_start`, `time_close`, `total_work`, `no_send`, 
-            `no_pulse1`, `no_pulse2`, `no_pulse3`) 
-            VALUES ('".$dataActivity['id_task']."','".$dataActivity['id_machine']."',
-            '".$dataActivity['id_staff']."','".$dataActivity['shif']."','".$data['code_scrap']."',
-            '3','".gmdate("Y-m-d", strtotime("+7 hours"))."','".gmdate("Y-m-d H:i:s", strtotime("+7 hours"))."',
-            '".gmdate("Y-m-d H:i:s", strtotime("+7 hours"))."','"."00:00:00"."','1',
-            '0','".$data['value']."','0')");
+                `shif`, `id_code_scrap`, `status_scrap`, `date_eff`, 
+                `time_start`, `time_close`, `total_work`, `no_send`, 
+                `no_pulse1`, `no_pulse2`, `no_pulse3`) 
+                VALUES ('".$dataActivity['id_task']."','".$dataActivity['id_machine']."',
+                '".$dataActivity['id_staff']."','".$dataActivity['shif']."','".$data['code_scrap']."',
+                '3','".gmdate("Y-m-d", strtotime("+7 hours"))."','".gmdate("Y-m-d H:i:s", strtotime("+7 hours"))."',
+                '".gmdate("Y-m-d H:i:s", strtotime("+7 hours"))."','"."00:00:00"."','1',
+                '0','".$data['value']."','0')");
+
+            
             return response() -> json([
                 'status'=>'OK',
             ]);

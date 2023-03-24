@@ -73,12 +73,12 @@
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup" style="display: flex; justify-content: space-between;">
             <span>
             <div class="navbar-nav">
-            <a class="nav-link" style="font-size: 20px" aria-current="page" href="/">Main</a>
-            <a class="nav-link" style="font-size: 20px" href="{{url('/productTimeline')}}">Product</a>
-            <a class="nav-link" style="font-size: 20px" href="{{url('/humanTimeline')}}">Employee</a>
-            <a class="nav-link" style="font-size: 20px" href="{{url('/machineTimeline')}}">Machine</a>
-            <a class="nav-link" style="font-size: 20px" href="{{url('/importfile')}}">Import</a>
-            <a class="nav-link" style="font-size: 20px" href="{{url('/export')}}">Export</a>
+            <a id='nav_select_1' class="nav-link" style="font-size: 20px" aria-current="page" href="/">Main</a>
+            <a id='nav_select_2' class="nav-link" style="font-size: 20px" href="{{url('/productTimeline')}}">Product</a>
+            <a id='nav_select_3' class="nav-link" style="font-size: 20px" href="{{url('/humanTimeline')}}">Employee</a>
+            <a id='nav_select_4' class="nav-link" style="font-size: 20px" href="{{url('/machineTimeline')}}">Machine</a>
+            <a id='nav_select_5' class="nav-link" style="font-size: 20px" href="{{url('/importfile')}}">Import</a>
+            <a id='nav_select_6' class="nav-link" style="font-size: 20px" href="{{url('/export')}}">Export</a>
             </div>
         </span>
         <span>
@@ -92,12 +92,12 @@
                             } else {
                                 var html = '<b>Hello, Data Entry </b>';
                             }
-                
                             return html;
                         }
                 
                         var myDiv = document.getElementById('user_level');
                         myDiv.innerHTML = generateHTML();
+                        
                     </script>
                     <button type="button" class="btn btn-danger" onclick="logout()">Logout</button>
                 </div>
