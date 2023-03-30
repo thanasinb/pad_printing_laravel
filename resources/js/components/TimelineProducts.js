@@ -297,7 +297,7 @@ render() {
                     
                     <Form.Control type="text" placeholder="Search..." onChange={this.filterSearch}/>
                     <Form.Text className="text-muted">
-                    ค้นหางานที่ต้องการโดยเลือกหมวดหมู่ของการค้นหา จากนั้นเติมคำที่ต้องลงในช่องว่าง กรณีไม่เลือกหมวดหมู่จะค้นหาจากทุกหมวด
+                    If no category is selected, it will search from all categories.
                     </Form.Text>
                 </Form.Group>
                 {/* <Button  variant="primary" type="submit">

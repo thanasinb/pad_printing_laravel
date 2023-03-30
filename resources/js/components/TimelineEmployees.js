@@ -338,12 +338,12 @@ class TimelineEmployees extends Component {
           showEmployeeEdit:false
         });
         this.getEmployees();
-        alert("Editing employee "+response.data.id_staff+" success.");
+        alert("Editing Staff ID "+response.data.id_staff+" success.");
         // console.log(response.data);
       }
       else{
         console.log(response.data);
-        alert("Employee ID Staff: "+response.data.id_staff+" already exist.");
+        alert("Employee Staff ID: "+response.data.id_staff+" already exist.");
       }
   });
   }
@@ -641,7 +641,7 @@ render() {
                 <Form.Label className='text-white'>SEARCH</Form.Label>
                 <Form.Select aria-label="Default select example" onChange={this.handleSearchType}>
                     <option value="0">All</option>
-                    <option value="1">By ID-Staff</option>
+                    <option value="1">By Staff-ID</option>
                     <option value="2">By MC-RFID</option>
                     <option value="3">By First Name</option>
                     <option value="4">By Last Name</option>
@@ -655,7 +655,7 @@ render() {
                     
                     <Form.Control type="text" placeholder="Search..." onChange={this.filterSearch}/>
                     <Form.Text className="text-muted">
-                    ค้นหาพนักงานที่ต้องการโดยเลือกหมวดหมู่ของการค้นหา จากนั้นเติมคำที่ต้องลงในช่องว่าง กรณีไม่เลือกหมวดหมู่จะค้นหาจากทุกหมวด
+                    If no category is selected, it will search from all categories.
                     </Form.Text>
                 </Form.Group>
                 {/* <Button  variant="primary" type="submit">
@@ -676,8 +676,8 @@ render() {
                 <Row>
                     <Col xs={6} md={4} >{row.staff_img.length<2?<HiOutlineUser size={70}/>:<img src={"images/employees/"+encodeURI(row.staff_img)} width="70" height="70" alt={"Image ID : "+row.staff_img} />}<p/>
                                         <a style={{ color: '#CBCBCB', opacity:0.5}}>Click to see more information</a></Col>
-                    <Col xs={6} md={4}> ID Staff : {row.id_staff}<p/>
-                                        ID-RFID : {row.id_rfid}<p/>
+                    <Col xs={6} md={4}> Staff ID : {row.id_staff}<p/>
+                                        RFID : {row.id_rfid}<p/>
                                         Name : {row.prefix+row.name_first+"  "+row.name_last}</Col>
                     <Col xs={3} md={2} style={{textAlign:'canter'}}>Site: {row.site?row.site:"-"} <p/>
                                         Role : {row.role}<p/>
@@ -712,8 +712,8 @@ render() {
               <div className="modal-body">
                 <Row>
                 <Col>
-                  <b>ID Staff : </b>{this.state.dataOnModal.id_staff}<p/>
-                  <b>ID RFID : </b>{this.state.dataOnModal.id_rfid}<p/>
+                  <b>Staff ID : </b>{this.state.dataOnModal.id_staff}<p/>
+                  <b>RFID : </b>{this.state.dataOnModal.id_rfid}<p/>
                   <b>Name : </b>{this.state.dataOnModal.prefix+this.state.dataOnModal.name_first+" "+this.state.dataOnModal.name_last}<p/>
                   <b>Site : </b>{this.state.dataOnModal.site}<p/>
                   <b>Team : </b>{this.state.dataOnModal.id_shif}<p/>
@@ -764,11 +764,11 @@ render() {
               <div className="modal-body">
               <Form onSubmit={this.handleSubmitEditModal}>
                 <Form.Group className="mb-3" controlId="idStaff">
-                  <Form.Label className='text-black'>ID Staff</Form.Label>
+                  <Form.Label className='text-black'>Staff ID</Form.Label>
                   <Form.Control placeholder="Search..." value={this.state.dataOnModal.id_staff} onChange={(event) => this.handleIdStaff(event)}/>
                 </Form.Group>
                   <Form.Group className="mb-3" controlId="idRfid">
-                  <Form.Label className='text-black'>ID RFID</Form.Label>
+                  <Form.Label className='text-black'>RFID</Form.Label>
                 <Form.Control placeholder="Search..." value={this.state.dataOnModal.id_rfid} onChange={(event) => this.handleIdRfid(event)}/>
                 </Form.Group>
                   <Form.Group className="mb-3" controlId="prefixName">

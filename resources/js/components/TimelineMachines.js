@@ -430,9 +430,9 @@ render() {
                 <Form.Label className='text-white'>SEARCH</Form.Label>
                 <Form.Select aria-label="Default select example" onChange={this.handleSearchType}>
                     <option value="0">All</option>
-                    <option value="1">By ID-Machine</option>
+                    <option value="1">By Machine-ID</option>
                     <option value="2">By Machine-Description</option>
-                    <option value="3">By ID-Machine-TYPE</option>
+                    <option value="3">By Machine-TYPE-ID</option>
                     <option value="5">By Machine-TYPE</option>
                 </Form.Select>
                 </Form.Group>
@@ -440,7 +440,7 @@ render() {
                     
                     <Form.Control type="text" placeholder="Search..." onChange={this.filterSearch}/>
                     <Form.Text className="text-muted">
-                    ค้นหาเครื่องจักรที่ต้องการโดยเลือกหมวดหมู่ของการค้นหา จากนั้นเติมคำที่ต้องลงในช่องว่าง กรณีไม่เลือกหมวดหมู่จะค้นหาจากทุกหมวด
+                    If no category is selected, it will search from all categories.
                     </Form.Text>
                 </Form.Group>
                 {/* <Button  variant="primary" type="submit">
@@ -468,7 +468,7 @@ render() {
                 <Row>
                     <Col xs={6} md={4} >{row.mc_img.length<2?<GiSewingMachine size={70}/>:<img src={"images/machines/"+encodeURI(row.mc_img)} width="70" height="70" alt={"Image ID : "+row.id_mc} />}<p/>
                                         <a style={{ color: '#CBCBCB', opacity:0.5}}>Click to see more information</a></Col>
-                    <Col xs={6} md={4}> ID Machine : {row.id_mc}<p/>
+                    <Col xs={6} md={4}> Machine ID : {row.id_mc}<p/>
                                         MC-DES : {row.mc_des?row.mc_des:"-"}
                                         {/* Name: {row.name_first+"  "+row.name_last} */}
                                         </Col>
@@ -505,7 +505,7 @@ render() {
               <div className="modal-body">
               <Row>
                 <Col>
-                  <b>ID Machine : </b>{this.state.dataOnModal.id_mc}<p/>
+                  <b>Machine ID : </b>{this.state.dataOnModal.id_mc}<p/>
                   <b>Macnine Type : </b>{this.state.dataOnModal.mc_type}<p/>
                   <b>Machine Description : </b>{this.state.dataOnModal.mc_des}<p/>
                   <b>Time Contact : </b>{this.state.dataOnModal.time_contact}<p/>
@@ -543,11 +543,11 @@ render() {
               <div className="modal-body">
               <Form onSubmit={this.handleAddMachineModal}>
                 <Form.Group className="mb-3" controlId="id_mc">
-                  <Form.Label className='text-black'>ID Machine</Form.Label>
+                  <Form.Label className='text-black'>Machine ID</Form.Label>
                   <Form.Control value={this.state.addIdMc} type='text' onChange={(event) => this.handleIdMachine(event)}/>
                 </Form.Group>
                   <Form.Group className="mb-3" controlId="id_mc_type">
-                  <Form.Label className='text-black'>ID Machine Type</Form.Label>
+                  <Form.Label className='text-black'>Machine Type ID</Form.Label>
                   <Form.Select value={this.state.addIdMcType} onChange={(event) => this.handleIdMachineType(event)}>
                       <option value="1">2 Color Ink Tray Shutter</option>
                       <option value="2">4 Color Ink Tray Shutter</option>
@@ -584,11 +584,11 @@ render() {
               <div className="modal-body">
               <Form onSubmit={this.handleSubmitEditModal}>
               <Form.Group className="mb-3" controlId="id_mc_edit">
-                  <Form.Label className='text-black'>ID Machine</Form.Label>
+                  <Form.Label className='text-black'>Machine ID</Form.Label>
                   <Form.Control value={this.state.dataOnModal.id_mc} type='text' onChange={(event) => this.handleIdMachineOnModal(event)}/>
                 </Form.Group>
                   <Form.Group className="mb-3" controlId="id_mc_type_edit">
-                  <Form.Label className='text-black'>ID Machine Type</Form.Label>
+                  <Form.Label className='text-black'>Machine Type ID</Form.Label>
                   <Form.Select value={this.state.dataOnModal.id_mc_type} onChange={(event) => this.handleIdMachineTypeOnModal(event)}>
                       <option value="1">2 Color Ink Tray Shutter</option>
                       <option value="2">4 Color Ink Tray Shutter</option>
